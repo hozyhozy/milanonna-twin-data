@@ -1,0 +1,16 @@
+# 자막 전문은 로컬에만 보관
+youtube_transcripts/
+*.vtt
+**/[최종]*.md
+!docs/참고자료/[최종]언론기사_모음.md
+# 이전 버전·내보내기 파일
+_old/
+_export_for_git.tar.gz
+_repo_export_*.tar.gz
+# 환경
+.DS_Store
+~$*
+__pycache__/
+.ipynb_checkpoints/
+.env
+api_key*
