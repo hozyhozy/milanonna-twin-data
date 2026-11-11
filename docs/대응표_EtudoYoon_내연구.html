@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Etudo &amp; Yoon (2024) ↔ 내 연구 대응표</title>
+<style>
+  :root{
+    --ink:#1b1c20;--mute:#6a6d76;--line:#e3e5ea;--bg:#f7f7f9;--card:#fff;
+    --ref:#5b6475;--ref-bg:#f1f3f6;--ref-line:#cfd4dd;
+    --me:#2459d6;--me-bg:#eaf1ff;--me-line:#b9cdf8;
+    --done:#1f8a55;--done-bg:#e6f6ee;--draft:#b06a00;--draft-bg:#fff3de;--todo:#c0362c;--todo-bg:#fdeceb;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;line-height:1.55;font-size:15px}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 80px}
+  header h1{margin:0 0 6px;font-size:25px;letter-spacing:-.01em}
+  header p{margin:0;color:var(--mute)}
+  .topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+  .topbar-in{max-width:1080px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto;white-space:nowrap;align-items:center}
+  .topbar a{padding:13px 12px;font-size:14px;color:#2a2a2e;text-decoration:none;border-bottom:3px solid transparent}
+  .topbar a:hover{color:var(--me);border-bottom-color:var(--me)}
+  .topbar button{margin-left:auto;font:inherit;font-size:13px;padding:6px 12px;border:1px solid var(--line);border-radius:6px;background:#fff;cursor:pointer}
+  section{margin:38px 0;scroll-margin-top:60px}
+  h2{font-size:19px;margin:0 0 14px;padding-left:11px;border-left:4px solid var(--me)}
+
+  /* 한눈에 */
+  .one{display:grid;grid-template-columns:1fr 44px 1fr;gap:0;align-items:stretch;margin-top:20px}
+  .one .box{border-radius:10px;padding:14px 16px;border:1px solid}
+  .one .ref{background:var(--ref-bg);border-color:var(--ref-line)}
+  .one .me{background:var(--me-bg);border-color:var(--me-line)}
+  .one .mid{display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:20px}
+  .one b.lab{display:block;font-size:12px;letter-spacing:.04em;margin-bottom:4px}
+  .ref b.lab{color:var(--ref)} .me b.lab{color:var(--me)}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px;font-size:13px;color:var(--mute)}
+
+  .badge{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;vertical-align:middle;white-space:nowrap}
+  .b-done{background:var(--done-bg);color:var(--done)}
+  .b-draft{background:var(--draft-bg);color:var(--draft)}
+  .b-todo{background:var(--todo-bg);color:var(--todo)}
+
+  /* 세로 순서도 */
+  .colhead{display:grid;grid-template-columns:1fr 150px 1fr;gap:14px;margin-bottom:6px;position:sticky;top:46px;background:var(--bg);padding:8px 0;z-index:10}
+  .colhead div{font-weight:700;font-size:14px;text-align:center;padding:7px;border-radius:8px}
+  .colhead .r{background:var(--ref-bg);color:var(--ref)} .colhead .m{background:var(--me-bg);color:var(--me)}
+  .colhead .c{color:var(--mute);font-weight:500}
+  .row{display:grid;grid-template-columns:1fr 150px 1fr;gap:14px;align-items:stretch}
+  .cell{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 15px}
+  .cell.ref{border-left:4px solid var(--ref)}
+  .cell.me{border-left:4px solid var(--me)}
+  .cell h3{margin:0 0 4px;font-size:15px;line-height:1.4}
+  .cell p{margin:4px 0 0;color:#33353b;font-size:14px}
+  .stage{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative}
+  .stage .num{width:34px;height:34px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+  .stage .nm{font-size:13px;font-weight:600;margin-top:6px;line-height:1.3}
+  .stage .grp{font-size:11px;color:var(--mute);margin-top:2px}
+  .arrow{display:grid;grid-template-columns:1fr 150px 1fr;gap:14px;height:30px}
+  .arrow i{grid-column:2;justify-self:center;width:2px;background:#b9bdc7;position:relative}
+  .arrow i:after{content:"";position:absolute;bottom:-1px;left:-5px;border:6px solid transparent;border-top-color:#b9bdc7;border-bottom:0}
+  details{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+  summary{cursor:pointer;font-size:13px;color:var(--mute);list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary:before{content:"＋ ";font-weight:700}
+  details[open] summary:before{content:"－ "}
+  details ul{margin:6px 0 2px;padding-left:18px;font-size:13.5px;color:#3a3c43}
+  details li{margin:3px 0}
+  .find{background:var(--me-bg);border-radius:6px;padding:7px 10px;margin-top:6px;font-size:13.5px}
+  .find b{color:var(--me)}
+
+  /* 파이프라인 미니 순서도 */
+  .pipe{display:flex;flex-direction:column;align-items:stretch;margin-top:8px}
+  .pipe .p{border:1px solid var(--line);border-radius:7px;padding:6px 10px;font-size:13.5px;background:#fbfbfc}
+  .pipe .p b{font-size:12px;display:block}
+  .cell.ref .pipe .p b{color:var(--ref)} .cell.me .pipe .p b{color:var(--me)}
+  .pipe .d{align-self:center;color:#a3a7b1;font-size:13px;line-height:1.2}
+
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;vertical-align:top;text-align:left}
+  th{background:#f1f2f5;font-weight:600}
+  td.k{font-weight:600;white-space:nowrap}
+  .todo-list{display:grid;gap:10px}
+  .todo{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 15px;display:grid;grid-template-columns:34px 1fr;gap:10px}
+  .todo .n{width:28px;height:28px;border-radius:50%;background:var(--me);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .todo h3{margin:0;font-size:15px}
+  .todo p{margin:3px 0 0;font-size:14px;color:#33353b}
+  footer{color:var(--mute);font-size:12.5px;margin-top:40px;border-top:1px solid var(--line);padding-top:12px}
+
+  @media (max-width:760px){
+    .one{grid-template-columns:1fr}.one .mid{transform:rotate(90deg);height:30px}
+    .colhead{display:none}
+    .row{grid-template-columns:1fr}
+    .stage{flex-direction:row;gap:8px;justify-content:flex-start;order:-1}
+    .stage .nm{margin-top:0}
+    .arrow{grid-template-columns:1fr}.arrow i{grid-column:1}
+    .cell.ref:before{content:"Etudo & Yoon";display:block;font-size:11px;font-weight:700;color:var(--ref);margin-bottom:3px}
+    .cell.me:before{content:"내 연구";display:block;font-size:11px;font-weight:700;color:var(--me);margin-bottom:3px}
+  }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <a href="#one">한눈에</a><a href="#flow">논문 흐름 대응</a><a href="#diff">차이점</a><a href="#next">앞으로 찾을 것</a>
+  <button id="tg" type="button">설명 모두 펼치기</button>
+</div></div>
+
+<div class="wrap">
+<header>
+  <h1>Etudo &amp; Yoon (2024) ↔ 내 연구 대응표</h1>
+  <p>참고 논문의 흐름 순서대로, 같은 자리에 내 연구의 무엇이 들어가는지 맞춰 본 틀입니다. 연구는 시작 전이며, 빈칸은 "어떻게 찾을지"만 적었습니다.</p>
+</header>
+
+<section id="one">
+  <h2>한눈에</h2>
+  <div class="one">
+    <div class="box ref"><b class="lab">ETUDO &amp; YOON (ISR 2024)</b>
+      급진 조직의 <b>이념</b>을 온톨로지로 정리해 두고, 온라인 게시물이 그 이념과 <b>얼마나 맞는지</b>를 손 라벨 없이 탐지한다.</div>
+    <div class="mid">⇄</div>
+    <div class="box me"><b class="lab">내 연구 (밀라논나 트윈)</b>
+      한 인물의 <b>입장</b>을 온톨로지로 정리해 두고, 트윈의 답이 본인 입장에서 <b>얼마나 벗어나는지</b>를 본인 확인 없이 탐지한다.</div>
+  </div>
+  <div class="legend">
+    <span><span class="badge b-done">근거 있음</span> 파일럿에서 확인된 것</span>
+    <span><span class="badge b-draft">가안</span> 방향만 정한 것</span>
+    <span><span class="badge b-todo">빈칸</span> 아직 찾아야 하는 것</span>
+    <span>＋ 를 누르면 세부 설명이 열립니다</span>
+  </div>
+</section>
+
+<section id="flow">
+  <h2>논문 흐름 대응 (위에서 아래로)</h2>
+  <div class="colhead"><div class="r">Etudo &amp; Yoon</div><div class="c">논문 단계</div><div class="m">내 연구</div></div>
+  <div id="rows"></div>
+</section>
+
+<section id="diff">
+  <h2>차이점</h2>
+  <table>
+    <tr><th style="width:17%">항목</th><th style="width:36%">Etudo &amp; Yoon</th><th style="width:36%">내 연구</th><th>영향</th></tr>
+    <tr><td class="k">찾는 것</td><td>이념과 <b>일치</b>하는 게시물</td><td>본인 입장과 <b>불일치</b>하는 트윈 답</td><td>방향만 반대, 구조는 같음</td></tr>
+    <tr><td class="k">최종 목적</td><td>분류(탐지)에서 끝남</td><td>탐지 후 트윈을 고치는 데까지 씀</td><td>"응용 시연" 절이 하나 더 필요</td></tr>
+    <tr><td class="k">검사 대상</td><td>사람이 쓴 게시물</td><td>LLM이 만든 답</td><td>대상이 그럴듯하게 꾸며져 있어 탐지가 더 어려울 수 있음</td></tr>
+    <tr><td class="k">규모</td><td>여러 이념, 포럼 회원 602명</td><td>인물 1명, 발화 381개</td><td>일반성 주장이 약함 → 두 번째 인물 필요</td></tr>
+    <tr><td class="k">근거 이론</td><td>집단행동 프레이밍 이론으로 확정</td><td>미정</td><td>가장 큰 빈칸</td></tr>
+    <tr><td class="k">추출 기술</td><td>개체명 인식 + 관계 추출 모델을 직접 학습</td><td>LLM에 스키마를 주고 추출</td><td>기술 기여는 작음. 대신 추출 정확도 검증이 중요</td></tr>
+    <tr><td class="k">정답</td><td>저자가 602명을 직접 읽고 라벨</td><td>본인의 이후 인터뷰 답(Holdout)을 자동 정답으로</td><td>코더 없이 가능하나 정답 품질을 따로 입증해야 함</td></tr>
+    <tr><td class="k">사전 진단</td><td>없음(문헌 공백에서 출발)</td><td>파일럿으로 왜곡을 먼저 확인</td><td>서론의 문제 제기가 더 구체적</td></tr>
+    <tr><td class="k">온톨로지의 필요성</td><td>이념을 구분하려면 구조가 필수</td><td>단순 검증기로도 될 수 있음</td><td>온톨로지 유무 비교를 먼저 해야 함</td></tr>
+  </table>
+</section>
+
+<section id="next">
+  <h2>앞으로 찾을 것 (순서대로)</h2>
+  <div class="todo-list" id="todos"></div>
+</section>
+
+<footer>
+  참고: Etudo, U., &amp; Yoon, V. Y. (2024). Ontology-Based Information Extraction for Labeling Radical Online Content Using Distant Supervision. <i>Information Systems Research</i>, 35(1), 203–225. · 내 연구 쪽 내용은 <code>본실험_방향_v3.md</code> 기준 가안 · 2026-11-12
+</footer>
+</div>
+
+<script>
+const B={done:'<span class="badge b-done">근거 있음</span>',draft:'<span class="badge b-draft">가안</span>',todo:'<span class="badge b-todo">빈칸</span>'};
+const rows=[
+ {n:1,nm:"문제 제기",grp:"서론",
+  ref:{h:"급진 콘텐츠에 구체적인 라벨을 붙여야 하는데, 이념이 너무 많아 일일이 학습시킬 수 없다",
+       d:["플랫폼은 계정 삭제 대신 콘텐츠 라벨을 붙이는 쪽으로 옮겨 가고 있다","라벨은 구체적일수록(어떤 이념인지) 효과가 있다","이념별로 손 라벨 학습 자료를 만드는 것은 건초 더미에서 바늘 찾기"]},
+  me:{st:"done",h:"트윈 답을 믿어도 되는지 본인 확인 없이는 알 수 없다",
+      d:["파일럿: 페르소나 정보를 더 넣어도 본인에 가까워지지 않음","부정 문항에서 긍정 쪽으로 쏠림, 자료에 없는 일화를 섞음","코더·본인 응답이 없어 매번 확인 불가"],
+      f:"긍정 쏠림이 다른 판정 모델·부정 문항 30개 이상에서도 유지되는지 확인. 누가 왜 이 트윈을 쓰는지(사용 맥락) 한 가지 확정"}},
+ {n:2,nm:"문헌 공백",grp:"문헌 검토",
+  ref:{h:"기존 연구는 이분 분류뿐이고, 이념을 표현하는 공통 틀과 이론이 없다",
+       d:["탐지 연구 60여 편이 모두 '급진이냐 아니냐' 분류","연구마다 과업 정의가 달라 누적이 안 됨","이론에 기반하고 실제 구현까지 한 설계가 드묾"]},
+  me:{st:"todo",h:"기존 트윈 연구는 왜곡을 보고하는 데 그치고, 답 하나하나의 충실도를 가리는 장치가 없다 (확인 필요)",
+      d:["수업 논문들(Funhouse Mirrors, Twin-2K-500 등)은 집단 수준 왜곡 진단","개별 답을 원자료에 대조해 걸러내는 설계가 있는지 아직 모름"],
+      f:"세 갈래 문헌 검색 — ① LLM 페르소나·트윈의 충실도 평가 ② LLM 답변 검증·선택적 응답(보류) ③ 온톨로지·지식그래프 기반 사실 검증. 이미 있으면 차별점을 다시 잡음"}},
+ {n:3,nm:"연구 질문",grp:"서론",
+  ref:{h:"RQ 3개 — 표현 → 채우기 → 분류",
+       d:["RQ1 급진 이념을 표현하려면 어떤 개념·관계가 필요한가","RQ2 텍스트에서 프레임을 찾아 온톨로지를 채우려면","RQ3 채운 온톨로지로 급진 게시물을 분류하려면"]},
+  me:{st:"draft",h:"RQ 3개 — 표현 → 채우기 → 검증",
+      d:["RQ1 한 인물의 입장을 표현하려면 어떤 개념·관계가 필요한가","RQ2 인터뷰에서 입장을 자동으로 뽑아 채울 수 있는가","RQ3 채운 온톨로지로 트윈의 불충실한 답을 탐지할 수 있는가","(응용) 탐지 결과로 트윈이 나아지는가"],
+      f:"문헌 공백(2)과 근거 이론(4)이 정해진 뒤 문장을 다듬음"}},
+ {n:4,nm:"근거 이론",grp:"이론적 틀",
+  ref:{h:"집단행동 프레이밍 이론 — 이념 = 진단·예후·동기 프레임",
+       d:["통찰 1: 사회운동의 이념이 단독 범행자에게 영감을 준다(프레임 공명)","통찰 2: 이념은 세 가지 프레임으로 구조화할 수 있다","통찰 3: 그 프레임은 온라인 글에서 탐지된다","세 통찰이 각각 아티팩트의 설계 근거가 됨"]},
+  me:{st:"todo",h:"미정 — '왜 대상·극성·근거·말투인가'를 댈 이론이 필요",
+      d:["지금 태그는 파일럿에서 쓴 조작적 정의일 뿐","후보: 태도 이론(대상에 대한 평가), 논증 모형(주장–근거), 인상 관리·사회적 바람직성"],
+      f:"후보별 대표 문헌 2~3편을 읽고 중심 이론 1개 선택. 기준: 온톨로지 클래스를 그 이론의 용어로 설명할 수 있는가, '충실하다'를 그 이론으로 정의할 수 있는가"}},
+ {n:5,nm:"전체 구조",grp:"설계",pipe:true,
+  ref:{h:"아티팩트 3개가 이어서 작동",
+       p:[["TBO","이념 온톨로지(틀)"],["FDS","선전물에서 프레임을 뽑아 TBO를 채움"],["FDS (재사용)","검사할 게시물에서도 프레임을 뽑음"],["FRDS","두 쪽을 비교 → 공명 프로필 → 분류"]],
+       d:["연구 질문 – 이론 – 아티팩트 – 평가 실험을 한 장의 '연구 틀' 그림으로 연결"]},
+  me:{st:"draft",h:"같은 3단 구조",
+      p:[["인물 입장 온톨로지","입장을 담는 틀"],["입장 추출기","Train 인터뷰에서 입장을 뽑아 채움"],["입장 추출기 (재사용)","트윈 답에서도 입장을 뽑음"],["충실도 검증기","두 쪽을 비교 → 충실도 프로필 → 충실/불충실"],["(응용)","불충실이면 재생성 또는 보류"]],
+      d:["같은 '연구 틀' 그림을 내 연구용으로 그릴 예정"],
+      f:"온톨로지 유무 소규모 비교를 통과한 뒤 구조 확정"}},
+ {n:6,nm:"아티팩트 ①\n온톨로지",grp:"설계",
+  ref:{h:"TBO — 누가(Claimant) 어떤 프레임(Frame)으로 무엇(Entity)을 어떻게(Relation) 말하는가",
+       d:["최상위 클래스 4개: Claimant, Frame, FrameEntity, FrameRelation","온톨로지 개발 방법론(METHONTOLOGY) + 선전물 주제 코딩으로 개념 도출","'어떤 급진 이념이든' 담을 수 있는 일반 틀을 목표"]},
+  me:{st:"draft",h:"인물이(Person) 무엇에 대해(Topic) 어떤 입장을(Stance) 어떤 근거와 말투로 말했는가",
+      d:["클래스 후보: Person, Statement, Topic, Stance(극성·강도), Ground(일화·원칙·사실), Voice","관계 후보: 주제, 입장 표현, 근거, 말투, 입장 변경","이전 온톨로지 설계안의 개념 9개를 줄인 것"],
+      f:"같은 개발 방법론을 따름. Train 발화 주제 코딩으로 Topic 목록을 만들고, 근거 이론(4)에 맞춰 클래스를 확정"}},
+ {n:7,nm:"아티팩트 ②\n채우기",grp:"설계",
+  ref:{h:"FDS — 개체명 인식 + 관계 추출로 (주어, 관계, 목적어)를 뽑음",
+       d:["개체 인식: 통계 모델과 딥러닝 모델 비교","관계 추출: 특징 기반 모델과 신경망 비교","학습 자료는 저자·크라우드 주석"]},
+  me:{st:"draft",h:"LLM에 스키마를 주고 (주제, 극성, 근거, 말투)를 뽑음",
+      d:["파일럿의 태깅 프롬프트를 확장","Train 381개와 트윈 답 양쪽에 같은 추출기 사용"],
+      f:"프롬프트·출력 형식 설계 → 소량으로 시험 → 손 검수와 비교해 고침"}},
+ {n:8,nm:"아티팩트 ③\n탐지",grp:"설계",
+  ref:{h:"FRDS — 게시물 프레임과 이념 프레임의 유사도 벡터(공명 프로필)로 분류",
+       d:["관계 종류마다 공명 점수를 계산해 벡터로","규칙 기반 점수로 학습 라벨을 자동 생성(원격 지도)","그 라벨로 여러 분류 모델을 학습"]},
+  me:{st:"draft",h:"트윈 답의 입장과 본인 입장의 차이 벡터(충실도 프로필)로 판정",
+      d:["프로필 요소 후보: 극성 편차, 근거 지지, 말투 편차, 자료 범위, 입장 변동","규칙 기반 점수 + 단순 분류기","검증기는 Holdout 본인 답을 보지 않음"],
+      f:"어떤 요소가 불충실을 잘 가리는지 기존 파일럿 출력으로 먼저 시험"}},
+ {n:9,nm:"평가 ①\n온톨로지",grp:"평가",
+  ref:{h:"전문가 검토",
+       d:["급진화 연구자·대테러 실무자에게 클래스·관계 타당성 검증","세부는 온라인 부록"]},
+  me:{st:"todo",h:"역량 질문 + 표현 범위 + 전문가 의견",
+      d:["'이 인물은 X에 어떤 입장인가' 같은 질문에 답할 수 있는가","Train 발화 중 틀로 표현되는 비율"],
+      f:"검토해 줄 사람(지도교수·동료 연구자 1~2명) 섭외. 역량 질문 10~15개 작성"}},
+ {n:10,nm:"평가 ②\n추출",grp:"평가",
+  ref:{h:"손 주석 대비 정밀도·재현율·F1",
+       d:["개체 유형별, 관계 유형별 성능 표","모델 간 비교(통계 모델 vs 딥러닝)"]},
+  me:{st:"todo",h:"손 검수 정답 대비 정확도",
+      d:["주제 대응, 극성 일치, 근거·말투 분류 성능","비교: 제약 없는 프롬프트 vs 스키마 추출, 모델 2종"],
+      f:"손 검수 정답 150개 만들기(Train 100 + 트윈 답 50). 미뤄 둔 태그 검수가 여기서 필요"}},
+ {n:11,nm:"평가 ③\n탐지",grp:"평가 (핵심)",
+  ref:{h:"포럼 회원 602명 분류 — 기존 방식과 비교 + 요소 제거 실험",
+       d:["저자가 직접 읽고 라벨(동조 40명)","비교: 단어 빈도 특징, 사전학습 언어모델","손 라벨 학습 vs 자동 라벨 학습 성능이 비슷함을 보임","온톨로지 관계 종류를 절반쯤 빼기 전까지는 성능이 크게 떨어지지 않음"]},
+  me:{st:"todo",h:"트윈 답의 불충실 탐지 — 단순 검증기와 비교 + 요소 제거 실험",
+      d:["정답: Holdout 본인 답과의 불일치(자동) + 사람 채점 100쌍","비교: 무작위, 모델 자기 확신, 검색 유사도, 원문만 읽는 LLM 검증기, 온톨로지 기반 검증기","지표: 정밀도·재현율·F1, 보류 곡선"],
+      f:"가장 먼저 할 것 — 기존 파일럿 출력 300개로 '온톨로지 있는 검증 vs 없는 검증' 소규모 비교. 지면 온톨로지를 빼고 v2 설계로 복귀"}},
+ {n:12,nm:"논의·기여",grp:"논의",
+  ref:{h:"손 라벨 없이 어떤 이념에도 적용되는 첫 설계 + 이론을 기계가 읽는 형식으로",
+       d:["설계 기여: 영역 지식 학습을 분류 알고리즘과 분리","이론 기여: 프레임 분석을 대규모로 할 수 있게 함","실무 기여: 플랫폼의 구체적 라벨링"]},
+  me:{st:"todo",h:"본인 확인 없이 트윈 답의 충실도를 가리는 설계 (결과에 따라 확정)",
+      d:["설계 기여 후보: 생성과 검증의 분리, 극성 균형 발췌, 근거 없으면 보류","이론 기여는 근거 이론(4)이 정해져야 쓸 수 있음","한계: 인물 1명, 행동 결과 없음"],
+      f:"평가 결과가 나온 뒤 작성. 두 번째 인물에 같은 틀을 적용해 일반성 근거 확보"}}
+];
+const esc=s=>s;
+function cell(side,o){
+  let h='<div class="cell '+side+'"><h3>'+(o.st?B[o.st]+' ':'')+o.h+'</h3>';
+  if(o.p){h+='<div class="pipe">'+o.p.map((x,i)=>(i?'<div class="d">▼</div>':'')+'<div class="p"><b>'+x[0]+'</b>'+x[1]+'</div>').join('')+'</div>';}
+  if(o.f&&side==='me'){h+='<div class="find"><b>어떻게 찾을까</b> · '+o.f+'</div>';}
+  if(o.d&&o.d.length){h+='<details><summary>세부 설명</summary><ul>'+o.d.map(x=>'<li>'+x+'</li>').join('')+'</ul></details>';}
+  return h+'</div>';
+}
+document.getElementById('rows').innerHTML=rows.map((r,i)=>
+  (i?'<div class="arrow"><i></i></div>':'')+
+  '<div class="row">'+cell('ref',r.ref)+
+  '<div class="stage"><div class="num">'+r.n+'</div><div class="nm">'+r.nm.replace('\n','<br>')+'</div><div class="grp">'+r.grp+'</div></div>'+
+  cell('me',r.me)+'</div>').join('');
+
+const todos=[
+ ["온톨로지가 값을 하는지 먼저 확인","기존 파일럿 출력 300개에 '원문만 읽는 검증기'와 '온톨로지 간이판 검증기'를 붙여 비교. 지면 이 틀을 접고 v2 설계로 돌아감. (단계 11)"],
+ ["근거 이론 정하기","태도 이론, 논증 모형, 인상 관리 중 대표 문헌을 읽고 중심 이론 1개 선택. (단계 4)"],
+ ["문헌 공백 확인","트윈 충실도 평가, LLM 답변 검증·보류, 온톨로지 기반 검증 세 갈래 검색. 비슷한 설계가 이미 있는지 확인. (단계 2)"],
+ ["문제의 크기 재확인","긍정 쏠림이 다른 판정 모델과 부정 문항 30개 이상에서도 나오는지. 사용 맥락 한 가지 확정. (단계 1)"],
+ ["온톨로지 클래스 확정","Train 발화 주제 코딩 → 주제 목록 → 이론에 맞춰 클래스·관계 정리 → 전문가 의견. (단계 6, 9)"],
+ ["손 검수 정답 150개","추출 정확도 평가용. 태그 검수와 함께 진행. (단계 10)"],
+ ["두 번째 인물 정하기","공개 인터뷰가 충분한 인물 1명. 같은 틀이 그대로 통하는지 확인용. (단계 12)"]
+];
+document.getElementById('todos').innerHTML=todos.map((t,i)=>'<div class="todo"><div class="n">'+(i+1)+'</div><div><h3>'+t[0]+'</h3><p>'+t[1]+'</p></div></div>').join('');
+
+const tg=document.getElementById('tg');let open=false;
+tg.onclick=()=>{open=!open;document.querySelectorAll('details').forEach(d=>d.open=open);tg.textContent=open?'설명 모두 접기':'설명 모두 펼치기';};
+</script>
+</body>
+</html>
