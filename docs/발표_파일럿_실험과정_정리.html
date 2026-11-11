@@ -18,7 +18,7 @@
   .topbar a{display:inline-block;padding:16px 14px;font-size:15px;color:#2a2a2e;text-decoration:none;border-bottom:3px solid transparent;transition:.15s}
   .topbar a:hover{color:var(--acc)}
   .topbar a.active{color:var(--acc);border-bottom-color:var(--acc);font-weight:500}
-  section{scroll-margin-top:70px}
+  section,#legend{scroll-margin-top:70px}
   html{scroll-behavior:smooth}
   nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
   nav a{font-size:13px;color:var(--acc);background:var(--acc2);padding:4px 10px;border-radius:999px;text-decoration:none}
@@ -82,6 +82,25 @@
 <p><b>연구 질문.</b> 인터뷰 자료로 만든 트윈은 (1) 아무 자료 없는 LLM이나 요약 페르소나보다 본인에 가까운가, (2) 모델이 이미 알고 있는 "밀라논나"보다 우리 자료가 더 보태는 것이 있는가, (3) 틀릴 때 과도한 합리성·긍정 편향·전형 의존 중 어느 쪽인가.</p>
 <p><b>검증 기준.</b> 본인에게 설문을 새로 받지 않고 <b>인터뷰에서 실제로 한 말(Holdout)</b>을 정답으로 쓴다. 가명 "노라(P01)"로 처리해 실험한다.</p>
 </div>
+
+<div class="card" id="legend">
+<b>실험 코드 범례</b> — 수업 논문에서 보고된 LLM 편향을 트윈에서 테스트하는 항목. 이 문서의 A1·A2… 는 모두 아래를 가리킨다. <span class="kv">(오늘 실행: A1 한 번 돌린 출력으로 A2·A3·B1·C1·E1까지 분석. D·C2·E2는 미실행)</span>
+<table style="margin-top:8px">
+  <tr><th style="width:70px">코드</th><th>묻는 것</th><th>대응 편향 · 근거 논문</th></tr>
+  <tr><td><b>A1</b></td><td>트윈 답이 본인에 가까운가, 빈 LLM·요약 페르소나·실명만 준 모델에 가까운가</td><td>개인화 부족·전형 의존 — Funhouse Mirrors ①②, Twin-2K-500</td></tr>
+  <tr><td><b>A2</b></td><td>본인이 부정적·비판적으로 말한 문항에서 트윈이 온건·긍정적으로 바뀌나</td><td>긍정·친사회 편향 — Capraro 2024(이타성 과대), Twin-2K outcome bias</td></tr>
+  <tr><td><b>A3</b></td><td>반복 응답이 본인의 재검사 변동보다 좁은가, 온도가 뭘 바꾸나</td><td>분산 축소 — Funhouse ①, 안내문 2절</td></tr>
+  <tr><td><b>B1</b></td><td>본인 입장이 LLM 기본값과 충돌하는 문항에서 트윈이 어느 쪽으로 가나</td><td>이념 편향 — Funhouse ④</td></tr>
+  <tr><td><b>B2</b></td><td>AI·SNS·알고리즘 문항에서만 B1 반복</td><td>pro-technology — Funhouse ④</td></tr>
+  <tr><td><b>C1</b></td><td>본인은 일화로, 트윈은 원칙·일반론으로 답하나; Train에 없는 일화를 지어내나</td><td>과도한 합리성·환각 — Funhouse ⑤</td></tr>
+  <tr><td><b>C2</b></td><td>본인이 모르거나 틀린 것을 트윈이 정답으로 말하나</td><td>지식 과잉 — Twin-2K 앵커링 UN 사례</td></tr>
+  <tr><td><b>D1</b></td><td>대안 제시 순서를 바꾸면 선택이 뒤집히나 (robust/fragile/indifferent)</td><td>순서 효과 — Yin 2026 Fragile Preferences, Pezeshkpour</td></tr>
+  <tr><td><b>D2</b></td><td>속성 하나만 바꿔도 트윈이 배경(품질·원산지)을 함께 상상하나</td><td>비지정 맥락 교란 — Gui–Toubia</td></tr>
+  <tr><td><b>D3·D4</b></td><td>호칭·문체 프레임 / CoT 요구가 입장을 바꾸나</td><td>절차 민감성 — Capraro(문구), Goli–Singh(CoT)</td></tr>
+  <tr><td><b>E1</b></td><td>실명만 준 G3가 가명 G0보다 잘 맞히나; 유명 발언에서만 잘 맞히나</td><td>학습 누출 — Funhouse leakage, 분할 설계</td></tr>
+  <tr><td><b>E2</b></td><td>시즌1 자료로 만든 트윈이 시즌2의 입장 변화를 못 따라가나</td><td>시간 드리프트 — Brand et al. 파인튜닝 외삽 실패</td></tr>
+</table>
+</div>
 </section>
 
 <section id="s1">
@@ -125,6 +144,7 @@
 <p class="kv">시간상 Holdout 후보 306 → novel 264(Holdout) / shared_anecdote 28(Train으로) / same_question 14(Retest). 검토 후 기각한 기준: 2025년 단일 기준(검정력 부족), 채널 분할(시간 누수), 질문 유형 분할(같은 영상이 양쪽에 걸림).</p>
 
 <h3>2-2. 층화 추출 — Holdout 270 → 파일럿 50문항</h3>
+<p class="kv">"쓰는 실험" 열의 코드(A1·C1…)는 <a href="#legend">실험 코드 범례</a> 참조.</p>
 <table>
   <tr><th>층</th><th class="num">수</th><th>기준</th><th>쓰는 실험</th></tr>
   <tr><td>의견·가치관형</td><td class="num">25</td><td>topic ∈ 가치관·인생관·세대·연애·결혼·육아·나이듦·소비·인간관계…</td><td>A1·A2·B1 본체</td></tr>
@@ -158,7 +178,7 @@
 <h2>4. Q/A 하나에 어떤 태그를 달았고, 왜</h2>
 <p>태그는 <b>트윈 답이 아니라 밀라논나 본인 답</b>에 단다. 전체 평균 하나를 "부정 문항 vs 긍정 문항", "일화 vs 원칙", "유명 vs 신규"로 쪼개서 보기 위한 <b>층화 변수</b>다. 태그가 없으면 "G2가 G0보다 몇 점 높다"까지만 말할 수 있고 편향의 방향은 읽을 수 없다.</p>
 <table>
-  <tr><th>태그</th><th>값</th><th>어떤 실험에 쓰나</th><th>없으면 못 하는 것</th></tr>
+  <tr><th>태그</th><th>값</th><th>어떤 실험에 쓰나 (<a href="#legend">범례</a>)</th><th>없으면 못 하는 것</th></tr>
   <tr><td><code>valence_truth</code></td><td>−2 ~ +2 (본인 답의 정서·평가 방향)</td><td><b>A2</b> 긍정·친사회 편향</td><td>"본인이 비판적으로 말한 문항에서 트윈이 온건해지나"를 보려면 어느 문항이 비판적인지 먼저 알아야 함</td></tr>
   <tr><td><code>ground_type_truth</code></td><td>일화 / 원칙 / 사실 / 혼합</td><td><b>C1</b> 과도한 합리성</td><td>"본인은 일화로 답했는데 트윈은 일반론으로 답하나"를 세려면 본인 쪽 분포가 필요</td></tr>
   <tr><td><code>fame</code></td><td>유명 / 신규 (기사·밈으로 퍼진 발언인지)</td><td><b>E1</b> 학습 누출</td><td>"모델이 외운 건지"를 보려면 유명 발언과 신규 발언을 나눠야 함. G3가 유명 발언에서만 잘 맞히면 누출</td></tr>
