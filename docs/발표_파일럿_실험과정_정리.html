@@ -170,7 +170,7 @@
   <div class="step"><b>① 가명 처리</b>실명·활동명·지명·브랜드·방송명 치환(규칙 ~120개)<small>장명숙·밀라논나→노라, 밀라노→M시, 이탈리아→L국, 삼풍→내가 다니던 백화점</small></div>
   <div class="step"><b>② 50문항 + 태그</b>층화 추출 → 본인 답에 태그<small>LLM 1차 태깅 → 연구자 검수</small></div>
   <div class="step"><b>③ 프롬프트</b>G0 / G1(요약 1,000자) / G2(G1+발췌) / G3(실명만)</div>
-  <div class="step"><b>④ 발췌 고정</b>문항마다 Train에서 유사 20개 미리 선택<small>실행 때 검색 안 함 → 재현성</small></div>
+  <div class="step"><b>④ 발췌 고정</b>G2 프롬프트에 넣을 "과거 인터뷰 Q/A"를 문항마다 Train 381개 중 <b>비슷한 20개</b>로 미리 골라 파일에 저장<small>실행 중 매번 검색하지 않고 그 파일을 읽음 → 같은 질문엔 항상 같은 발췌 = 재현성. 유사도는 질문+답 앞 200자의 글자 조각(TF-IDF)</small></div>
   <div class="step"><b>⑤ 생성</b>50문항 × 4조건 × 형식(F1 자유응답 / F2 7점) × T=1 반복 + T=0<small>DeepSeek-chat, 병렬 호출, 캐시</small></div>
   <div class="step"><b>⑥ 채점</b>눈가림 A/B 판정 + 임베딩 유사도 + 응답 태깅<small>본인 답 vs 트윈 답</small></div>
   <div class="step"><b>⑦ 집계</b>조건별 일치도, 거리 삼각형, 층별 분해, 누출 지수</div>
