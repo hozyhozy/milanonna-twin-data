@@ -52,6 +52,8 @@
   .kv{font-size:13px;color:var(--mute)}
   .kv b{color:var(--ink)}
   .pending{color:var(--mute);font-style:italic}
+  details.how{background:#fbfbfd;border-style:dashed}
+  details.how summary{font-size:13px;color:var(--mute)}
   details{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:8px 0;padding:0}
   summary{cursor:pointer;padding:10px 14px;font-weight:500;color:var(--acc)}
   summary:hover{background:var(--acc2)}
@@ -385,8 +387,23 @@ A: 아들이 객지에서 혼자 있어서 엄마 항상 엄마 이렇게 아침
 <section id="s7">
 <h2>7. 결과 — 축소판 A1 (2026-11-11 11:00)</h2>
 <p class="kv">설정: 50문항 × G0·G1·G2·G3 × F1 × (T=1 5회 + T=0 1회) = 1,200회 생성 · DeepSeek-chat(생성·판정 동일) · 임베딩 TF-IDF · 태그 미검수 · 문항 균등 가중. <b>방향을 읽는 결과이지 크기를 확정하는 결과가 아니다.</b></p>
+<div class="card"><b>수치의 세 가지 출처</b> (모든 표가 이 셋 중 하나로 계산됨)
+<table style="margin-top:6px">
+  <tr><th style="width:170px">출처</th><th>어떻게</th><th>쓰인 표</th></tr>
+  <tr><td>① 판정 모델 점수 (0~100)</td><td>트윈 답 하나마다 DeepSeek-chat에 (질문, 본인 답, 트윈 답)을 <b>눈가림 A/B</b>로 주고 stance·ground·valence·voice를 JSON으로 받음. 1,200개 답 → 1,200개 JSON. 조건별로 <b>문항마다 평균 → 문항 간 평균</b>.</td><td>7-1 표1·층별, 7-4′ B1의 stance, 7-4″ E1, Retest 천장</td></tr>
+  <tr><td>② 임베딩 거리 (0~1)</td><td>답변을 TF-IDF 문자 2~4그램 벡터로 바꿔 <code>거리 = 1 − 코사인 유사도</code>. 모델 호출 없음. 같은 글자 조각을 얼마나 썼는지의 거리라 절대값보다 <b>상대 비교</b>만 의미.</td><td>7-1 sim_emb, 7-2 거리 삼각형·분산, 7-4′ 끌림 지수</td></tr>
+  <tr><td>③ 응답 태깅 (범주·정수)</td><td>채점 때 트윈 답마다 한 번 더 물음: valence(−2~+2), ground(일화/원칙/사실/혼합), 구체적 일화 목록. 1,200개 JSON.</td><td>7-3 valence_gap, 7-4 근거 유형·일화 수</td></tr>
+</table>
+<p class="kv" style="margin:6px 0 0">원본은 <code>experiments/runs/A1/judge_*.jsonl</code>(한 줄 = 답 하나), 집계는 <code>analyze.py</code>. 어떤 숫자든 문항 단위로 역추적 가능.</p></div>
 
-<h3>7-1. 조건별 일치도 (A1) — 트윈은 요약·실명 조건과 구분되지 않았다</h3>
+
+<h3>7-1. 조건별 일치도 (A1) — 트윈은 요약·실명 조건과 구분되지 않았다</h3><details class="how"><summary>이 수치는 어떻게 나왔나</summary><div style="padding:10px 14px"><ol style="margin:0 0 0 18px">
+<li>50문항 × 조건 × 5회(T=1) = 조건당 250개 답. 각 답을 본인 인터뷰 답과 짝지어 판정 모델에 눈가림 A/B로 넣고 네 항목 0~100을 받음.</li>
+<li>문항마다 5개 점수 평균 → 50문항 평균 = 표의 stance·ground·valence·voice. (같은 답으로 TF-IDF 유사도도 계산 = sim_emb)</li>
+<li><b>천장</b>: Retest 14쌍(같은 질문에 시즌1 답·시즌2 답)을 같은 판정 프롬프트에 넣은 stance 평균 = 56.0. <b>stance/천장</b> = 조건 stance ÷ 56.0 (Twin-2K-500의 "88%" 방식).</li>
+<li>층별 표는 같은 점수를 문항의 <code>stratum</code>(가치관/일화/채널/기술)으로 나눠 평균.</li>
+</ol>
+<p class="kv">예: G2 stance 54.1 = 50문항 각각의 5회 평균을 다시 평균. 반복 수를 조건 간에 맞추려고 rep&lt;5만 사용(실행 중 중단 때문에 G0에 더 쌓였던 반복은 제외).</p></div></details>
 <table>
   <tr><th>조건</th><th class="num">n</th><th class="num">stance</th><th class="num">ground</th><th class="num">valence</th><th class="num">voice</th><th class="num">sim_emb</th><th class="num">stance/천장</th></tr>
   <tr><td>G0 빈 페르소나</td><td class="num">250</td><td class="num"><b>56.7</b></td><td class="num">47.4</td><td class="num">54.3</td><td class="num">29.4</td><td class="num">0.12</td><td class="num">1.01</td></tr>
@@ -409,7 +426,13 @@ A: 아들이 객지에서 혼자 있어서 엄마 항상 엄마 이렇게 아침
               ↑
  G0 (0.916) ← G2 → G3 (0.906)
               ↓
-            G1 (0.865)    ← 가장 가까움</pre>
+            G1 (0.865)    ← 가장 가까움</pre><details class="how"><summary>이 수치는 어떻게 나왔나</summary><div style="padding:10px 14px"><ol style="margin:0 0 0 18px">
+<li>모든 답(본인 50 + 조건별 250×4)을 TF-IDF 문자 n-gram 벡터로 변환.</li>
+<li>같은 문항·같은 반복 번호의 G2 답을 기준으로, (G2, 본인) (G2, G0) (G2, G1) (G2, G3) 네 쌍의 <code>1 − 코사인</code>을 계산 → 250개씩.</li>
+<li>쌍 종류별 평균 = 표의 dist. 작을수록 가까움.</li>
+<li><b>응답 간 분산</b>(표4): 같은 문항의 G2 답 5개 중 2개씩 10쌍 거리 평균 → 50문항 평균 = 0.74. 분모 = Retest 14쌍 거리 평균(≈0.75). 비율 0.99.</li>
+</ol>
+<p class="kv">TF-IDF라 뜻이 같아도 표현이 다르면 멀게 나옴 → 절대값(0.86~0.95)이 아니라 순서만 읽음. 본실험은 의미 임베딩(e5)으로 재계산.</p></div></details>
 <table>
   <tr><th>G2 응답과의 거리 (1−sim, 작을수록 가까움)</th><th class="num">dist</th><th>판정</th></tr>
   <tr><td>G2 – <b>G1 요약</b></td><td class="num"><b>0.865</b></td><td>가장 가까움 → <b>전형(요약) 의존</b></td></tr>
@@ -419,7 +442,12 @@ A: 아들이 객지에서 혼자 있어서 엄마 항상 엄마 이렇게 아침
 </table>
 <p class="kv">결과는 거꾸로다: 본인이 가장 멀고 요약 페르소나(G1)가 가장 가깝다 → 트윈 답은 사실상 요약문을 풀어 쓴 것이고 Train 발췌 381문항은 거의 쓰이지 않았다. Funhouse Mirrors가 2,000명 트윈에서 "full persona 트윈이 사람보다 demo-only persona에 더 가깝다"(MAD 0.132 &lt; 0.252)고 보인 것의 1인 버전. 같은 질문을 T=1로 5회 반복한 트윈 답들 간 거리 ÷ 본인 Retest 거리 = 0.99 → 분산 축소(Funhouse ①의 SD 측면)는 보이지 않음(단, 트윈 50문항 vs 본인 Retest 14문항으로 문항이 달라 "좁지는 않다"까지만).</p>
 
-<h3>7-3. 긍정 편향 (A2) — 가장 큰 체계적 효과, 페르소나가 악화시킨다</h3>
+<h3>7-3. 긍정 편향 (A2) — 가장 큰 체계적 효과, 페르소나가 악화시킨다</h3><details class="how"><summary>이 수치는 어떻게 나왔나</summary><div style="padding:10px 14px"><ol style="margin:0 0 0 18px">
+<li><b>본인 쪽</b>: 50문항의 인터뷰 답에 태깅 단계에서 단 <code>valence_truth</code>(−2~+2). 부정(≤−1) 9문항, 중립 6, 긍정(≥+1) 35.</li>
+<li><b>트윈 쪽</b>: 채점 때 <code>--tag</code>로 트윈 답 1,200개 각각의 valence를 같은 척도로 받음.</li>
+<li><code>gap = 트윈 답 valence − valence_truth</code>를 답마다 계산 → 조건별 평균(전체), 그리고 본인이 부정으로 말한 문항만 / 긍정으로 말한 문항만 따로 평균.</li>
+</ol>
+<p class="kv">예: '경력 단절' 문항 본인 −2, G2 답 5개의 valence가 −1, 0, −1, 0, −1이면 gap 평균 = +1.4. 부정 문항 9개가 적어 본실험에서 20개 이상으로 보강 필요.</p></div></details>
 <table>
   <tr><th>조건</th><th class="num">전체 gap</th><th class="num">본인이 부정적으로 말한 문항 (9)</th><th class="num">긍정 문항 (35)</th></tr>
   <tr><td>G0</td><td class="num">+0.23</td><td class="num">+0.76</td><td class="num">−0.03</td></tr>
@@ -429,7 +457,11 @@ A: 아들이 객지에서 혼자 있어서 엄마 항상 엄마 이렇게 아침
 </table>
 <p>gap = (트윈 답의 valence) − (본인 답의 valence), −2~+2 척도. 긍정 문항은 거의 0, <b>부정 문항만 +0.8~+1.4</b> → 중간 수렴이 아니라 <b>비대칭 긍정화</b>. "화가 나요"(−2)로 말한 '경력 단절' 같은 문항에서 트윈은 온건하게 답한다. 요약·발췌를 넣을수록(G1·G2) 더 심해지는 것은 "따뜻한 할머니" 페르소나 요약이 본인의 단호함을 덮기 때문으로 보인다. Capraro(2024)·Twin-2K-500 outcome bias와 같은 방향이되, <b>페르소나 정보가 편향을 키운다</b>는 점이 새 관찰.</p>
 
-<h3>7-4. 근거 유형 (C1) — 트윈은 경험으로 말하나, 교훈으로 말하나</h3>
+<h3>7-4. 근거 유형 (C1) — 트윈은 경험으로 말하나, 교훈으로 말하나</h3><details class="how"><summary>이 수치는 어떻게 나왔나</summary><div style="padding:10px 14px"><ol style="margin:0 0 0 18px">
+<li><b>본인</b>: 태깅 단계의 <code>ground_type_truth</code> 50개를 세어 비율(일화 22/원칙 13/혼합 12/사실 3).</li>
+<li><b>트윈</b>: 채점 때 <code>--tag</code>로 받은 ground 범주를 조건별로 세어 비율. 같은 프롬프트·같은 정의.</li>
+<li><b>응답당 일화 수</b>: 태깅 JSON의 <code>anecdotes</code> 리스트 길이를 답마다 세어 조건별 평균. Train에 있는 일화인지는 아직 대조 안 함.</li>
+</ol></div></details>
 <p>밀라논나는 <b>자기 경험(일화)으로</b> 말하는 사람이다(본인 답 50개 중 일화 44%). 트윈도 그렇게 답하는지, 아니면 "인생 교훈·일반론"으로 바꾸는지를 본다. 본인 답과 트윈 답 1,200개를 같은 기준(일화/원칙/사실/혼합)으로 분류하고, 답 속의 구체적 일화(시점·장소·인물이 있는 사건) 수를 센다.</p>
 <table>
   <tr><th></th><th class="num">일화</th><th class="num">원칙</th><th class="num">혼합</th><th class="num">사실</th><th class="num">응답당 일화 수</th><th>읽기</th></tr>
@@ -446,7 +478,8 @@ A: 아들이 객지에서 혼자 있어서 엄마 항상 엄마 이렇게 아침
   <li><b>충돌 문항 고르기</b> — 연구자 판단이 아니라 데이터로: G0(정보 없는 LLM)의 T=0 답이 본인 답과 가장 안 맞는 하위 1/3(16문항) = "LLM 혼자 두면 밀라논나와 다르게 답하는 질문". 상위 1/3 = 일치 문항.</li>
   <li>그 문항들에서 트윈(G2) 답을 가운데 두고 <b>G0 답까지의 거리</b>와 <b>본인 답까지의 거리</b>를 잰다.</li>
   <li><b>끌림 지수</b> = dist(G2–G0) ÷ [dist(G2–G0) + dist(G2–본인)]. 1에 가까우면 본인 쪽(페르소나가 이김), 0에 가까우면 G0 쪽(기본값에 남음), 0.5면 정확히 중간.</li>
-</ol>
+</ol><details class="how"><summary>이 수치는 어떻게 나왔나</summary><div style="padding:10px 14px"><p style="margin:0">직선 위에 점 세 개를 놓은 것: <code>G0 답 ●──a──● G2 답 ●──b──● 본인 답</code>. 지수 = a/(a+b). 트윈이 본인 옆이면 b≈0 → 1, G0 옆이면 a≈0 → 0. 거리 a·b는 7-2와 같은 TF-IDF 거리. 충돌/일치 집합은 G0의 <b>T=0</b> 답의 stance 점수(판정 모델)로 하위·상위 1/3을 자른 것. 표의 G0·G2 stance는 그 집합에 속한 문항들의 T=1 답 판정 점수 평균.</p>
+<p class="kv">예: 충돌 문항에서 a=0.90, b=0.93 → 0.90/(0.90+0.93)=0.49. 둘 사이 한가운데, 아주 약간 G0 쪽.</p></div></details>
 <table>
   <tr><th>집합</th><th class="num">n문항</th><th class="num">G0 stance</th><th class="num">G2 stance</th><th class="num">끌림 지수</th><th>읽기</th></tr>
   <tr><td>충돌</td><td class="num">16</td><td class="num">39.8</td><td class="num">40.3</td><td class="num">0.49</td><td>인터뷰 발췌 20개를 넣어도 답이 <b>본인 쪽으로 전혀 이동하지 않음</b></td></tr>
@@ -454,7 +487,7 @@ A: 아들이 객지에서 혼자 있어서 엄마 항상 엄마 이렇게 아침
 </table>
 <p class="kv">Funhouse ④(이념 편향: base LLM의 가치가 페르소나 위에 덧씌워짐)와 같은 방향이되, 이 결과는 "덧씌움"보다 <b>"페르소나가 아예 안 먹힘"</b>에 가깝다. 주의: 충돌 집합을 G0 답으로 정의했으므로 G0가 이 집합에서 낮은 것은 당연하고, 볼 것은 G2가 그 위로 올라갔는가뿐.</p>
 
-<h3>7-4″. 누출 (E1)</h3>
+<h3>7-4″. 누출 (E1)</h3><details class="how"><summary>이 수치는 어떻게 나왔나</summary><div style="padding:10px 14px"><p style="margin:0">7-1과 같은 판정 stance 점수의 조건별 평균에서 <code>leak = G3 − G0</code>, <code>순기여 = G2 − G3</code>를 뺀 것. strict 행은 <code>split_strict == Holdout</code>(2025년 이후) 문항만으로 같은 계산. fame(유명/신규) 분해는 태그가 비어 있어 생략.</p></div></details>
 <div class="card"><b>G3 − G0 = −1.8</b> (strict 2025+: −0.5) · <b>G2 − G3 = −0.8</b> (strict: +0.1)<br><span class="kv">실명만 준 G3가 가명 G0보다 낫지 않음 → DeepSeek가 밀라논나를 특별히 "아는" 징후 없음. 가명 처리의 실익은 작았고, 유명/신규 분해는 <code>fame</code> 태그 미입력으로 못 함.</span></div>
 
 <div class="ok"><b>한 줄 결론.</b> 인터뷰 자료로 만든 트윈은 요약 페르소나·실명만 준 모델과 구분되지 않았고, 본인보다 다른 LLM 조건의 답에 더 가까웠다(개인화 부족·전형 의존). 가장 큰 체계적 편향은 <b>부정 발언의 긍정화</b>(부정 문항 gap +1.4)이며 페르소나 정보가 이를 키웠다. 트윈이 도움이 된 곳은 전기적 사실 질문뿐이다.</div>
