@@ -84,7 +84,7 @@
 </div>
 
 <div class="card" id="legend">
-<b>실험 코드 범례</b> — 수업 논문에서 보고된 LLM 편향을 트윈에서 테스트하는 항목. 이 문서의 A1·A2… 는 모두 아래를 가리킨다. <span class="kv">(오늘 실행: A1 한 번 돌린 출력으로 A2·A3·B1·C1·E1까지 분석. D·C2·E2는 미실행)</span>
+<b>범례 — 실험 코드와 기호</b>. 수업 논문에서 보고된 LLM 편향을 트윈에서 테스트하는 항목. 이 문서의 A1·A2… 는 모두 아래를 가리킨다. <span class="kv">(오늘 실행: A1 한 번 돌린 출력으로 A2·A3·B1·C1·E1까지 분석. D·C2·E2는 미실행)</span>
 <table style="margin-top:8px">
   <tr><th style="width:70px">코드</th><th>묻는 것</th><th>대응 편향 · 근거 논문</th></tr>
   <tr><td><b>A1</b></td><td>트윈 답이 본인에 가까운가, 빈 LLM·요약 페르소나·실명만 준 모델에 가까운가</td><td>개인화 부족·전형 의존 — Funhouse Mirrors ①②, Twin-2K-500</td></tr>
@@ -99,6 +99,13 @@
   <tr><td><b>D3·D4</b></td><td>호칭·문체 프레임 / CoT 요구가 입장을 바꾸나</td><td>절차 민감성 — Capraro(문구), Goli–Singh(CoT)</td></tr>
   <tr><td><b>E1</b></td><td>실명만 준 G3가 가명 G0보다 잘 맞히나; 유명 발언에서만 잘 맞히나</td><td>학습 누출 — Funhouse leakage, 분할 설계</td></tr>
   <tr><td><b>E2</b></td><td>시즌1 자료로 만든 트윈이 시즌2의 입장 변화를 못 따라가나</td><td>시간 드리프트 — Brand et al. 파인튜닝 외삽 실패</td></tr>
+</table>
+<table style="margin-top:10px">
+  <tr><th style="width:70px">기호</th><th>뜻</th></tr>
+  <tr><td><b>F1</b></td><td><b>자유 응답</b> 형식. 질문을 그대로 주고 노라 말투로 300자 이내 답을 받는다 → 본인 인터뷰 답과 <b>답변 대 답변</b>으로 비교. <b>오늘 실행은 F1만.</b></td></tr>
+  <tr><td><b>F2</b></td><td><b>7점 동의도</b> 형식(보조). 질문 + "다음 진술에 1~7로 얼마나 동의합니까?"(진술은 본인 답에서 추출) → 숫자 하나. Twin-2K-500식 정확도 계산용. 오늘은 생략.</td></tr>
+  <tr><td><b>G0~G3</b></td><td>페르소나 조건 — G0 빈 / G1 요약 / G2 트윈(요약+발췌) / G3 실명만. 자세한 것은 <a href="#s5">5절</a>.</td></tr>
+  <tr><td><b>T</b></td><td>온도(temperature). T=0은 거의 결정적 1회, T=1은 독립 샘플로 반복(오늘 5회).</td></tr>
 </table>
 </div>
 </section>
@@ -162,13 +169,13 @@
   <div class="step"><b>② 50문항 + 태그</b>층화 추출 → 본인 답에 태그<small>LLM 1차 태깅 → 연구자 검수</small></div>
   <div class="step"><b>③ 프롬프트</b>G0 / G1(요약 1,000자) / G2(G1+발췌) / G3(실명만)</div>
   <div class="step"><b>④ 발췌 고정</b>문항마다 Train에서 유사 20개 미리 선택<small>실행 때 검색 안 함 → 재현성</small></div>
-  <div class="step"><b>⑤ 생성</b>50문항 × 4조건 × T=1 반복 + T=0<small>DeepSeek-chat, 병렬 호출, 캐시</small></div>
+  <div class="step"><b>⑤ 생성</b>50문항 × 4조건 × 형식(F1 자유응답 / F2 7점) × T=1 반복 + T=0<small>DeepSeek-chat, 병렬 호출, 캐시</small></div>
   <div class="step"><b>⑥ 채점</b>눈가림 A/B 판정 + 임베딩 유사도 + 응답 태깅<small>본인 답 vs 트윈 답</small></div>
   <div class="step"><b>⑦ 집계</b>조건별 일치도, 거리 삼각형, 층별 분해, 누출 지수</div>
 </div>
 <div class="grid">
   <div class="card"><b>파일럿 설계(원안)</b><br>50 × 4 × 2형식 × 21회 = 8,400회 생성 + 판정</div>
-  <div class="card"><b>오늘 실행(축소판)</b><br>F1만, 반복 5회 + T=0 → 50 × 4 × 6 = <b>1,200회</b> 생성, 채점+태깅 2,400회</div>
+  <div class="card"><b>오늘 실행(축소판)</b><br>F1(자유 응답)만, 반복 5회 + T=0 → 50 × 4 × 6 = <b>1,200회</b> 생성, 채점+태깅 2,400회</div>
   <div class="card"><b>한 번 돌리면 나오는 실험</b><br>A1(개인화) · A2(긍정 편향) · A3(분산) · B1(가치 충돌) · C1(근거 유형·환각) · E1(누출) — 같은 출력을 다른 코딩으로</div>
 </div>
 <div class="ok"><b>왜 가명인가.</b> 저장소·프롬프트·로그에 실명이 남지 않게 하는 것 외에, 가명 G0는 "70대 여성 패션계 출신 크리에이터"라는 전형만 가진 <b>demo-only persona</b>(Funhouse Mirrors)가 되어 기준선 역할을 한다. 실명만 준 G3와 비교하면 모델의 사전지식 크기가 분리된다.</div>
@@ -349,7 +356,7 @@ A: 아들이 객지에서 혼자 있어서 엄마 항상 엄마 이렇게 아침
 
 <section id="s6">
 <h2>6. 어떤 측정을 할 것인가</h2>
-<h3>6-1. 채점 — 답변 대 답변</h3>
+<h3>6-1. 채점 — 답변 대 답변 (F1 자유 응답)</h3>
 <p>트윈 답마다 (질문, 본인 답, 트윈 답)을 판정 모델에 <b>눈가림 A/B</b>(어느 쪽이 본인인지 알리지 않고 순서 무작위)로 넣어 네 항목을 0~100으로 채점한다. 판정 모델이 필요 없는 <b>임베딩 코사인 유사도</b>(<code>sim_emb</code>)를 함께 계산해 교차 확인한다.</p>
 <table>
   <tr><th>항목</th><th>뜻</th><th>주/보조</th></tr>
