@@ -8,7 +8,7 @@ A3(온도):                  python3 experiments/scripts/run.py --exp A3 --conds
 D4(CoT):                   python3 experiments/scripts/run.py --exp D4 --conds G2 --formats F1 --cot
 같은 (프롬프트,온도,rep) 호출은 캐시되므로 중단 후 재실행해도 이어서 진행된다.
 """
-import json, os, sys, argparse, hashlib, re
+import json, os, sys, argparse, hashlib, re, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from llm import LLM
 
@@ -71,6 +71,7 @@ def main():
     ap.add_argument("--cot", action="store_true")
     ap.add_argument("--items", type=int, default=0, help="앞에서 N문항만")
     ap.add_argument("--dry", action="store_true", help="5문항 × 2회 × T=1 만")
+    ap.add_argument("--workers", type=int, default=8, help="동시 호출 수")
     a = ap.parse_args()
     if a.dry:
         a.items, a.reps, a.no_t0 = 5, 2, True
@@ -97,27 +98,40 @@ def main():
         if os.path.exists(out):
             for line in open(out, encoding="utf-8"):
                 j = json.loads(line); done.add((j["item_id"], j["format"], j["temp"], j["rep"]))
-        n_new = 0; tok = 0
-        with open(out, "a", encoding="utf-8") as f:
-            for it in items:
-                system = build_system(cond, it, pr, retrieved, train_by_id)
-                for fmt in a.formats.split(","):
-                    user = build_user(fmt, it, pr, a.cot)
-                    if user is None:
-                        continue
-                    for temp, rep in plan:
-                        key = (it["item_id"], fmt, temp, rep)
-                        if key in done:
-                            continue
-                        text, meta = llm.chat(system, user, temperature=temp, seed=rep,
-                                              max_tokens=400 if fmt == "F1" or a.cot else 8)
-                        rec = {"exp": a.exp, "item_id": it["item_id"], "stratum": it["stratum"], "cond": cond,
-                               "format": fmt, "cot": a.cot, "temp": temp, "rep": rep,
-                               "model": meta["model"], "retrieved_ids": [r["id"] for r in retrieved[it["item_id"]]] if cond == "G2" else [],
-                               "prompt_hash": meta["prompt_hash"], "response": text, "parsed": parse(fmt, text),
-                               "tokens_in": meta["tokens_in"], "tokens_out": meta["tokens_out"], "cached": meta["cached"], "ts": meta["ts"]}
-                        f.write(json.dumps(rec, ensure_ascii=False) + "\n"); f.flush()
-                        n_new += 1; tok += (meta["tokens_in"] or 0) + (meta["tokens_out"] or 0)
+        jobs = []
+        for it in items:
+            system = build_system(cond, it, pr, retrieved, train_by_id)
+            for fmt in a.formats.split(","):
+                user = build_user(fmt, it, pr, a.cot)
+                if user is None:
+                    continue
+                for temp, rep in plan:
+                    if (it["item_id"], fmt, temp, rep) not in done:
+                        jobs.append((it, fmt, temp, rep, system, user))
+
+        def work(j):
+            it, fmt, temp, rep, system, user = j
+            text, meta = llm.chat(system, user, temperature=temp, seed=rep,
+                                  max_tokens=400 if fmt == "F1" or a.cot else 8)
+            return {"exp": a.exp, "item_id": it["item_id"], "stratum": it["stratum"], "cond": cond,
+                    "format": fmt, "cot": a.cot, "temp": temp, "rep": rep,
+                    "model": meta["model"], "retrieved_ids": [r["id"] for r in retrieved[it["item_id"]]] if cond == "G2" else [],
+                    "prompt_hash": meta["prompt_hash"], "response": text, "parsed": parse(fmt, text),
+                    "tokens_in": meta["tokens_in"], "tokens_out": meta["tokens_out"], "cached": meta["cached"], "ts": meta["ts"]}
+
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        n_new = 0; tok = 0; t0 = time.time()
+        with open(out, "a", encoding="utf-8") as f, ThreadPoolExecutor(max_workers=a.workers) as ex:
+            futs = [ex.submit(work, j) for j in jobs]
+            for fu in as_completed(futs):
+                try:
+                    rec = fu.result()
+                except Exception as e:
+                    print("  [실패]", e); continue
+                f.write(json.dumps(rec, ensure_ascii=False) + "\n"); f.flush()
+                n_new += 1; tok += (rec["tokens_in"] or 0) + (rec["tokens_out"] or 0)
+                if n_new % 50 == 0:
+                    print(f"  {cond}: {n_new}/{len(jobs)} ({time.time()-t0:.0f}s)")
         print(f"{cond}: 신규 {n_new}건 (누적 {len(done) + n_new}), 토큰 {tok:,} → {out}")
 
 

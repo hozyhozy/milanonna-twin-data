@@ -61,6 +61,7 @@ def main():
     ap.add_argument("--exp", default="A1")
     ap.add_argument("--tag", action="store_true"); ap.add_argument("--retest", action="store_true")
     ap.add_argument("--swap", action="store_true"); ap.add_argument("--backend", default="auto")
+    ap.add_argument("--workers", type=int, default=8)
     a = ap.parse_args()
 
     items = {x["item_id"]: x for x in json.load(open(P("experiments/items/holdout50.json"), encoding="utf-8"))["items"]}
@@ -87,26 +88,40 @@ def main():
         truths = [items[r["item_id"]]["answer_truth"] for r in todo]
         resps = [pseudo(r["response"]) if r["cond"] == "G3" else r["response"] for r in todo]
         sims = emb.sim(resps, truths)
-        with open(out, "a", encoding="utf-8") as fo:
-            for r, resp, s in zip(todo, resps, sims):
-                it = items[r["item_id"]]
-                seed = f"{r['item_id']}|{r['cond']}|{r['temp']}|{r['rep']}"
-                sc, a_truth, meta = judge_pair(llm, it["question"], it["answer_truth"], resp, seed)
-                rec = {**{k: r[k] for k in ["exp", "item_id", "stratum", "cond", "format", "cot", "temp", "rep"]},
-                       "sim_emb": round(s, 4), "emb_model": emb.name, "judge_model": meta["model"],
-                       "truth_was_A": a_truth, "scores": sc}
-                if a.swap:
-                    sc2, _, _ = judge_pair(llm, it["question"], it["answer_truth"], resp, seed, swap=True)
-                    rec["scores_swap"] = sc2
-                if tagger:
-                    t, _ = tagger.chat("당신은 텍스트 코딩을 돕는 연구 보조원입니다. JSON만 출력합니다.",
-                                       TAG_RESP.replace("{question}", it["question"]).replace("{answer}", resp),
-                                       temperature=0, json_mode=True, seed="tag", max_tokens=300)
-                    try:
-                        rec["resp_tags"] = json.loads(t)
-                    except Exception:
-                        rec["resp_tags"] = None
+        def work(args):
+            r, resp, s = args
+            it = items[r["item_id"]]
+            seed = f"{r['item_id']}|{r['cond']}|{r['temp']}|{r['rep']}"
+            sc, a_truth, meta = judge_pair(llm, it["question"], it["answer_truth"], resp, seed)
+            rec = {**{k: r[k] for k in ["exp", "item_id", "stratum", "cond", "format", "cot", "temp", "rep"]},
+                   "sim_emb": round(s, 4), "emb_model": emb.name, "judge_model": meta["model"],
+                   "truth_was_A": a_truth, "scores": sc}
+            if a.swap:
+                sc2, _, _ = judge_pair(llm, it["question"], it["answer_truth"], resp, seed, swap=True)
+                rec["scores_swap"] = sc2
+            if tagger:
+                t, _ = tagger.chat("당신은 텍스트 코딩을 돕는 연구 보조원입니다. JSON만 출력합니다.",
+                                   TAG_RESP.replace("{question}", it["question"]).replace("{answer}", resp),
+                                   temperature=0, json_mode=True, seed="tag", max_tokens=300)
+                try:
+                    rec["resp_tags"] = json.loads(t)
+                except Exception:
+                    rec["resp_tags"] = None
+            return rec
+
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        n = 0
+        with open(out, "a", encoding="utf-8") as fo, ThreadPoolExecutor(max_workers=a.workers) as ex:
+            futs = [ex.submit(work, x) for x in zip(todo, resps, sims)]
+            for fu in as_completed(futs):
+                try:
+                    rec = fu.result()
+                except Exception as e:
+                    print("  [실패]", e); continue
                 fo.write(json.dumps(rec, ensure_ascii=False) + "\n"); fo.flush()
+                n += 1
+                if n % 100 == 0:
+                    print(f"  {os.path.basename(f)}: {n}/{len(todo)}")
         print(f"{os.path.basename(f)}: {len(todo)}건 채점 → {out}")
 
     if a.retest:
