@@ -175,6 +175,18 @@
   <div class="step"><b>⑥ 채점</b>눈가림 A/B 판정 + 임베딩 유사도 + 응답 태깅<small>본인 답 vs 트윈 답</small></div>
   <div class="step"><b>⑦ 집계</b>조건별 일치도, 거리 삼각형, 층별 분해, 누출 지수</div>
 </div>
+<details><summary>④ 발췌 예시 — "행복은 어떻게 오는 것이라고 생각하나요?"에 붙은 Train 20개 중 상위 6개</summary><div style="padding:10px 14px">
+<table>
+  <tr><th>순위</th><th class="num">유사도</th><th>Train의 질문</th><th>답 앞부분</th><th>뜻이 통하나</th></tr>
+  <tr><td>1</td><td class="num">0.20</td><td>인생이란 무엇이라고 생각하나요?</td><td>태어난 수업 열심히 사는 거죠</td><td>○</td></tr>
+  <tr><td>2</td><td class="num">0.18</td><td>멋진 이별이란 어떤 것이라고 생각하나요?</td><td>…참 멋있게 그런 연애를…</td><td>✗ 질문 꼴만 같음</td></tr>
+  <tr><td>3</td><td class="num">0.14</td><td>'명품'이라는 단어를 어떻게 생각하나요?</td><td>명품이란 단어를 안 좋아요, 우리 다 명품이잖아요</td><td>✗</td></tr>
+  <tr><td>4</td><td class="num">0.13</td><td>명품에 대해 어떻게 생각하나요?</td><td>…</td><td>✗</td></tr>
+  <tr><td>5</td><td class="num">0.13</td><td>낡은 물건을 어떻게 생각하나요?</td><td>낡은 게 뭐 나쁜 거예요, 전 낡은 게 좋아</td><td>✗</td></tr>
+  <tr><td>6</td><td class="num">0.10</td><td>살아 있다는 것을 어떻게 생각하나요?</td><td>살아있는 건 참 축복…</td><td>○</td></tr>
+</table>
+<p class="kv">이 20개가 G2 시스템 프롬프트의 "노라가 과거 인터뷰에서 한 말" 블록에 그대로 들어간다(5절 G2 원문 참고). 파일에 적혀 있어 몇 번을 다시 돌려도 같은 조합. <b>TF-IDF의 한계가 보인다</b>: "~라고 생각하나요?"라는 질문 꼴이 같아 이별·명품·낡은 물건이 걸림 — 트윈이 참고하는 재료의 절반이 엉뚱하고, 이것이 G2가 G1보다 나아지지 않은 이유 중 하나일 수 있다 → 본실험은 뜻 기반 임베딩(e5)으로 재검색.</p>
+</div></details>
 <div class="grid">
   <div class="card"><b>파일럿 설계(원안)</b><br>50문항 × 4조건(G0 빈·G1 요약·G2 트윈·G3 실명만) × 2형식(F1 자유응답 + F2 7점) × 21회(T=1 20회 + T=0 1회) = 8,400회 생성 + 판정</div>
   <div class="card"><b>오늘 실행(축소판)</b><br>50문항 × 4조건(G0·G1·G2·G3) × 1형식(F1만) × 6회(T=1 5회 + T=0 1회) = <b>1,200회</b> 생성, 채점+태깅 2,400회</div>
