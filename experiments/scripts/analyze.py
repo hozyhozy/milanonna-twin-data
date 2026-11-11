@@ -26,12 +26,23 @@ def mean(xs):
     return round(st.mean(xs), 2) if xs else None
 
 
+def item_mean(js, key_fn):
+    """문항별 평균을 먼저 낸 뒤 문항 간 평균 (문항마다 반복 수가 달라도 동일 가중)."""
+    by = collections.defaultdict(list)
+    for j in js:
+        v = key_fn(j)
+        if v is not None:
+            by[j["item_id"]].append(v)
+    return mean([st.mean(v) for v in by.values()]) if by else None
+
+
 def load_jsonl(path):
     return [json.loads(l) for l in open(path, encoding="utf-8")] if os.path.exists(path) else []
 
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--exp", default="A1"); ap.add_argument("--backend", default="auto")
+    ap.add_argument("--max-rep", type=int, default=5, help="T>0 반복은 rep < max_rep 만 사용(조건 간 반복 수 균형)")
     a = ap.parse_args()
     items = {x["item_id"]: x for x in json.load(open(P("experiments/items/holdout50.json"), encoding="utf-8"))["items"]}
     J, R = [], []
@@ -40,8 +51,11 @@ def main():
             (J if os.path.basename(f).startswith("judge_") else R).extend(load_jsonl(f))
     if not J:
         print("judge 결과가 없습니다. judge.py를 먼저 실행하세요."); return
+    # 조건 간 반복 수를 맞춘다 (한 조건만 더 많이 돌아간 경우 평균이 문항 구성에 끌리는 것을 방지)
+    J = [j for j in J if j["temp"] == 0 or j["rep"] < a.max_rep]
+    R = [r for r in R if r["temp"] == 0 or r["rep"] < a.max_rep]
     conds = sorted({j["cond"] for j in J})
-    out = [f"# {a.exp} 집계 ({len(J)} 채점, 조건 {', '.join(conds)})\n"]
+    out = [f"# {a.exp} 집계 ({len(J)} 채점, 조건 {', '.join(conds)}, T>0 반복 rep<{a.max_rep}, 문항 균등 가중)\n"]
     rows = []
 
     # 천장
@@ -57,8 +71,8 @@ def main():
     out.append("## 표1. 조건별 일치도 (F1, T>0 평균)\n\n| 조건 | n | stance | ground | valence | voice | sim_emb | stance/천장 |\n|---|---:|---:|---:|---:|---:|---:|---:|")
     for c in conds:
         js = [j for j in J if j["cond"] == c and j["temp"] > 0 and j["scores"]]
-        m = {k: mean([j["scores"][k] for j in js]) for k in KEYS}
-        se = mean([j["sim_emb"] for j in js])
+        m = {k: item_mean(js, lambda j, k=k: j["scores"][k]) for k in KEYS}
+        se = item_mean(js, lambda j: j["sim_emb"])
         ratio = round(m["stance"] / ceil["stance"], 2) if ceil and m["stance"] else ""
         out.append(f"| {c} | {len(js)} | {m['stance']} | {m['ground']} | {m['valence']} | {m['voice']} | {se} | {ratio} |")
         rows.append({"table": "cond", "cond": c, "n": len(js), **m, "sim_emb": se})
@@ -82,7 +96,7 @@ def main():
             cells = []
             for c in conds:
                 js = [j for j in J if j["cond"] == c and j["temp"] > 0 and j["scores"] and str(items[j["item_id"]].get(key)) == v]
-                cells.append(str(mean([j["scores"]["stance"] for j in js])))
+                cells.append(str(item_mean(js, lambda j: j["scores"]["stance"])))
             out.append(f"| {key} | {v} | " + " | ".join(cells) + " |")
 
     # 표3 거리 삼각형 (응답 텍스트 필요)
@@ -123,7 +137,7 @@ def main():
     # 표5 A2/C1
     tagged = [j for j in J if j.get("resp_tags")]
     if tagged:
-        out.append("\n## 표5. A2 valence_gap(응답 − 본인) · C1 근거 유형\n\n| 조건 | n | valence_gap | 부정문항 gap | 긍정문항 gap | 일화% | 원칙% | 사실% | 혼합% | 환각후보(일화 수) |\n|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
+        out.append("\n## 표5. A2 valence_gap(응답 − 본인) · C1 근거 유형\n\n| 조건 | n | valence_gap | 부정문항 gap | 긍정문항 gap | 일화% | 원칙% | 사실% | 혼합% | 응답당 일화 수 |\n|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
         for c in conds:
             js = [j for j in tagged if j["cond"] == c and j["temp"] > 0]
             gaps = [(j["resp_tags"].get("valence") or 0) - (items[j["item_id"]].get("valence_truth") or 0) for j in js if items[j["item_id"]].get("valence_truth") is not None]
@@ -131,7 +145,7 @@ def main():
             pos = [(j["resp_tags"].get("valence") or 0) - items[j["item_id"]]["valence_truth"] for j in js if (items[j["item_id"]].get("valence_truth") or 0) >= 1]
             g = collections.Counter(j["resp_tags"].get("ground") for j in js)
             tot = max(1, len(js))
-            an = sum(len(j["resp_tags"].get("anecdotes") or []) for j in js)
+            an = mean([len(j["resp_tags"].get("anecdotes") or []) for j in js])
             out.append(f"| {c} | {len(js)} | {mean(gaps)} | {mean(neg)} | {mean(pos)} | {round(100*g['일화']/tot)} | {round(100*g['원칙']/tot)} | {round(100*g['사실']/tot)} | {round(100*g['혼합']/tot)} | {an} |")
         tg = collections.Counter(x.get("ground_type_truth") for x in items.values())
         out.append(f"\n본인 근거 유형 분포: {dict(tg)}. 환각 후보는 응답 속 일화 목록을 Train·G1과 대조해 연구자가 확인(`judge_*.jsonl`의 resp_tags.anecdotes).")
@@ -169,7 +183,7 @@ def main():
             for v in vals:
                 def m(c):
                     js = [j for j in J if j["cond"] == c and j["temp"] > 0 and j["scores"] and (v is None or str(items[j["item_id"]].get(key)) == v)]
-                    return mean([j["scores"]["stance"] for j in js])
+                    return item_mean(js, lambda j: j["scores"]["stance"])
                 a0, a3, a2 = m("G0"), m("G3"), m("G2")
                 lk = round(a3 - a0, 2) if a0 is not None and a3 is not None else ""
                 nc = round(a2 - a3, 2) if a2 is not None and a3 is not None else ""
