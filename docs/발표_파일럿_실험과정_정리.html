@@ -397,27 +397,54 @@ A: 아들이 객지에서 혼자 있어서 엄마 항상 엄마 이렇게 아침
 <p class="kv" style="margin:6px 0 0">원본은 <code>experiments/runs/A1/judge_*.jsonl</code>(한 줄 = 답 하나), 집계는 <code>analyze.py</code>. 어떤 숫자든 문항 단위로 역추적 가능.</p></div>
 
 
-<h3>7-1. 조건별 일치도 (A1) — 트윈은 요약·실명 조건과 구분되지 않았다</h3><div class="card" style="text-align:center"><svg viewBox="0 0 560 260" width="100%" style="max-width:560px;font-family:inherit;font-size:12px" role="img" aria-label="조건별 stance 일치도 (0~100)">
-<text x="56" y="18" font-size="13" font-weight="500" fill="#1d1d1f">조건별 stance 일치도 (0~100)</text>
-<line x1="56" x2="544" y1="214.0" y2="214.0" stroke="#e6e6ea"/><text x="50" y="218.0" text-anchor="end" fill="#6b6b70">40</text>
-<line x1="56" x2="544" y1="154.0" y2="154.0" stroke="#e6e6ea"/><text x="50" y="158.0" text-anchor="end" fill="#6b6b70">50</text>
-<line x1="56" x2="544" y1="94.0" y2="94.0" stroke="#e6e6ea"/><text x="50" y="98.0" text-anchor="end" fill="#6b6b70">60</text>
-<line x1="56" x2="544" y1="34.0" y2="34.0" stroke="#e6e6ea"/><text x="50" y="38.0" text-anchor="end" fill="#6b6b70">70</text>
-<line x1="56" x2="544" y1="118.0" y2="118.0" stroke="#d9534f" stroke-dasharray="5,4"/><text x="544" y="114.0" text-anchor="end" fill="#d9534f">본인 Retest 천장 56.0</text>
-<rect x="103.0" y="113.8" width="25.0" height="100.2" fill="#2f6fed" rx="2"/>
-<text x="115.5" y="110.8" text-anchor="middle" fill="#333" font-size="11">56.7</text>
-<text x="117.0" y="230" text-anchor="middle" fill="#1d1d1f">G0 빈</text>
-<rect x="225.0" y="122.8" width="25.0" height="91.2" fill="#2f6fed" rx="2"/>
-<text x="237.5" y="119.8" text-anchor="middle" fill="#333" font-size="11">55.2</text>
-<text x="239.0" y="230" text-anchor="middle" fill="#1d1d1f">G1 요약</text>
-<rect x="347.0" y="129.4" width="25.0" height="84.6" fill="#2f6fed" rx="2"/>
-<text x="359.5" y="126.4" text-anchor="middle" fill="#333" font-size="11">54.1</text>
-<text x="361.0" y="230" text-anchor="middle" fill="#1d1d1f">G2 트윈</text>
-<rect x="469.0" y="124.6" width="25.0" height="89.4" fill="#2f6fed" rx="2"/>
-<text x="481.5" y="121.6" text-anchor="middle" fill="#333" font-size="11">54.9</text>
-<text x="483.0" y="230" text-anchor="middle" fill="#1d1d1f">G3 실명만</text>
-<rect x="56" y="246" width="10" height="10" fill="#2f6fed" rx="2"/><text x="70" y="255" fill="#1d1d1f">stance</text>
-</svg><div class="kv" style="margin-top:4px">네 조건이 모두 천장(점선) 근처, 서로 2.6점 이내 — 정보를 더 줘도 판정 점수가 오르지 않음</div></div><details class="how"><summary>이 수치는 어떻게 나왔나</summary><div style="padding:10px 14px"><ol style="margin:0 0 0 18px">
+<h3>7-1. 조건별 일치도 (A1) — 트윈은 요약·실명 조건과 구분되지 않았다</h3><div class="card" style="text-align:center"><svg viewBox="0 0 640 300" width="100%" style="max-width:640px;font-family:inherit;font-size:12px" role="img" aria-label="조건별 판정 점수 — stance · ground · valence · voice (0~100)">
+<text x="56" y="18" font-size="13" font-weight="500" fill="#1d1d1f">조건별 판정 점수 — stance · ground · valence · voice (0~100)</text>
+<line x1="56" x2="624" y1="254.0" y2="254.0" stroke="#e6e6ea"/><text x="50" y="258.0" text-anchor="end" fill="#6b6b70">0</text>
+<line x1="56" x2="624" y1="191.1" y2="191.1" stroke="#e6e6ea"/><text x="50" y="195.1" text-anchor="end" fill="#6b6b70">20</text>
+<line x1="56" x2="624" y1="128.3" y2="128.3" stroke="#e6e6ea"/><text x="50" y="132.3" text-anchor="end" fill="#6b6b70">40</text>
+<line x1="56" x2="624" y1="65.4" y2="65.4" stroke="#e6e6ea"/><text x="50" y="69.4" text-anchor="end" fill="#6b6b70">60</text>
+<line x1="56" x2="624" y1="78.0" y2="78.0" stroke="#d9534f" stroke-dasharray="5,4"/><text x="624" y="74.0" text-anchor="end" fill="#d9534f">stance 천장 56.0</text>
+<rect x="71.0" y="75.8" width="25.0" height="178.2" fill="#9aa0a6" rx="2"/>
+<text x="83.5" y="72.8" text-anchor="middle" fill="#333" font-size="10">56.7</text>
+<rect x="99.0" y="80.5" width="25.0" height="173.5" fill="#7fb3ff" rx="2"/>
+<text x="111.5" y="77.5" text-anchor="middle" fill="#333" font-size="10">55.2</text>
+<rect x="127.0" y="84.0" width="25.0" height="170.0" fill="#2f6fed" rx="2"/>
+<text x="139.5" y="81.0" text-anchor="middle" fill="#333" font-size="10">54.1</text>
+<rect x="155.0" y="81.5" width="25.0" height="172.5" fill="#f0a73b" rx="2"/>
+<text x="167.5" y="78.5" text-anchor="middle" fill="#333" font-size="10">54.9</text>
+<text x="127.0" y="270" text-anchor="middle" fill="#1d1d1f">stance 입장</text>
+<rect x="213.0" y="105.0" width="25.0" height="149.0" fill="#9aa0a6" rx="2"/>
+<text x="225.5" y="102.0" text-anchor="middle" fill="#333" font-size="10">47.4</text>
+<rect x="241.0" y="110.1" width="25.0" height="143.9" fill="#7fb3ff" rx="2"/>
+<text x="253.5" y="107.1" text-anchor="middle" fill="#333" font-size="10">45.8</text>
+<rect x="269.0" y="107.9" width="25.0" height="146.1" fill="#2f6fed" rx="2"/>
+<text x="281.5" y="104.9" text-anchor="middle" fill="#333" font-size="10">46.5</text>
+<rect x="297.0" y="112.6" width="25.0" height="141.4" fill="#f0a73b" rx="2"/>
+<text x="309.5" y="109.6" text-anchor="middle" fill="#333" font-size="10">45</text>
+<text x="269.0" y="270" text-anchor="middle" fill="#1d1d1f">ground 근거</text>
+<rect x="355.0" y="83.3" width="25.0" height="170.7" fill="#9aa0a6" rx="2"/>
+<text x="367.5" y="80.3" text-anchor="middle" fill="#333" font-size="10">54.3</text>
+<rect x="383.0" y="87.7" width="25.0" height="166.3" fill="#7fb3ff" rx="2"/>
+<text x="395.5" y="84.7" text-anchor="middle" fill="#333" font-size="10">52.9</text>
+<rect x="411.0" y="87.7" width="25.0" height="166.3" fill="#2f6fed" rx="2"/>
+<text x="423.5" y="84.7" text-anchor="middle" fill="#333" font-size="10">52.9</text>
+<rect x="439.0" y="89.9" width="25.0" height="164.1" fill="#f0a73b" rx="2"/>
+<text x="451.5" y="86.9" text-anchor="middle" fill="#333" font-size="10">52.2</text>
+<text x="411.0" y="270" text-anchor="middle" fill="#1d1d1f">valence 정서</text>
+<rect x="497.0" y="161.6" width="25.0" height="92.4" fill="#9aa0a6" rx="2"/>
+<text x="509.5" y="158.6" text-anchor="middle" fill="#333" font-size="10">29.4</text>
+<rect x="525.0" y="163.5" width="25.0" height="90.5" fill="#7fb3ff" rx="2"/>
+<text x="537.5" y="160.5" text-anchor="middle" fill="#333" font-size="10">28.8</text>
+<rect x="553.0" y="157.8" width="25.0" height="96.2" fill="#2f6fed" rx="2"/>
+<text x="565.5" y="154.8" text-anchor="middle" fill="#333" font-size="10">30.6</text>
+<rect x="581.0" y="170.1" width="25.0" height="83.9" fill="#f0a73b" rx="2"/>
+<text x="593.5" y="167.1" text-anchor="middle" fill="#333" font-size="10">26.7</text>
+<text x="553.0" y="270" text-anchor="middle" fill="#1d1d1f">voice 말투</text>
+<rect x="56" y="286" width="10" height="10" fill="#9aa0a6" rx="2"/><text x="70" y="295" fill="#1d1d1f">G0 빈</text>
+<rect x="122" y="286" width="10" height="10" fill="#7fb3ff" rx="2"/><text x="136" y="295" fill="#1d1d1f">G1 요약</text>
+<rect x="197" y="286" width="10" height="10" fill="#2f6fed" rx="2"/><text x="211" y="295" fill="#1d1d1f">G2 트윈</text>
+<rect x="272" y="286" width="10" height="10" fill="#f0a73b" rx="2"/><text x="286" y="295" fill="#1d1d1f">G3 실명만</text>
+</svg><div class="kv" style="margin-top:4px">네 항목 모두 조건 간 차이가 2~4점 이내. 입장·정서는 50대, 근거는 40대, <b>말투는 30 아래</b> — 트윈이 가장 못 맞추는 것은 말투</div></div><details class="how"><summary>이 수치는 어떻게 나왔나</summary><div style="padding:10px 14px"><ol style="margin:0 0 0 18px">
 <li>50문항 × 조건 × 5회(T=1) = 조건당 250개 답. 각 답을 본인 인터뷰 답과 짝지어 판정 모델에 눈가림 A/B로 넣고 네 항목 0~100을 받음.</li>
 <li>문항마다 5개 점수 평균 → 50문항 평균 = 표의 stance·ground·valence·voice. (같은 답으로 TF-IDF 유사도도 계산 = sim_emb)</li>
 <li><b>천장</b>: Retest 14쌍(같은 질문에 시즌1 답·시즌2 답)을 같은 판정 프롬프트에 넣은 stance 평균 = 56.0. <b>stance/천장</b> = 조건 stance ÷ 56.0 (Twin-2K-500의 "88%" 방식).</li>
