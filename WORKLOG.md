@@ -4,6 +4,7 @@
 
 ## 2026-11-11 (수)
 
+- **⑤ 실행·채점·집계 코드**: `run.py`(조건×형식×온도×반복, 캐시로 재개, G3는 runs_local), `judge.py`(눈가림 A/B 판정 + sim_emb + --tag 응답 태깅 + --retest 천장 + --swap 자기일관성, G3 응답은 가명 치환 후 채점), `analyze.py`(표1~8 → results/<exp>_summary.md), `embed.py`(st/tfidf). `MOCK_LLM=1`로 API 없이 전 과정 점검 완료.
 - **③ 프롬프트 파일**: `prompts/system_G0.txt`, `system_G1.txt`(가명 참고자료 요약 약 1,000자 — 검수 필요), `system_G2.txt`(G1 + 발췌 템플릿), `user_F1/F2.txt`, `judge.txt`, `reid_check.txt`. G3(실명)는 로컬 `Desktop/밀라논나/system_G3.txt`. 가명 사전에 참고자료용 규칙 추가(출판사·대학·기업·언론사명 등).
 - **④ 발췌 고정**: `retrieve.py`(st/tfidf 백엔드) → `items/retrieved_ids.json` 생성(현재 TF-IDF; 로컬에서 sentence-transformers 설치 후 `--backend st`로 재생성 권장).
 - **② 추출·태깅 코드**: `select_items.py`(층화 50문항, seed 고정, 영상당 ≤3) → `items/holdout50.json` 생성(가치관 25/일화 10/채널 10/기술 5; 층 분류는 키워드 휴리스틱이라 검수 필요). `tag_items.py` + `prompts/tag_items.txt`(valence·ground·stance 1차 태깅, 로그 `tagging_log.md`). 공용 클라이언트 `llm.py`(OpenAI 호환, DeepSeek 기본, 캐시·재시도), `config/models.json`, `.env.example`. 모델: 생성 deepseek-chat / 판정 deepseek-reasoner(같은 패밀리라는 한계 보고 예정).
@@ -68,5 +69,6 @@
 - [ ] ②-2 `tag_items.py` 실행(API 키 필요) → holdout50.json 검수(stratum·태그·fame, reviewed=true)
 - [x] ③ G1 요약 초안·G3 프롬프트 (G1 검수 필요)
 - [x] ④ `retrieve.py` → retrieved_ids.json (TF-IDF; st로 재생성 권장)
-- [ ] ⑤ A1 실행·채점·분석 (설계서 §10)
+- [x] ⑤ 코드 작성(모의 실행으로 검증)
+- [ ] ⑤-2 `.env` 키 입력 → `run.py --exp A1 --dry`로 비용·출력 확인 → 본실행 → judge → analyze
 - [ ] Holdout 문항을 일화 회상형 / 의견·가치관형으로 태깅
