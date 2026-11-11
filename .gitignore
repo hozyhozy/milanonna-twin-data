@@ -18,3 +18,5 @@ api_key*
 # 실명 로그
 experiments/runs_local/
 experiments/config/pseudonym_dict.json
+experiments/.env
+experiments/.cache/

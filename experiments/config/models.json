@@ -1,0 +1,15 @@
+{
+  "_note": "provider는 OpenAI 호환 chat/completions 엔드포인트면 모두 가능. 키는 .env (DEEPSEEK_API_KEY 등). judge는 생성 모델과 다른 패밀리를 권장 — DeepSeek만 쓸 경우 generation=deepseek-chat, judge=deepseek-reasoner로 두고 한계를 보고에 명시.",
+  "providers": {
+    "deepseek": {"base_url": "https://api.deepseek.com/v1", "key_env": "DEEPSEEK_API_KEY"},
+    "openai":   {"base_url": "https://api.openai.com/v1",   "key_env": "OPENAI_API_KEY"},
+    "anthropic_compat": {"base_url": "https://api.anthropic.com/v1/", "key_env": "ANTHROPIC_API_KEY", "_note": "Anthropic OpenAI-호환 엔드포인트 사용 시"}
+  },
+  "roles": {
+    "generation": {"provider": "deepseek", "model": "deepseek-chat"},
+    "judge":      {"provider": "deepseek", "model": "deepseek-reasoner"},
+    "tagger":     {"provider": "deepseek", "model": "deepseek-chat"},
+    "embedding":  {"provider": "local", "model": "intfloat/multilingual-e5-small", "_note": "retrieve.py에서 sentence-transformers로 로컬 계산(DeepSeek는 임베딩 API 없음)"}
+  },
+  "defaults": {"max_tokens": 600, "timeout_s": 90, "retries": 4, "cache_dir": "experiments/.cache"}
+}
