@@ -1,0 +1,4 @@
+requests>=2.31
+scikit-learn>=1.3
+numpy
+# 더 좋은 검색(권장): pip install sentence-transformers  → retrieve.py --backend st (모델 intfloat/multilingual-e5-small 자동 다운로드)

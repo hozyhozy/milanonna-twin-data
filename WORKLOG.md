@@ -4,6 +4,8 @@
 
 ## 2026-11-11 (수)
 
+- **③ 프롬프트 파일**: `prompts/system_G0.txt`, `system_G1.txt`(가명 참고자료 요약 약 1,000자 — 검수 필요), `system_G2.txt`(G1 + 발췌 템플릿), `user_F1/F2.txt`, `judge.txt`, `reid_check.txt`. G3(실명)는 로컬 `Desktop/밀라논나/system_G3.txt`. 가명 사전에 참고자료용 규칙 추가(출판사·대학·기업·언론사명 등).
+- **④ 발췌 고정**: `retrieve.py`(st/tfidf 백엔드) → `items/retrieved_ids.json` 생성(현재 TF-IDF; 로컬에서 sentence-transformers 설치 후 `--backend st`로 재생성 권장).
 - **② 추출·태깅 코드**: `select_items.py`(층화 50문항, seed 고정, 영상당 ≤3) → `items/holdout50.json` 생성(가치관 25/일화 10/채널 10/기술 5; 층 분류는 키워드 휴리스틱이라 검수 필요). `tag_items.py` + `prompts/tag_items.txt`(valence·ground·stance 1차 태깅, 로그 `tagging_log.md`). 공용 클라이언트 `llm.py`(OpenAI 호환, DeepSeek 기본, 캐시·재시도), `config/models.json`, `.env.example`. 모델: 생성 deepseek-chat / 판정 deepseek-reasoner(같은 패밀리라는 한계 보고 예정).
 - **① 가명본 생성 완료**: `experiments/scripts/pseudonymize.py` + 치환 사전(규칙 약 120개, 로컬 `experiments/config/pseudonym_dict.json`; 저장소엔 example만). 출력 `data/anon/{전체,Train,Holdout,Retest}.json` + 참고자료 2종(URL·source_url 제거). 치환 약 6,400회, 잔여 의심어 0건(`experiments/results/pseudonymize_report.md`). 사전 순서대로 적용(복합어 먼저) — 길이 정렬은 '논나 할머니'가 '밀라논나'를 깨뜨려 폐기. 남은 것: 재식별 점검(API 필요), ASR 오인식 잔여(예: '도메니코 돌')는 발견 시 사전에 추가.
 
@@ -64,7 +66,7 @@
 - [ ] ①-2 재식별 점검(가명 G1 요약 → "누구?" 20회)
 - [x] ② 코드 작성·50문항 추출 완료
 - [ ] ②-2 `tag_items.py` 실행(API 키 필요) → holdout50.json 검수(stratum·태그·fame, reviewed=true)
-- [ ] ③ G1 요약 800자·G3 프롬프트
-- [ ] ④ `retrieve.py` 발췌 고정(k=20)
+- [x] ③ G1 요약 초안·G3 프롬프트 (G1 검수 필요)
+- [x] ④ `retrieve.py` → retrieved_ids.json (TF-IDF; st로 재생성 권장)
 - [ ] ⑤ A1 실행·채점·분석 (설계서 §10)
 - [ ] Holdout 문항을 일화 회상형 / 의견·가치관형으로 태깅

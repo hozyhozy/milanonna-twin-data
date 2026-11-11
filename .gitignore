@@ -20,3 +20,4 @@ experiments/runs_local/
 experiments/config/pseudonym_dict.json
 experiments/.env
 experiments/.cache/
+experiments/prompts/system_G3.txt
