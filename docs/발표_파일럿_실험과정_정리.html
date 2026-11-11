@@ -13,6 +13,13 @@
   header{border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:32px}
   header h1{margin:0 0 6px;font-size:26px;letter-spacing:-.01em}
   header p{margin:0;color:var(--mute)}
+  .topbar{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(0,0,0,.02)}
+  .topbar-in{max-width:1040px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;white-space:nowrap}
+  .topbar a{display:inline-block;padding:16px 14px;font-size:15px;color:#2a2a2e;text-decoration:none;border-bottom:3px solid transparent;transition:.15s}
+  .topbar a:hover{color:var(--acc)}
+  .topbar a.active{color:var(--acc);border-bottom-color:var(--acc);font-weight:500}
+  section{scroll-margin-top:70px}
+  html{scroll-behavior:smooth}
   nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
   nav a{font-size:13px;color:var(--acc);background:var(--acc2);padding:4px 10px;border-radius:999px;text-decoration:none}
   section{margin:44px 0}
@@ -49,13 +56,20 @@
 </style>
 </head>
 <body>
+<div class="topbar"><div class="topbar-in">
+  <a href="#s1" data-s="s1">1. 데이터 수집</a>
+  <a href="#s2" data-s="s2">2. 분할·층화</a>
+  <a href="#s3" data-s="s3">3. 실험 순서도</a>
+  <a href="#s4" data-s="s4">4. 태그</a>
+  <a href="#s5" data-s="s5">5. 조건 G0–G3</a>
+  <a href="#s6" data-s="s6">6. 측정</a>
+  <a href="#s7" data-s="s7">7. 결과</a>
+</div></div>
 <div class="wrap">
 <header>
   <h1>밀라논나 디지털 트윈 — 파일럿 실험 과정 정리</h1>
   <p>마케팅 인텔리전스 · 2026-11-11 · 허지연 &nbsp;|&nbsp; 저장소 <span class="mono">hozyhozy/milanonna-twin-data</span> (private)</p>
-  <nav>
-    <a href="#s1">1 데이터 수집</a><a href="#s2">2 분할·층화</a><a href="#s3">3 실험 순서도</a><a href="#s4">4 태그</a><a href="#s5">5 조건 G0–G3</a><a href="#s6">6 측정</a><a href="#s7">7 결과</a>
-  </nav>
+
 </header>
 
 <section id="s0">
@@ -275,5 +289,17 @@ A: {Train 답 1}
 
 <footer>설계서: docs/파일럿_실험설계_편향테스트_v1.md · 분할 기준: docs/분할기준_및_통합기록.md · 코드: experiments/ (pseudonymize → select_items → tag_items → retrieve → run → judge → analyze)</footer>
 </div>
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.topbar a'));
+  var secs=links.map(function(a){return document.getElementById(a.dataset.s)});
+  function upd(){
+    var y=window.scrollY+90, cur=0;
+    secs.forEach(function(sec,i){ if(sec && sec.offsetTop<=y) cur=i; });
+    links.forEach(function(a,i){ a.classList.toggle('active',i===cur); });
+  }
+  window.addEventListener('scroll',upd,{passive:true}); upd();
+})();
+</script>
 </body>
 </html>
