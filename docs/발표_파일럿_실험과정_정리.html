@@ -93,7 +93,7 @@
   <tr><td><b>A2</b></td><td>본인이 부정적·비판적으로 말한 문항에서 트윈이 온건·긍정적으로 바뀌나</td><td>긍정·친사회 편향 — Capraro 2024(이타성 과대), Twin-2K outcome bias</td></tr>
   <tr><td><b>A3</b></td><td>반복 응답이 본인의 재검사 변동보다 좁은가, 온도가 뭘 바꾸나</td><td>분산 축소 — Funhouse ①, 안내문 2절</td></tr>
   <tr><td><b>B1</b></td><td>본인 입장이 LLM 기본값과 충돌하는 문항에서 트윈이 어느 쪽으로 가나</td><td>이념 편향 — Funhouse ④</td></tr>
-  <tr><td><b>B2</b></td><td>AI·SNS·알고리즘 문항에서만 B1 반복</td><td>pro-technology — Funhouse ④</td></tr>
+  <tr><td><b>B2</b></td><td>AI·SNS·알고리즘 문항에서만 B1 반복</td><td>pro-technology — Funhouse ④ <span class="kv">(파일럿: 해당 문항이 1개뿐이라 보류)</span></td></tr>
   <tr><td><b>C1</b></td><td>본인은 일화로, 트윈은 원칙·일반론으로 답하나; Train에 없는 일화를 지어내나</td><td>과도한 합리성·환각 — Funhouse ⑤</td></tr>
   <tr><td><b>C2</b></td><td>본인이 모르거나 틀린 것을 트윈이 정답으로 말하나</td><td>지식 과잉 — Twin-2K 앵커링 UN 사례</td></tr>
   <tr><td><b>D1</b></td><td>대안 제시 순서를 바꾸면 선택이 뒤집히나 (robust/fragile/indifferent)</td><td>순서 효과 — Yin 2026 Fragile Preferences, Pezeshkpour</td></tr>
@@ -546,7 +546,7 @@ A: 아들이 객지에서 혼자 있어서 엄마 항상 엄마 이렇게 아침
   <tr><td>일화 회상형 (10)</td><td class="num">44.8</td><td class="num"><b>50.4</b></td><td class="num">48.2</td><td class="num">45.0</td><td>페르소나 정보가 <b>전기적 사실</b>에는 +4~6점 도움</td></tr>
   <tr><td>채널·경력 (10)</td><td class="num">44.7</td><td class="num">48.3</td><td class="num"><b>48.4</b></td><td class="num">44.9</td><td>위와 같음</td></tr>
   <tr><td>가치관 (25)</td><td class="num"><b>65.4</b></td><td class="num">59.4</td><td class="num">58.6</td><td class="num">61.6</td><td>가치관 질문은 <b>일반 LLM이 가장 높음</b> — 일반론 답이 "입장 일치"로 채점되기 쉬움(판정 관대성 의심)</td></tr>
-  <tr><td>기술·AI (5)</td><td class="num">60.6</td><td class="num">57.2</td><td class="num">54.6</td><td class="num">60.8</td><td>n 작음</td></tr>
+  <tr><td>기술·AI (5)</td><td class="num">60.6</td><td class="num">57.2</td><td class="num">54.6</td><td class="num">60.8</td><td><b>분류 오류</b> — 키워드("댓글" 등)로 걸린 5개 중 진짜 기술·AI 질문은 1개("AI 시대 젊은 세대에게 조언할 수 있나") → 이 행은 B2로 읽지 않음. Holdout 전체에도 AI·SNS 입장 문항이 서너 개뿐이라 B2는 보류</td></tr>
 </table>
 
 <h3>7-2. 거리 삼각형 — "트윈 답은 누구를 닮았나?"</h3>
