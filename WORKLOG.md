@@ -4,6 +4,8 @@
 
 ## 2026-11-11 (수)
 
+- **축소판 A1 실행·결과** (F1, 5회+T=0, 1,200회, DeepSeek-chat 생성·판정): G0 56.7 / G1 55.2 / G2 54.1 / G3 54.9 (천장 56.0) — 트윈이 요약·실명 조건과 구분 안 됨; 거리 삼각형 G2–G1 0.865 < G2–G3 0.906 < G2–G0 0.916 < G2–본인 0.952(전형 의존·개인화 부족); A2 부정 문항 valence gap G0 +0.76 / G1 +1.27 / G2 +1.44(페르소나가 긍정 편향 악화); B1 충돌 문항 무변화; E1 누출 징후 없음. 발표 HTML 7절에 반영. 실행 중 Ctrl+C로 G0 반복이 더 쌓여 analyze에 --max-rep·문항 균등 가중 추가.
+
 - **⑤ 실행·채점·집계 코드**: `run.py`(조건×형식×온도×반복, 캐시로 재개, G3는 runs_local), `judge.py`(눈가림 A/B 판정 + sim_emb + --tag 응답 태깅 + --retest 천장 + --swap 자기일관성, G3 응답은 가명 치환 후 채점), `analyze.py`(표1~8 → results/<exp>_summary.md), `embed.py`(st/tfidf). `MOCK_LLM=1`로 API 없이 전 과정 점검 완료.
 - **③ 프롬프트 파일**: `prompts/system_G0.txt`, `system_G1.txt`(가명 참고자료 요약 약 1,000자 — 검수 필요), `system_G2.txt`(G1 + 발췌 템플릿), `user_F1/F2.txt`, `judge.txt`, `reid_check.txt`. G3(실명)는 로컬 `Desktop/밀라논나/system_G3.txt`. 가명 사전에 참고자료용 규칙 추가(출판사·대학·기업·언론사명 등).
 - **④ 발췌 고정**: `retrieve.py`(st/tfidf 백엔드) → `items/retrieved_ids.json` 생성(현재 TF-IDF; 로컬에서 sentence-transformers 설치 후 `--backend st`로 재생성 권장).

@@ -212,25 +212,65 @@ A: {Train 답 1}
 </section>
 
 <section id="s7">
-<h2>7. 결과</h2>
-<div class="card">
-  <p class="pending">실행 중 — 축소판 A1(F1, 반복 5회 + T=0, 4조건 1,200회) 생성 → 채점 → 집계. 완료 후 <code>experiments/results/A1_summary.md</code>의 표를 여기에 옮긴다.</p>
-  <table>
-    <tr><th>조건</th><th class="num">n</th><th class="num">stance</th><th class="num">ground</th><th class="num">valence</th><th class="num">voice</th><th class="num">sim_emb</th><th class="num">stance/천장</th></tr>
-    <tr><td>G0</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
-    <tr><td>G1</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
-    <tr><td>G2</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
-    <tr><td>G3</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
-  </table>
-  <p class="kv">읽는 순서: ① G0→G1→G2 상승 여부와 천장 대비 비율 ② G3 위치(≈G0: 모델이 인물을 모름 / ≈G2: 자료 순기여 없음 / G1&lt;G3&lt;G2: 가장 좋은 그림) ③ 거리 삼각형 ④ 층별·유명/신규 분해 ⑤ A2·C1·B1·E1 표.</p>
+<h2>7. 결과 — 축소판 A1 (2026-11-11 11:00)</h2>
+<p class="kv">설정: 50문항 × G0·G1·G2·G3 × F1 × (T=1 5회 + T=0 1회) = 1,200회 생성 · DeepSeek-chat(생성·판정 동일) · 임베딩 TF-IDF · 태그 미검수 · 문항 균등 가중. <b>방향을 읽는 결과이지 크기를 확정하는 결과가 아니다.</b></p>
+
+<h3>7-1. 조건별 일치도 (A1) — 트윈은 요약·실명 조건과 구분되지 않았다</h3>
+<table>
+  <tr><th>조건</th><th class="num">n</th><th class="num">stance</th><th class="num">ground</th><th class="num">valence</th><th class="num">voice</th><th class="num">sim_emb</th><th class="num">stance/천장</th></tr>
+  <tr><td>G0 빈 페르소나</td><td class="num">250</td><td class="num"><b>56.7</b></td><td class="num">47.4</td><td class="num">54.3</td><td class="num">29.4</td><td class="num">0.12</td><td class="num">1.01</td></tr>
+  <tr><td>G1 요약</td><td class="num">250</td><td class="num">55.2</td><td class="num">45.8</td><td class="num">52.9</td><td class="num">28.8</td><td class="num">0.11</td><td class="num">0.99</td></tr>
+  <tr><td>G2 트윈</td><td class="num">250</td><td class="num">54.1</td><td class="num">46.5</td><td class="num">52.9</td><td class="num">30.6</td><td class="num">0.12</td><td class="num">0.97</td></tr>
+  <tr><td>G3 실명만</td><td class="num">250</td><td class="num">54.9</td><td class="num">45.0</td><td class="num">52.2</td><td class="num">26.7</td><td class="num">0.13</td><td class="num">0.98</td></tr>
+</table>
+<p class="kv">본인 Retest 천장(같은 질문에 시즌1·2 답의 일치도): stance 56.0, sim_emb 0.25. 네 조건 모두 천장 근처에 몰려 있고 <b>G2 − G0 = −2.6</b>, <b>G2 − G3(순기여) = −0.8</b>. 단, 트윈의 sim_emb(0.12)는 본인 재검사(0.25)의 절반 — "입장은 비슷해 보이지만 말은 다르다."</p>
+<table>
+  <tr><th>층</th><th class="num">G0</th><th class="num">G1</th><th class="num">G2</th><th class="num">G3</th><th>읽기</th></tr>
+  <tr><td>일화 회상형 (10)</td><td class="num">44.8</td><td class="num"><b>50.4</b></td><td class="num">48.2</td><td class="num">45.0</td><td>페르소나 정보가 <b>전기적 사실</b>에는 +4~6점 도움</td></tr>
+  <tr><td>채널·경력 (10)</td><td class="num">44.7</td><td class="num">48.3</td><td class="num"><b>48.4</b></td><td class="num">44.9</td><td>위와 같음</td></tr>
+  <tr><td>가치관 (25)</td><td class="num"><b>65.4</b></td><td class="num">59.4</td><td class="num">58.6</td><td class="num">61.6</td><td>가치관 질문은 <b>일반 LLM이 가장 높음</b> — 일반론 답이 "입장 일치"로 채점되기 쉬움(판정 관대성 의심)</td></tr>
+  <tr><td>기술·AI (5)</td><td class="num">60.6</td><td class="num">57.2</td><td class="num">54.6</td><td class="num">60.8</td><td>n 작음</td></tr>
+</table>
+
+<h3>7-2. 거리 삼각형 — 트윈 답은 본인보다 다른 LLM 조건에 더 가깝다</h3>
+<table>
+  <tr><th>G2 응답과의 거리 (1−sim, 작을수록 가까움)</th><th class="num">dist</th><th>판정</th></tr>
+  <tr><td>G2 – <b>G1 요약</b></td><td class="num"><b>0.865</b></td><td>가장 가까움 → <b>전형(요약) 의존</b></td></tr>
+  <tr><td>G2 – G3 실명</td><td class="num">0.906</td><td>사전지식 지배는 아님</td></tr>
+  <tr><td>G2 – G0 빈</td><td class="num">0.916</td><td>→ 개인화 부족</td></tr>
+  <tr><td>G2 – <b>본인</b></td><td class="num"><b>0.952</b></td><td>가장 멂</td></tr>
+</table>
+<p class="kv">Funhouse Mirrors ①②(insufficient individuation·stereotyping)의 1인 버전. 반복 응답 간 거리 ÷ Retest 거리 = 0.99 → 분산 축소(Funhouse ①의 SD 측면)는 보이지 않음.</p>
+
+<h3>7-3. 긍정 편향 (A2) — 가장 큰 체계적 효과, 페르소나가 악화시킨다</h3>
+<table>
+  <tr><th>조건</th><th class="num">전체 gap</th><th class="num">본인이 부정적으로 말한 문항 (9)</th><th class="num">긍정 문항 (35)</th></tr>
+  <tr><td>G0</td><td class="num">+0.23</td><td class="num">+0.76</td><td class="num">−0.03</td></tr>
+  <tr><td>G1</td><td class="num">+0.31</td><td class="num">+1.27</td><td class="num">−0.06</td></tr>
+  <tr><td>G2</td><td class="num">+0.38</td><td class="num"><b>+1.44</b></td><td class="num">−0.03</td></tr>
+  <tr><td>G3</td><td class="num">+0.32</td><td class="num">+0.80</td><td class="num">+0.07</td></tr>
+</table>
+<p>gap = (트윈 답의 valence) − (본인 답의 valence), −2~+2 척도. 긍정 문항은 거의 0, <b>부정 문항만 +0.8~+1.4</b> → 중간 수렴이 아니라 <b>비대칭 긍정화</b>. "화가 나요"(−2)로 말한 '경력 단절' 같은 문항에서 트윈은 온건하게 답한다. 요약·발췌를 넣을수록(G1·G2) 더 심해지는 것은 "따뜻한 할머니" 페르소나 요약이 본인의 단호함을 덮기 때문으로 보인다. Capraro(2024)·Twin-2K-500 outcome bias와 같은 방향이되, <b>페르소나 정보가 편향을 키운다</b>는 점이 새 관찰.</p>
+
+<h3>7-4. 근거 유형 (C1) · 가치 충돌 (B1) · 누출 (E1)</h3>
+<div class="grid">
+  <div class="card"><b>C1 근거 유형</b><br>본인: 일화 44% / 원칙 26% / 혼합 24%<br>G2: 일화 16% / 혼합 74%<br>G3: <b>원칙 41%</b><br><span class="kv">실명만 주면 교훈·일반론으로 답함(과도한 합리성 방향). 응답당 일화 수 G2 1.6개 — Train에 없는 일화인지 검증 전이라 환각률은 보류.</span></div>
+  <div class="card"><b>B1 가치 충돌</b><br>충돌 문항(16): G0 39.8 → G2 40.3<br>일치 문항(16): G0 73.6 → G2 66.9<br>끌림 지수 0.49<br><span class="kv">페르소나가 base 값과 충돌하는 문항을 <b>전혀 움직이지 못함</b>; 일치 문항에서는 오히려 하락.</span></div>
+  <div class="card"><b>E1 누출</b><br>G3 − G0 = −1.8 (strict 2025+: −0.5)<br>G2 − G3 = −0.8 (strict: +0.1)<br><span class="kv">DeepSeek가 밀라논나를 특별히 "아는" 징후 없음. 가명 처리의 실익은 작았고, 유명/신규 분해는 fame 태그 미입력으로 못 함.</span></div>
 </div>
-<h3>파일럿에서 생략한 것 (본실험 전 보강)</h3>
-<ul>
-  <li>코더 2인: 태그 검수, 판정 모델 채점 100쌍 독립 채점 → κ/ICC</li>
-  <li>자막 오인식 더블체크: Holdout 50문항 영상 원본 대조 복원</li>
-  <li>F2(7점) 형식, 반복 20회, 판정 자기일관성(A/B 재채점), 다른 패밀리 판정 모델</li>
-  <li>D1 순서 효과 · D2 비지정 맥락 · D3 호칭·문체 · D4 CoT · C2 지식 과잉 · E2 시간 드리프트</li>
-</ul>
+
+<div class="ok"><b>한 줄 결론.</b> 인터뷰 자료로 만든 트윈은 요약 페르소나·실명만 준 모델과 구분되지 않았고, 본인보다 다른 LLM 조건의 답에 더 가까웠다(개인화 부족·전형 의존). 가장 큰 체계적 편향은 <b>부정 발언의 긍정화</b>(부정 문항 gap +1.4)이며 페르소나 정보가 이를 키웠다. 트윈이 도움이 된 곳은 전기적 사실 질문뿐이다.</div>
+
+<h3>7-5. 한계와 다음 단계</h3>
+<table>
+  <tr><th>한계</th><th>영향</th><th>다음</th></tr>
+  <tr><td>생성·판정 모두 DeepSeek</td><td>G0 답을 후하게 볼 수 있음 → G2−G0 과소추정 방향. 가치관층 G0 우위가 이 때문일 수 있음</td><td>다른 패밀리 판정 50쌍 재채점, 연구자 직접 채점</td></tr>
+  <tr><td>태그 미검수 · fame 미입력</td><td>A2·C1 층 분류 오차, E1 유명/신규 분해 불가</td><td>50문항 검수(1시간)</td></tr>
+  <tr><td>TF-IDF 유사도</td><td>sim_emb 절대값 낮음(0.1~0.25); 거리 삼각형은 상대 비교만 유효</td><td>sentence-transformers(e5)로 재계산</td></tr>
+  <tr><td>반복 5회, 1 모델</td><td>분산·온도 효과(A3) 거칠음</td><td>20회, T=0/0.7/1, 모델 2개</td></tr>
+  <tr><td>자막 오인식</td><td>본인 답 자체의 잡음</td><td>Holdout 50문항 원본 대조 복원</td></tr>
+</table>
+<p><b>본실험 주제 후보</b>: (1) 페르소나 정보가 긍정 편향을 키우는 메커니즘 — 요약의 어느 요소(가치관 서술 vs 말투 지시 vs 발췌)가 부정 발화를 덮는가, 그리고 "단호하게 말한다"는 지시·부정 발화 가중 검색으로 줄일 수 있는가. (2) 트윈이 전형(G1)에 머무는 이유 — 발췌 k·전체 삽입·파인튜닝에 따른 거리 삼각형의 변화.</p>
 </section>
 
 <footer>설계서: docs/파일럿_실험설계_편향테스트_v1.md · 분할 기준: docs/분할기준_및_통합기록.md · 코드: experiments/ (pseudonymize → select_items → tag_items → retrieve → run → judge → analyze)</footer>
