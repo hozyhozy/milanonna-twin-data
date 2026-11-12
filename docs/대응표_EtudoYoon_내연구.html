@@ -123,11 +123,48 @@
   .nums div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--mute)}
   .nums b{display:block;font-size:19px;color:var(--ink)}
   @media (max-width:760px){.q4{grid-template-columns:1fr}.q4>div:nth-child(-n+3){display:none}.ds,.dsarrow,.dshead{grid-template-columns:1fr}.dshead{display:none}.dsarrow i:nth-child(2){display:none}.nums{grid-template-columns:1fr}}
+
+  .archbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+  .seg button{font:inherit;font-size:13.5px;padding:7px 14px;border:0;background:#fff;cursor:pointer;color:var(--mute)}
+  .seg button.on[data-side=ref]{background:var(--ref);color:#fff}
+  .seg button.on[data-side=me]{background:var(--me);color:#fff}
+  .chips{display:flex;gap:4px;flex-wrap:wrap}
+  .chips button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink)}
+  .chips button.all{width:auto;border-radius:15px;padding:0 12px;font-weight:500}
+  .chips button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .nav2{margin-left:auto;display:flex;gap:6px}
+  .nav2 button{font:inherit;font-size:13.5px;padding:7px 14px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}
+  figure.arch{margin:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 10px 4px}
+  figure.arch svg{width:100%;height:auto;display:block;color:var(--ink)}
+  figure.arch figcaption{font-size:12.5px;color:var(--mute);padding:4px 8px 8px}
+  .arch g[data-s]{transition:opacity .2s}
+  .arch.focus g[data-s]{opacity:.18}
+  .arch.focus g[data-s].on{opacity:1}
+  .arch .bx{fill:#fff;stroke:currentColor;stroke-width:1.3}
+  .arch .dash{stroke-dasharray:5 4}
+  .arch g.on .bx{stroke:var(--hl);stroke-width:2.6;fill:var(--hlbg)}
+  .arch .ar{stroke:#6a6d76;stroke-width:1.6;fill:none}
+  .arch g.on .ar{stroke:var(--hl);stroke-width:2.4}
+  .arch text{font-family:inherit;fill:currentColor}
+  .arch .t1{font-size:14px;font-weight:700}
+  .arch .t2{font-size:11.5px;fill:#6a6d76}
+  .arch .nb{fill:#1b1c20}
+  .arch g.on .nb{fill:var(--hl)}
+  .arch .nt{fill:#fff;font-size:12.5px;font-weight:700}
+  .arch .bar{fill:#b9bdc7}
+  .arch g.on .bar{fill:var(--hl)}
+  .cap{margin-top:10px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--hl);border-radius:10px;padding:12px 16px;min-height:86px}
+  .cap h3{margin:0 0 4px;font-size:15.5px}
+  .cap p{margin:0;font-size:14.5px;color:#33353b}
+  .cap .ex{margin-top:6px;font-size:13.5px;color:var(--mute)}
+  #arch{--hl:var(--ref);--hlbg:var(--ref-bg)}
+  #arch.me{--hl:var(--me);--hlbg:var(--me-bg)}
 </style>
 </head>
 <body>
 <div class="topbar"><div class="topbar-in">
-  <a href="#sum">논문 요약</a><a href="#ds">원격 감독 과정</a><a href="#q4">배경·목적·RQ·시사점</a><a href="#flow">내 연구 대응</a><a href="#diff">차이점</a><a href="#next">앞으로 찾을 것</a>
+  <a href="#sum">논문 요약</a><a href="#arch">시스템 구조</a><a href="#ds">단계별 세부</a><a href="#q4">배경·목적·RQ·시사점</a><a href="#flow">내 연구 대응</a><a href="#diff">차이점</a><a href="#next">앞으로 찾을 것</a>
   <button id="tg" type="button">설명 모두 펼치기</button>
 </div></div>
 
@@ -160,8 +197,41 @@
   </div>
 </section>
 
+<section id="arch">
+  <h2>2. 시스템 구조 — 번호 순서대로 작동 원리</h2>
+  <div class="archbar">
+    <div class="seg"><button type="button" data-side="ref" class="on">Etudo &amp; Yoon</button><button type="button" data-side="me">내 연구 (가안)</button></div>
+    <div class="chips" id="chips"></div>
+    <div class="nav2"><button type="button" id="prev">◀ 이전</button><button type="button" id="nextb">다음 ▶</button></div>
+  </div>
+  <figure class="arch" id="archfig"><svg viewBox="0 0 1000 520" role="img" aria-label="문서가 추출기를 거쳐 지식 베이스와 임시 프레임이 되고, 둘을 비교한 프로필에 규칙을 적용해 자동 라벨을 만드는 구조">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#6a6d76"/></marker></defs>
+<g data-s="1"><rect class="bx dash" x="430" y="14" width="170" height="48" rx="8"/><text class="t1" data-k="tmpl1" x="515.0" y="36.0" text-anchor="middle"></text><text class="t2" data-k="tmpl2" x="515.0" y="53.0" text-anchor="middle"></text><line class="ar" x1="515" y1="62" x2="515" y2="96" marker-end="url(#ah)"/><text class="t2" x="522" y="84" data-k="tmplA"></text><circle class="nb" cx="414" cy="38" r="11"/><text class="nt" x="414" y="42.5" text-anchor="middle">1</text></g>
+<g data-s="2"><rect class="bx" x="30" y="100" width="140" height="70" rx="8"/><text class="t1" data-k="docA1" x="100" y="132" text-anchor="middle"></text><text class="t2" data-k="docA2" x="100" y="150" text-anchor="middle"></text>
+<line class="ar" x1="170" y1="135" x2="228" y2="135" marker-end="url(#ah)"/><line class="ar" x1="380" y1="135" x2="428" y2="135" marker-end="url(#ah)"/>
+<path class="bx" d="M430 112a85 10 0 0 0 170 0a85 10 0 0 0-170 0zM430 112v58a85 10 0 0 0 170 0v-58"/><text class="t1" data-k="kb1" x="515" y="146" text-anchor="middle"></text><text class="t2" data-k="kb2" x="515" y="164" text-anchor="middle"></text><circle class="nb" cx="199" cy="116" r="11"/><text class="nt" x="199" y="120.5" text-anchor="middle">2</text></g>
+<g data-s="2 4"><rect class="bx" x="230" y="90" width="150" height="320" rx="10"/><text class="t1" data-k="fds1" x="305" y="205" text-anchor="middle"></text>
+<rect class="bx" x="248" y="222" width="114" height="36" rx="6"/><text class="t2" data-k="fdsa" x="305" y="244" text-anchor="middle"></text>
+<line class="ar" x1="305" y1="258" x2="305" y2="272" marker-end="url(#ah)"/>
+<rect class="bx" x="248" y="274" width="114" height="36" rx="6"/><text class="t2" data-k="fdsb" x="305" y="296" text-anchor="middle"></text>
+<text class="t2" x="305" y="332" text-anchor="middle">양쪽에 같은 추출기</text></g>
+<g data-s="3"><line class="ar" x1="600" y1="135" x2="648" y2="135" marker-end="url(#ah)"/><rect class="bx" x="650" y="105" width="140" height="60" rx="8"/><text class="t1" data-k="base1" x="720.0" y="133.0" text-anchor="middle"></text><text class="t2" data-k="base2" x="720.0" y="150.0" text-anchor="middle"></text><circle class="nb" cx="624" cy="116" r="11"/><text class="nt" x="624" y="120.5" text-anchor="middle">3</text></g>
+<g data-s="4"><rect class="bx" x="30" y="330" width="140" height="70" rx="8"/><text class="t1" data-k="docB1" x="100" y="362" text-anchor="middle"></text><text class="t2" data-k="docB2" x="100" y="380" text-anchor="middle"></text>
+<line class="ar" x1="170" y1="365" x2="228" y2="365" marker-end="url(#ah)"/><line class="ar" x1="380" y1="365" x2="428" y2="365" marker-end="url(#ah)"/><rect class="bx dash" x="430" y="335" width="170" height="60" rx="8"/><text class="t1" data-k="tmp1" x="515.0" y="363.0" text-anchor="middle"></text><text class="t2" data-k="tmp2" x="515.0" y="380.0" text-anchor="middle"></text><circle class="nb" cx="199" cy="346" r="11"/><text class="nt" x="199" y="350.5" text-anchor="middle">4</text></g>
+<g data-s="5"><line class="ar" x1="720" y1="165" x2="720" y2="223" marker-end="url(#ah)"/><polyline class="ar" points="600,365 720,365 720,297" marker-end="url(#ah)"/><rect class="bx" x="650" y="225" width="140" height="70" rx="8"/><text class="t1" data-k="cmp1" x="720.0" y="258.0" text-anchor="middle"></text><text class="t2" data-k="cmp2" x="720.0" y="275.0" text-anchor="middle"></text><circle class="nb" cx="634" cy="260" r="11"/><text class="nt" x="634" y="264.5" text-anchor="middle">5</text></g>
+<g data-s="6"><line class="ar" x1="790" y1="260" x2="828" y2="260" marker-end="url(#ah)"/><rect class="bx" x="830" y="200" width="150" height="120" rx="8"/><text class="t1" data-k="frp1" x="905" y="224" text-anchor="middle"></text>
+<rect class="bar" x="850" y="254" width="20" height="48"/><rect class="bar" x="882" y="272" width="20" height="30"/><rect class="bar" x="914" y="296" width="20" height="6"/><rect class="bar" x="946" y="262" width="20" height="40"/>
+<line class="ar" x1="844" y1="302" x2="972" y2="302"/><text class="t2" data-k="frp2" x="905" y="315" text-anchor="middle"></text><circle class="nb" cx="809" cy="242" r="11"/><text class="nt" x="809" y="246.5" text-anchor="middle">6</text></g>
+<g data-s="7"><line class="ar" x1="905" y1="320" x2="905" y2="353" marker-end="url(#ah)"/><rect class="bx" x="830" y="355" width="150" height="58" rx="8"/><text class="t1" data-k="rbc1" x="905.0" y="382.0" text-anchor="middle"></text><text class="t2" data-k="rbc2" x="905.0" y="399.0" text-anchor="middle"></text><circle class="nb" cx="926" cy="337" r="11"/><text class="nt" x="926" y="341.5" text-anchor="middle">7</text></g>
+<g data-s="8"><polyline class="ar" points="905,413 905,473 792,473" marker-end="url(#ah)"/><text class="t2" x="848" y="466" text-anchor="middle">자동 라벨</text><rect class="bx" x="650" y="445" width="140" height="56" rx="8"/><text class="t1" data-k="clf1" x="720.0" y="471.0" text-anchor="middle"></text><text class="t2" data-k="clf2" x="720.0" y="488.0" text-anchor="middle"></text><circle class="nb" cx="926" cy="445" r="11"/><text class="nt" x="926" y="449.5" text-anchor="middle">8</text></g>
+<g data-s="9"><rect class="bx dash" x="430" y="445" width="170" height="56" rx="8"/><text class="t1" data-k="hum1" x="515.0" y="471.0" text-anchor="middle"></text><text class="t2" data-k="hum2" x="515.0" y="488.0" text-anchor="middle"></text><line class="ar dash" x1="600" y1="473" x2="648" y2="473" marker-end="url(#ah)"/><text class="t2" x="624" y="465" text-anchor="middle">평가만</text><circle class="nb" cx="414" cy="473" r="11"/><text class="nt" x="414" y="477.5" text-anchor="middle">9</text></g>
+</svg>
+  <figcaption>번호를 누르거나 "다음"을 누르면 해당 단계만 강조됩니다. 위 줄은 지식 베이스를 만드는 길, 아래 줄은 검사할 글이 지나가는 길이고, 둘이 ⑤에서 만납니다. 점선 상자는 저장되지 않거나 평가에만 쓰이는 것입니다.</figcaption></figure>
+  <div class="cap" id="cap"></div>
+</section>
+
 <section id="ds">
-  <h2>2. 원격 감독(Distant Supervision) 라벨링 — 진행 과정</h2>
+  <h2>3. 원격 감독(Distant Supervision) 라벨링 — 단계별 세부</h2>
   <p style="margin:0 0 12px;color:#33353b">사람이 글을 읽고 라벨을 붙이는 대신, <b>채워진 온톨로지(지식 베이스)</b>를 기준으로 라벨 없는 글에 "이 이념에 공명함 / 아님" 라벨을 자동으로 붙이는 과정입니다.</p>
   <div class="dshead"><div class="r">Etudo &amp; Yoon의 과정</div><div class="m">내 연구에서 같은 자리 (가안)</div></div>
   <div id="dsrows"></div>
@@ -176,18 +246,18 @@
 </section>
 
 <section id="q4">
-  <h2>3. 연구배경 · 목적 · RQ · 시사점</h2>
+  <h2>4. 연구배경 · 목적 · RQ · 시사점</h2>
   <div class="q4" id="q4grid"></div>
 </section>
 
 <section id="flow">
-  <h2>4. 논문 흐름 대응 (대본 7장면 순서)</h2>
+  <h2>5. 논문 흐름 대응 (대본 7장면 순서)</h2>
   <div class="colhead"><div class="r">Etudo &amp; Yoon</div><div class="c">장면</div><div class="m">내 연구</div></div>
   <div id="rows"></div>
 </section>
 
 <section id="diff">
-  <h2>5. 차이점</h2>
+  <h2>6. 차이점</h2>
   <table>
     <tr><th style="width:17%">항목</th><th style="width:36%">Etudo &amp; Yoon</th><th style="width:36%">내 연구</th><th>영향</th></tr>
     <tr><td class="k">찾는 것</td><td>이념과 <b>일치</b>하는 게시물</td><td>본인 입장과 <b>불일치</b>하는 트윈 답</td><td>방향만 반대, 구조는 같음</td></tr>
@@ -203,7 +273,7 @@
 </section>
 
 <section id="next">
-  <h2>6. 앞으로 찾을 것 (순서대로)</h2>
+  <h2>7. 앞으로 찾을 것 (순서대로)</h2>
   <div class="todo-list" id="todos"></div>
 </section>
 
@@ -216,7 +286,57 @@
 const B={done:'<span class="badge b-done">근거 있음</span>',draft:'<span class="badge b-draft">가안</span>',todo:'<span class="badge b-todo">빈칸</span>'};
 const det=d=>d&&d.length?'<details><summary>세부 설명</summary><ul>'+d.map(x=>'<li>'+x+'</li>').join('')+'</ul></details>':'';
 
-/* 2. 원격 감독 과정 */
+
+/* 2. 시스템 구조 */
+const L={ref:{tmpl1:"TBO 틀",tmpl2:"주체·프레임·대상·관계",tmplA:"양식 제공",docA1:"조직 선전물",docA2:"예: AQAP 문서",kb1:"채워진 TBO",kb2:"(A, 점령한다, B)",
+ fds1:"FDS 추출기",fdsa:"대상 찾기",fdsb:"관계 찾기",base1:"기준 인스턴스",base2:"조직별 프레임 목록",docB1:"라벨 없는 글",docB2:"포럼 회원 602명",
+ tmp1:"글의 프레임",tmp2:"임시로만 만듦",cmp1:"관계별 비교",cmp2:"코사인 유사도",frp1:"공명 프로필 FRP",frp2:"관계 종류별 점수",
+ rbc1:"규칙 판정 RBC",rbc2:"공명함 / 아님",clf1:"분류 모델 학습",clf2:"SVM·로지스틱 등",hum1:"저자가 붙인 라벨",hum2:"동조 40 / 602명"},
+me:{tmpl1:"인물 입장 온톨로지 틀",tmpl2:"주제·극성·근거·말투",tmplA:"양식 제공",docA1:"Train 인터뷰",docA2:"발화 381개",kb1:"채워진 온톨로지",kb2:"예: (주제 X, 부정, 원칙)",
+ fds1:"입장 추출기",fdsa:"주제 찾기",fdsb:"극성·근거·말투",base1:"주제별 본인 입장",base2:"평균·범위·발화 수",docB1:"트윈의 답",docB2:"새 질문에 대한 답",
+ tmp1:"답의 입장",tmp2:"임시로만 만듦",cmp1:"주제별 비교",cmp2:"극성 편차 등",frp1:"충실도 프로필",frp2:"요소별 편차",
+ rbc1:"규칙 판정",rbc2:"충실 / 불충실",clf1:"(선택) 검증 모델",clf2:"규칙으로 충분하면 생략",hum1:"Holdout 본인 답",hum2:"+ 사람 채점 100쌍"}};
+const CAP={ref:[
+ ["전체 구조","조직의 문서와 검사할 글이 <b>같은 추출기</b>를 지나 각각 프레임이 되고, 둘을 비교한 점수에 규칙을 적용해 라벨을 자동으로 붙입니다.",""],
+ ["① 틀을 준비한다 (TBO)","이념을 적을 빈 양식을 먼저 만듭니다. 프레임 하나는 (주어 대상, 관계, 목적어 대상) 세 칸입니다.","근거: 집단행동 프레이밍 이론. 클래스 87개, 대상 종류 34개."],
+ ["② 조직 선전물로 틀을 채운다 (FDS)","추출기가 문장에서 대상을 찾고, 대상 사이의 관계를 찾아 프레임으로 저장합니다. 이것이 지식 베이스입니다.","예: \"A 세력이 B 지역을 점령한다\" → (A, 점령한다, B)"],
+ ["③ 기준 인스턴스를 꺼낸다","조직 하나를 지정해 그 조직이 가진 관계별 주어·목적어 목록을 조회합니다. 이후 비교의 기준이 됩니다.",""],
+ ["④ 라벨 없는 글도 같은 추출기에 넣는다","포럼 회원의 글에서 프레임을 뽑습니다. 저장하지 않고 비교에만 쓰는 임시 결과입니다.","②와 같은 추출기를 쓰는 것이 핵심 — 양쪽이 같은 형식이라 비교할 수 있습니다."],
+ ["⑤ 관계별로 맞대어 비교한다","같은 관계가 양쪽에 있으면 주어끼리, 목적어끼리 글자 단위 빈도 벡터의 코사인 유사도를 구합니다. 한쪽에 없으면 0점.",""],
+ ["⑥ 공명 프로필(FRP)을 만든다","관계 종류별 점수를 한 줄로 늘어놓은 벡터입니다. 어느 관계에서 겹쳤는지 보이므로 판정 이유를 설명할 수 있습니다.","예: 점령한다 0.7 · 적으로 둔다 0.4 · 무기를 든다 0 · …"],
+ ["⑦ 규칙으로 자동 라벨을 붙인다 (RBC)","평균 점수가 충분히 높고, 그 이념이 가진 관계 종류의 절반 이상에서 0이 아니면 '공명함'으로 라벨합니다. 여기가 원격 감독입니다.","사람이 글을 읽지 않고 지식 베이스만으로 라벨이 생깁니다."],
+ ["⑧ 자동 라벨로 분류 모델을 학습한다","자동 라벨을 정답 삼아 일반 분류 모델을 학습합니다. 규칙만 쓸 때보다 시험 자료에서 성능이 좋았습니다.",""],
+ ["⑨ 사람 라벨은 평가에만 쓴다","저자가 직접 읽고 붙인 라벨과 비교해 성능을 잽니다. 자동 라벨 학습 F1 83~86%, 손 라벨 학습 최고 88%.",""]],
+me:[
+ ["전체 구조 (가안)","본인 인터뷰와 트윈의 답이 <b>같은 추출기</b>를 지나 각각 입장이 되고, 둘의 차이에 규칙을 적용해 충실 여부를 가립니다.","클래스·요소는 모두 가안이며 근거 이론이 정해지면 바뀝니다."],
+ ["① 틀을 준비한다","한 인물의 입장을 적을 양식. 입장 하나는 (주제, 극성, 근거 유형, 말투)입니다.","찾을 것: 이 네 요소를 뒷받침할 근거 이론."],
+ ["② Train 인터뷰로 틀을 채운다","추출기가 발화마다 주제를 찾고 극성·근거·말투를 뽑아 저장합니다.","찾을 것: 주제 목록, 손 검수 정답 150개로 추출 정확도 확인."],
+ ["③ 주제별 본인 입장을 꺼낸다","주제마다 본인 극성의 평균과 범위, 근거 요지, 발화 수를 조회합니다.","발화 수가 0인 주제는 '자료 밖' — 이후 보류 판단의 근거."],
+ ["④ 트윈의 답도 같은 추출기에 넣는다","새 질문에 대한 트윈 답에서 입장을 뽑습니다. 비교에만 쓰는 임시 결과입니다.",""],
+ ["⑤ 주제별로 맞대어 비교한다","같은 주제에서 답의 극성과 본인 극성의 차이, 답에 나온 일화가 본인 자료에 있는지를 봅니다.",""],
+ ["⑥ 충실도 프로필을 만든다","극성 편차, 근거 지지, 말투 편차, 자료 범위, 입장 변동을 한 줄로 늘어놓습니다. 어디서 벗어났는지 보입니다.","찾을 것: 어떤 요소가 불충실을 잘 가리는지 (게이트 0-7)."],
+ ["⑦ 규칙으로 충실/불충실을 가린다","편차가 본인 재답변의 변동 범위를 넘으면 불충실로 판정합니다. 본인 답을 보지 않고 이루어집니다.","불충실이면 재생성하거나 답을 보류하는 데 씁니다."],
+ ["⑧ (선택) 검증 모델을 학습한다","규칙만으로 부족하면 자동 판정을 정답 삼아 검증 모델을 학습합니다.",""],
+ ["⑨ 본인 답은 평가에만 쓴다","Holdout 본인 답과의 불일치, 사람 채점 100쌍으로 검증기의 성능을 잽니다.","찾을 것: 판정 모델 교체 후에도 라벨이 믿을 만한지."]]};
+let side='ref',step=0;
+const sec=document.getElementById('arch'),fig=document.getElementById('archfig'),cap=document.getElementById('cap'),chips=document.getElementById('chips');
+chips.innerHTML='<button type="button" class="all" data-n="0">전체</button>'+[1,2,3,4,5,6,7,8,9].map(i=>'<button type="button" data-n="'+i+'">'+i+'</button>').join('');
+function draw(){
+  sec.classList.toggle('me',side==='me');
+  fig.querySelectorAll('[data-k]').forEach(t=>{t.textContent=L[side][t.dataset.k]});
+  fig.classList.toggle('focus',step>0);
+  fig.querySelectorAll('g[data-s]').forEach(g=>g.classList.toggle('on',step>0&&g.dataset.s.split(' ').includes(String(step))));
+  chips.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.n===step));
+  document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.side===side));
+  const c=CAP[side][step];cap.innerHTML='<h3>'+c[0]+'</h3><p>'+c[1]+'</p>'+(c[2]?'<div class="ex">'+c[2]+'</div>':'');
+}
+chips.onclick=e=>{const b=e.target.closest('button');if(b){step=+b.dataset.n;draw();}};
+document.querySelector('.seg').onclick=e=>{const b=e.target.closest('button');if(b){side=b.dataset.side;draw();}};
+document.getElementById('prev').onclick=()=>{step=(step+9)%10;draw();};
+document.getElementById('nextb').onclick=()=>{step=(step+1)%10;draw();};
+draw();
+
+/* 3. 원격 감독 과정 */
 const ds=[
  {ph:"준비 — 지식 베이스 만들기"},
  {r:["온톨로지 틀 준비 (TBO)","이념을 담을 빈 틀. 프레임 하나 = (주어 개체, 관계, 목적어 개체)",["클래스 87개, 그중 개체 종류 34개","관계 예: '점령한다', '적으로 둔다', '무기를 든다'","누가 한 말인지(Claimant)를 함께 기록"]],
@@ -294,7 +414,7 @@ const rows=[
       f:"프롬프트·출력 형식 설계 → 소량 시험 → 손 검수 정답 150개와 비교"}},
  {n:5,nm:"아티팩트 ③\n원격 감독 탐지",grp:"FRDS",
   ref:{h:"공명 프로필 → 규칙 기반 판정 → 자동 라벨",
-       d:["세부는 위 '2. 원격 감독 과정' 참고"]},
+       d:["세부는 위 '2. 시스템 구조'와 '3. 단계별 세부' 참고"]},
   me:{st:"draft",h:"충실도 프로필 → 규칙 기반 판정 → 충실/불충실",
       d:["프로필 요소 후보: 극성 편차, 근거 지지, 말투 편차, 자료 범위, 입장 변동","검증기는 Holdout 본인 답을 보지 않음"],
       f:"어떤 요소가 불충실을 잘 가리는지 기존 파일럿 출력으로 먼저 시험"}},
