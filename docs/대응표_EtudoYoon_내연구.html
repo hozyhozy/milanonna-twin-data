@@ -160,11 +160,22 @@
   .cap .ex{margin-top:6px;font-size:13.5px;color:var(--mute)}
   #arch{--hl:var(--ref);--hlbg:var(--ref-bg)}
   #arch.me{--hl:var(--me);--hlbg:var(--me-bg)}
+
+  .gl{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-bottom:16px}
+  .gl .g{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px}
+  .gl .ab{font-size:18px;font-weight:800;letter-spacing:.02em}
+  .gl .full{font-size:12.5px;color:var(--ref);font-weight:600;margin-left:6px}
+  .gl .ko{font-size:13px;color:var(--mute);margin:1px 0 5px}
+  .gl ul{margin:0;padding-left:17px;font-size:13.5px;color:#33353b}
+  .gl li{margin:2px 0}
+  .gl .mine{margin-top:6px;font-size:12.5px;color:var(--me);background:var(--me-bg);border-radius:6px;padding:3px 8px;display:inline-block}
+  .gl .g.core{border-left:4px solid var(--ref)}
+  .glh{font-size:13px;font-weight:700;color:var(--mute);margin:14px 0 6px}
 </style>
 </head>
 <body>
 <div class="topbar"><div class="topbar-in">
-  <a href="#sum">논문 요약</a><a href="#arch">시스템 구조</a><a href="#ds">단계별 세부</a><a href="#q4">배경·목적·RQ·시사점</a><a href="#flow">내 연구 대응</a><a href="#diff">차이점</a><a href="#next">앞으로 찾을 것</a>
+  <a href="#sum">논문 요약</a><a href="#arch">용어·시스템 구조</a><a href="#ds">단계별 세부</a><a href="#q4">배경·목적·RQ·시사점</a><a href="#flow">내 연구 대응</a><a href="#diff">차이점</a><a href="#next">앞으로 찾을 것</a>
   <button id="tg" type="button">설명 모두 펼치기</button>
 </div></div>
 
@@ -198,7 +209,9 @@
 </section>
 
 <section id="arch">
-  <h2>2. 시스템 구조 — 번호 순서대로 작동 원리</h2>
+  <h2>2. 용어와 시스템 구조 — 번호 순서대로 작동 원리</h2>
+  <div class="glh">핵심 약어 — 아티팩트</div><div class="gl"><div class="g core"><span class="ab">TBO</span><span class="full">Terror Beliefs Ontology</span><div class="ko">테러 신념 온톨로지</div><ul><li>급진 이념을 담는 <b>틀(양식)</b></li><li>프레임 하나 = (주어 대상, 관계, 목적어 대상)</li><li>최상위 클래스 4개: 주체 · 프레임 · 대상 · 관계</li><li>그림의 ①, 채워진 것은 ②</li></ul><div class="mine">내 연구에서는 → 인물 입장 온톨로지</div></div><div class="g core"><span class="ab">FDS</span><span class="full">Frame Discovery System</span><div class="ko">프레임 발견 시스템</div><ul><li>글에서 프레임을 뽑아 틀을 <b>채우는 추출기</b></li><li>대상 찾기(NER) → 관계 찾기(RE) 두 단계</li><li>조직 선전물과 검사할 글 양쪽에 똑같이 적용</li><li>그림의 ②와 ④</li></ul><div class="mine">내 연구에서는 → 입장 추출기</div></div><div class="g core"><span class="ab">FRDS</span><span class="full">Frame Resonance Detection System</span><div class="ko">프레임 공명 탐지 시스템</div><ul><li>글이 특정 이념과 맞는지 가리는 <b>탐지 시스템 전체</b></li><li>FRP를 만들고 RBC로 판정하는 부분을 묶어 부르는 이름</li><li>그림의 ⑤~⑧</li></ul><div class="mine">내 연구에서는 → 충실도 검증기</div></div><div class="g core"><span class="ab">FRP</span><span class="full">Frame Resonance Profile</span><div class="ko">프레임 공명 프로필</div><ul><li>글과 이념이 관계 종류별로 얼마나 겹치는지 적은 <b>점수 벡터</b></li><li>글 1건 × 조직 1개마다 하나</li><li>어느 관계에서 겹쳤는지 보여 설명이 가능</li><li>그림의 ⑥</li></ul><div class="mine">내 연구에서는 → 충실도 프로필</div></div><div class="g core"><span class="ab">RBC</span><span class="full">Rule-Based Classifier</span><div class="ko">규칙 기반 분류기</div><ul><li>FRP를 점수 하나로 요약해 <b>자동으로 라벨</b>을 붙이는 규칙</li><li>규칙: 평균 점수가 충분히 높고, 관계 종류의 절반 이상에서 0이 아님</li><li>원격 감독이 실제로 일어나는 곳</li><li>그림의 ⑦</li></ul><div class="mine">내 연구에서는 → 규칙 기반 충실/불충실 판정</div></div></div><div class="glh">함께 나오는 용어</div><div class="gl"><div class="g"><span class="ab">CAFT</span><span class="full">Collective Action Framing Theory</span><div class="ko">집단행동 프레이밍 이론</div><ul><li>이 논문의 <b>근거 이론</b></li><li>이념 = 진단 프레임 + 예후 프레임 + 동기 프레임</li><li>"공명(resonance)" 개념의 출처</li></ul><div class="mine">내 연구에서는 → 미정 (찾아야 함)</div></div><div class="g"><span class="ab">DS</span><span class="full">Distant Supervision</span><div class="ko">원격 감독</div><ul><li>사람 대신 <b>지식 베이스</b>가 학습용 라벨을 만드는 방식</li><li>여기서는 채워진 TBO + RBC가 그 역할</li></ul><div class="mine">내 연구에서는 → 본인 답 없이 온톨로지로 판정</div></div><div class="g"><span class="ab">NER</span><span class="full">Named Entity Recognition</span><div class="ko">개체명 인식</div><ul><li>문장에서 <b>대상</b>(사람, 조직, 장소, 종교 등)을 찾는 기술</li><li>FDS의 첫 단계</li></ul><div class="mine">내 연구에서는 → 주제 찾기</div></div><div class="g"><span class="ab">RE</span><span class="full">Relation Extraction</span><div class="ko">관계 추출</div><ul><li>찾은 대상들 사이의 <b>관계</b>를 찾는 기술</li><li>FDS의 둘째 단계. 결과가 프레임 세 칸이 됨</li></ul><div class="mine">내 연구에서는 → 극성·근거·말투 추출</div></div><div class="g"><span class="ab">Claimant</span><span class="full">(약어 아님)</span><div class="ko">주장 주체</div><ul><li>프레임을 말한 <b>조직 또는 온라인 인물</b></li><li>TBO에서 "누구의 이념인가"를 구분하는 기준</li></ul><div class="mine">내 연구에서는 → Person (인물)</div></div><div class="g"><span class="ab">TF-IDF</span><span class="full">Term Frequency–Inverse Document Frequency</span><div class="ko">단어 빈도 기반 특징</div><ul><li>글을 단어 출현 빈도로 나타내는 <b>기존 방식</b></li><li>논문에서 FRP와 비교한 기준선</li></ul><div class="mine">내 연구에서는 → 파일럿에서 쓴 유사도 계산</div></div></div>
+  <div class="glh">구조 그림</div>
   <div class="archbar">
     <div class="seg"><button type="button" data-side="ref" class="on">Etudo &amp; Yoon</button><button type="button" data-side="me">내 연구 (가안)</button></div>
     <div class="chips" id="chips"></div>
