@@ -96,28 +96,61 @@
     .cell.ref:before{content:"Etudo & Yoon";display:block;font-size:11px;font-weight:700;color:var(--ref);margin-bottom:3px}
     .cell.me:before{content:"내 연구";display:block;font-size:11px;font-weight:700;color:var(--me);margin-bottom:3px}
   }
+
+  .sum{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--ref);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+  .sum p{margin:0}
+  .q4{display:grid;grid-template-columns:110px 1fr 1fr;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+  .q4>div{padding:11px 14px;border-top:1px solid var(--line);font-size:14px}
+  .q4>div:nth-child(-n+3){border-top:0;font-weight:700;font-size:13px}
+  .q4 .k{font-weight:700;background:#f4f5f7}
+  .q4 .hr{background:var(--ref-bg);color:var(--ref)} .q4 .hm{background:var(--me-bg);color:var(--me)}
+  .q4 ol,.q4 ul{margin:0;padding-left:18px}
+  .q4 details{margin-top:6px}
+  .ds{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;align-items:stretch}
+  .ds .cell h3 .s{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;align-items:center;justify-content:center;font-size:12.5px;margin-right:7px;vertical-align:1px}
+  .ds .cell.me h3{font-size:14px}
+  .dsarrow{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;height:24px}
+  .dsarrow i{justify-self:center;width:2px;background:#b9bdc7;position:relative}
+  .dsarrow i:after{content:"";position:absolute;bottom:-1px;left:-5px;border:6px solid transparent;border-top-color:#b9bdc7;border-bottom:0}
+  .phase{margin:18px 0 8px;font-size:12.5px;font-weight:700;letter-spacing:.03em;color:var(--mute);display:flex;align-items:center;gap:8px}
+  .phase:after{content:"";flex:1;height:1px;background:var(--line)}
+  .dshead{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;margin-bottom:6px}
+  .dshead div{font-weight:700;font-size:14px;text-align:center;padding:7px;border-radius:8px}
+  .dshead .r{background:var(--ref-bg);color:var(--ref)} .dshead .m{background:var(--me-bg);color:var(--me)}
+  .warn{background:#fff7e8;border:1px solid #f1d9a6;border-radius:10px;padding:11px 15px;margin-top:14px;font-size:14px}
+  .warn details{border-top:0;margin-top:2px;padding-top:2px}
+  .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+  .nums div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--mute)}
+  .nums b{display:block;font-size:19px;color:var(--ink)}
+  @media (max-width:760px){.q4{grid-template-columns:1fr}.q4>div:nth-child(-n+3){display:none}.ds,.dsarrow,.dshead{grid-template-columns:1fr}.dshead{display:none}.dsarrow i:nth-child(2){display:none}.nums{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="topbar"><div class="topbar-in">
-  <a href="#one">한눈에</a><a href="#flow">논문 흐름 대응</a><a href="#diff">차이점</a><a href="#next">앞으로 찾을 것</a>
+  <a href="#sum">논문 요약</a><a href="#ds">원격 감독 과정</a><a href="#q4">배경·목적·RQ·시사점</a><a href="#flow">내 연구 대응</a><a href="#diff">차이점</a><a href="#next">앞으로 찾을 것</a>
   <button id="tg" type="button">설명 모두 펼치기</button>
 </div></div>
 
 <div class="wrap">
 <header>
   <h1>Etudo &amp; Yoon (2024) ↔ 내 연구 대응표</h1>
-  <p>참고 논문의 흐름 순서대로, 같은 자리에 내 연구의 무엇이 들어가는지 맞춰 본 틀입니다. 연구는 시작 전이며, 빈칸은 "어떻게 찾을지"만 적었습니다.</p>
+  <p>참고 논문을 설명 영상 대본의 7장면 순서로 정리하고, 같은 자리에 내 연구를 맞춰 본 틀입니다. 내 연구는 시작 전이라 빈칸은 "어떻게 찾을지"만 적었습니다.</p>
 </header>
 
-<section id="one">
-  <h2>한눈에</h2>
+<section id="sum">
+  <h2>1. Etudo &amp; Yoon 논문 요약</h2>
+  <div class="sum"><p>급진 조직의 <b>이념</b>을 프레이밍 이론에 따라 온톨로지(TBO)로 구조화하고, 선전물에서 프레임을 자동으로 뽑아 채운 뒤(FDS), 라벨 없는 온라인 글이 그 이념과 <b>얼마나 맞는지</b>를 점수화해(FRDS) <b>사람이 학습용 라벨을 붙이지 않고도</b> 급진 게시물과 그 이념을 가려내는 설계 연구.</p></div>
   <div class="one">
     <div class="box ref"><b class="lab">ETUDO &amp; YOON (ISR 2024)</b>
-      급진 조직의 <b>이념</b>을 온톨로지로 정리해 두고, 온라인 게시물이 그 이념과 <b>얼마나 맞는지</b>를 손 라벨 없이 탐지한다.</div>
+      조직의 <b>이념</b>을 저장해 두고, 게시물이 그 이념과 <b>일치</b>하는지 탐지</div>
     <div class="mid">⇄</div>
     <div class="box me"><b class="lab">내 연구 (밀라논나 트윈)</b>
-      한 인물의 <b>입장</b>을 온톨로지로 정리해 두고, 트윈의 답이 본인 입장에서 <b>얼마나 벗어나는지</b>를 본인 확인 없이 탐지한다.</div>
+      인물의 <b>입장</b>을 저장해 두고, 트윈 답이 본인 입장에서 <b>벗어나는지</b> 탐지</div>
+  </div>
+  <div class="nums">
+    <div><b>아티팩트 3개</b>TBO(온톨로지) · FDS(추출) · FRDS(탐지)</div>
+    <div><b>포럼 회원 602명</b>이 중 저자가 직접 읽고 판단한 동조자 40명 — 평가용 정답</div>
+    <div><b>F1 83~86%</b>자동 라벨만으로 학습했을 때 (손 라벨 학습 최고 88%)</div>
   </div>
   <div class="legend">
     <span><span class="badge b-done">근거 있음</span> 파일럿에서 확인된 것</span>
@@ -127,123 +160,161 @@
   </div>
 </section>
 
+<section id="ds">
+  <h2>2. 원격 감독(Distant Supervision) 라벨링 — 진행 과정</h2>
+  <p style="margin:0 0 12px;color:#33353b">사람이 글을 읽고 라벨을 붙이는 대신, <b>채워진 온톨로지(지식 베이스)</b>를 기준으로 라벨 없는 글에 "이 이념에 공명함 / 아님" 라벨을 자동으로 붙이는 과정입니다.</p>
+  <div class="dshead"><div class="r">Etudo &amp; Yoon의 과정</div><div class="m">내 연구에서 같은 자리 (가안)</div></div>
+  <div id="dsrows"></div>
+  <div class="warn"><b>대본에서 고쳐 읽을 곳 4가지</b> — 논문 원문과 대조한 결과입니다.
+    <details><summary>세부 설명</summary><ul>
+      <li><b>정밀도 90%·재현율 86%·F1 88%</b>는 <u>사람이 붙인 라벨로 학습</u>했을 때의 최고 수치(선형 SVM)입니다. 원격 감독(자동 라벨) 조건의 수치는 규칙 기반 판정 자체가 86·81·83%, 자동 라벨로 학습한 모델이 최고 87·85·86%입니다. 논문의 주장은 "자동 라벨로도 손 라벨과 비슷하게 나온다"입니다.</li>
+      <li><b>"예방적 프레임"</b>은 원문의 prognostic framing으로, 해결책과 수단을 제시하는 프레임입니다. "예후(처방) 프레임"이 뜻에 더 가깝습니다.</li>
+      <li>개체 인식 단독 성능은 딥러닝 모델(ELMo+BiLSTM+CRF)이 더 높았지만(태그별 F1 80~98%), <b>최종 탐지에 가장 좋았던 추출 구성은 특징 기반 모델</b>(CRF 개체 인식 + 로지스틱 관계 추출)이었습니다. 딥러닝 추출기를 넣으면 탐지 성능이 떨어졌습니다.</li>
+      <li>단어 빈도(TF-IDF) 대비 우위는 <b>정밀도에서 일관</b>되고, 재현율은 TF-IDF가 더 높은 경우도 있습니다. "월등히"보다는 "정밀도가 꾸준히 높다"가 정확합니다.</li>
+    </ul></details>
+  </div>
+</section>
+
+<section id="q4">
+  <h2>3. 연구배경 · 목적 · RQ · 시사점</h2>
+  <div class="q4" id="q4grid"></div>
+</section>
+
 <section id="flow">
-  <h2>논문 흐름 대응 (위에서 아래로)</h2>
-  <div class="colhead"><div class="r">Etudo &amp; Yoon</div><div class="c">논문 단계</div><div class="m">내 연구</div></div>
+  <h2>4. 논문 흐름 대응 (대본 7장면 순서)</h2>
+  <div class="colhead"><div class="r">Etudo &amp; Yoon</div><div class="c">장면</div><div class="m">내 연구</div></div>
   <div id="rows"></div>
 </section>
 
 <section id="diff">
-  <h2>차이점</h2>
+  <h2>5. 차이점</h2>
   <table>
     <tr><th style="width:17%">항목</th><th style="width:36%">Etudo &amp; Yoon</th><th style="width:36%">내 연구</th><th>영향</th></tr>
     <tr><td class="k">찾는 것</td><td>이념과 <b>일치</b>하는 게시물</td><td>본인 입장과 <b>불일치</b>하는 트윈 답</td><td>방향만 반대, 구조는 같음</td></tr>
     <tr><td class="k">최종 목적</td><td>분류(탐지)에서 끝남</td><td>탐지 후 트윈을 고치는 데까지 씀</td><td>"응용 시연" 절이 하나 더 필요</td></tr>
-    <tr><td class="k">검사 대상</td><td>사람이 쓴 게시물</td><td>LLM이 만든 답</td><td>대상이 그럴듯하게 꾸며져 있어 탐지가 더 어려울 수 있음</td></tr>
+    <tr><td class="k">검사 대상</td><td>사람이 쓴 게시물</td><td>LLM이 만든 답</td><td>그럴듯하게 꾸며져 있어 탐지가 더 어려울 수 있음</td></tr>
+    <tr><td class="k">원격 감독의 필요</td><td>이념이 많고 손 라벨이 비싸서 필수</td><td>실험에서는 Holdout 본인 답이 정답 역할을 함</td><td>"실제 사용 때는 본인 답이 없다"는 점으로 필요성을 세워야 함</td></tr>
     <tr><td class="k">규모</td><td>여러 이념, 포럼 회원 602명</td><td>인물 1명, 발화 381개</td><td>일반성 주장이 약함 → 두 번째 인물 필요</td></tr>
     <tr><td class="k">근거 이론</td><td>집단행동 프레이밍 이론으로 확정</td><td>미정</td><td>가장 큰 빈칸</td></tr>
-    <tr><td class="k">추출 기술</td><td>개체명 인식 + 관계 추출 모델을 직접 학습</td><td>LLM에 스키마를 주고 추출</td><td>기술 기여는 작음. 대신 추출 정확도 검증이 중요</td></tr>
-    <tr><td class="k">정답</td><td>저자가 602명을 직접 읽고 라벨</td><td>본인의 이후 인터뷰 답(Holdout)을 자동 정답으로</td><td>코더 없이 가능하나 정답 품질을 따로 입증해야 함</td></tr>
-    <tr><td class="k">사전 진단</td><td>없음(문헌 공백에서 출발)</td><td>파일럿으로 왜곡을 먼저 확인</td><td>서론의 문제 제기가 더 구체적</td></tr>
+    <tr><td class="k">추출 기술</td><td>개체명 인식 + 관계 추출 모델을 직접 학습</td><td>LLM에 스키마를 주고 추출</td><td>기술 기여는 작음. 추출 정확도 검증이 중요</td></tr>
+    <tr><td class="k">정답</td><td>저자가 602명을 직접 읽고 라벨(평가용)</td><td>본인의 이후 인터뷰 답 + 사람 채점 100쌍(평가용)</td><td>코더 없이 가능하나 정답 품질을 따로 입증</td></tr>
     <tr><td class="k">온톨로지의 필요성</td><td>이념을 구분하려면 구조가 필수</td><td>단순 검증기로도 될 수 있음</td><td>온톨로지 유무 비교를 먼저 해야 함</td></tr>
   </table>
 </section>
 
 <section id="next">
-  <h2>앞으로 찾을 것 (순서대로)</h2>
+  <h2>6. 앞으로 찾을 것 (순서대로)</h2>
   <div class="todo-list" id="todos"></div>
 </section>
 
 <footer>
-  참고: Etudo, U., &amp; Yoon, V. Y. (2024). Ontology-Based Information Extraction for Labeling Radical Online Content Using Distant Supervision. <i>Information Systems Research</i>, 35(1), 203–225. · 내 연구 쪽 내용은 <code>본실험_방향_v3.md</code> 기준 가안 · 2026-11-12
+  참고: Etudo, U., &amp; Yoon, V. Y. (2024). Ontology-Based Information Extraction for Labeling Radical Online Content Using Distant Supervision. <i>Information Systems Research</i>, 35(1), 203–225. · 구성은 설명 영상 대본(7장면)을 따르고 수치는 논문 원문 표와 대조 · 내 연구 쪽은 <code>본실험_방향_v3.md</code> 기준 가안 · 2026-11-12
 </footer>
 </div>
 
 <script>
 const B={done:'<span class="badge b-done">근거 있음</span>',draft:'<span class="badge b-draft">가안</span>',todo:'<span class="badge b-todo">빈칸</span>'};
+const det=d=>d&&d.length?'<details><summary>세부 설명</summary><ul>'+d.map(x=>'<li>'+x+'</li>').join('')+'</ul></details>':'';
+
+/* 2. 원격 감독 과정 */
+const ds=[
+ {ph:"준비 — 지식 베이스 만들기"},
+ {r:["온톨로지 틀 준비 (TBO)","이념을 담을 빈 틀. 프레임 하나 = (주어 개체, 관계, 목적어 개체)",["클래스 87개, 그중 개체 종류 34개","관계 예: '점령한다', '적으로 둔다', '무기를 든다'","누가 한 말인지(Claimant)를 함께 기록"]],
+  m:["draft","인물 입장 온톨로지","입장 하나 = (주제, 극성, 근거, 말투)"]},
+ {r:["조직 선전물로 틀 채우기 (FDS)","특정 조직의 선전물에서 개체를 찾고(개체 인식), 개체 사이 관계를 찾아(관계 추출) 프레임으로 저장",["평가에 쓴 조직: 아라비아반도 알카에다(AQAP)","추출 모델 학습에는 사람 주석이 필요 — 손 라벨이 완전히 없는 것은 아니고, <b>탐지 단계의 학습 라벨</b>이 필요 없다는 뜻"]],
+  m:["draft","Train 인터뷰 381개로 채우기","LLM 추출기로 발화마다 입장을 뽑아 저장"]},
+ {r:["기준 인스턴스 꺼내기","조직별로 질의해 관계마다 주어·목적어 목록을 꺼냄 → 그 이념의 '기준 모습'",["질의 언어(SPARQL)로 조직 하나의 관계 전체를 조회","이것이 이후 비교의 기준"]],
+  m:["draft","주제별 본인 입장 묶음","주제마다 본인 극성의 평균·범위, 근거 요지, 발화 수"]},
+ {ph:"자동 라벨링 — 라벨 없는 글 처리"},
+ {r:["라벨 없는 글에서도 프레임 뽑기","포럼 회원의 글에 <b>같은 추출기</b>를 적용해 그 사람의 프레임을 임시로 만듦",["대상: 영어로만 쓴 포럼 회원 602명의 글","저장하지 않는 임시 인스턴스"]],
+  m:["draft","트윈 답에서도 입장 뽑기","같은 추출기를 트윈 답에 적용"]},
+ {r:["관계별 공명 점수 계산","같은 관계가 양쪽에 있으면, 주어끼리·목적어끼리 글자 2-gram 빈도 벡터를 만들어 <b>코사인 유사도</b>를 구함",["예: '사람에게 치명적 행위를 한다' 관계에서 조직이 말한 대상과 회원이 말한 대상이 얼마나 겹치는가","한쪽에 그 관계가 없으면 점수 0"]],
+  m:["draft","주제별 편차 계산","같은 주제에서 답의 극성과 본인 극성의 차이, 답의 일화가 본인 근거에 있는지"]},
+ {r:["공명 프로필(FRP) 만들기","관계별 점수를 한 줄로 모은 벡터. 글 1건 × 조직 1개마다 하나",["어느 관계에서 겹쳤는지 보이므로 '왜 그렇게 판정했는지' 설명 가능","그대로 분류 모델의 입력 특징으로도 사용"]],
+  m:["draft","충실도 프로필","극성 편차, 근거 지지, 말투 편차, 자료 범위, 입장 변동"]},
+ {r:["규칙 기반 판정(RBC)으로 자동 라벨","프로필을 점수 하나로 요약하고 기준값을 넘으면 '공명함' 라벨",["규칙 ① 관계별 공명 점수의 평균이 충분히 높다(0.3 초과)","규칙 ② 그 이념이 가진 관계 종류의 절반 이상에서 점수가 0이 아니다","두 규칙을 연속 점수로 합친 뒤 0.2 초과면 공명으로 라벨","기준값 0.2는 학습용 자료에서 F1이 최대가 되도록 조정 — 이 조정에는 정답이 쓰임"]],
+  m:["draft","규칙 기반 판정으로 '불충실' 자동 라벨","편차가 본인 재답변 변동 범위를 넘으면 불충실"]},
+ {ph:"활용과 검증"},
+ {r:["자동 라벨로 분류 모델 학습","사람 라벨 대신 자동 라벨을 정답 삼아 로지스틱 회귀, SVM, 부스팅, 랜덤 포레스트 학습",["입력 특징 3종 비교: 프로필만 / 단어 빈도만 / 둘 다","규칙 기반 판정보다 학습 모델이 시험 자료에서 더 나음"]],
+  m:["draft","(선택) 자동 라벨로 검증 모델 학습","규칙만으로 충분하면 생략"]},
+ {r:["사람 라벨은 평가에만 사용","저자가 602명을 직접 읽고 붙인 정답(동조 40명)과 비교",["규칙 기반 판정 자체: 정밀도 86% · 재현율 81% · F1 83% (시험 자료)","자동 라벨 학습 모델 최고: 87% · 85% · 86%","손 라벨 학습 모델 최고: 90% · 86% · 88% → 큰 차이 없음","온톨로지 관계 종류를 절반쯤 빼기 전까지는 성능이 크게 떨어지지 않음"]],
+  m:["todo","Holdout 본인 답 + 사람 채점 100쌍은 평가에만","검증기는 Holdout을 보지 않음"]}
+];
+let n=0,first=true;
+document.getElementById('dsrows').innerHTML=ds.map(x=>{
+  if(x.ph){first=true;return '<div class="phase">'+x.ph+'</div>';}
+  n++;const a=first?'':'<div class="dsarrow"><i></i><i></i></div>';first=false;
+  return a+'<div class="ds"><div class="cell ref"><h3><span class="s">'+n+'</span>'+x.r[0]+'</h3><p>'+x.r[1]+'</p>'+det(x.r[2])+'</div>'+
+   '<div class="cell me"><h3>'+B[x.m[0]]+' '+x.m[1]+'</h3><p>'+x.m[2]+'</p></div></div>';
+}).join('');
+
+/* 3. 배경·목적·RQ·시사점 */
+const q4=[
+ ["연구배경",
+  "온라인 플랫폼이 급진화의 주 무대가 됨. 플랫폼은 계정 삭제 대신 콘텐츠 라벨로 대응하는 추세이고, 라벨은 구체적일수록 효과적."+det(["기존 탐지 연구는 모두 '급진이냐 아니냐' 이분 분류","이념이 무수히 많아 이념별 손 라벨 학습 자료를 만들 수 없음","이념을 표현하는 공통 틀과 이론 기반 설계가 없음"]),
+  B.done+" 공개 인터뷰로 만든 인물 트윈이 본인과 다르게 답함(파일럿). 본인·코더에게 매번 확인할 수 없음."+det(["페르소나 정보를 더 넣어도 가까워지지 않음","부정 문항에서 긍정 쏠림, 자료에 없는 일화 섞음","기존 연구에 개별 답의 충실도를 가리는 장치가 있는지는 "+B.todo])],
+ ["연구목적",
+  "손 라벨 학습 자료 없이, 온라인 글을 <b>어떤 급진 이념에든</b> 연결해 라벨링하는 설계를 이론에 근거해 만들고 구현·평가.",
+  B.draft+" 본인 확인 없이, 트윈 답이 본인 입장에 충실한지 가리는 설계를 만들고 구현·평가. 탐지 결과로 트윈을 고치는 데까지."],
+ ["RQ",
+  "<ol><li>급진 이념의 온톨로지에 필요한 개념과 관계는?</li><li>글에서 프레임을 찾아 온톨로지를 채우려면?</li><li>채워진 온톨로지로 급진 게시물을 분류하려면?</li></ol>",
+  B.draft+"<ol><li>한 인물의 입장을 표현하는 데 필요한 개념과 관계는?</li><li>인터뷰에서 입장을 자동으로 뽑아 채울 수 있는가?</li><li>채워진 온톨로지로 트윈의 불충실한 답을 탐지할 수 있는가?</li></ol>"],
+ ["시사점",
+  "<ul><li><b>설계</b>: 영역 지식의 갱신을 분류 모델 학습과 분리 — 새 선언문이 나오면 온톨로지만 채우면 됨</li><li><b>이론</b>: 프레임 분석을 기계가 읽는 형식으로 옮겨 대규모 분석 가능</li><li><b>실무</b>: 어떤 프레임이 겹쳤는지 보여 주는 설명 가능한 라벨</li></ul>"+det(["한계: 관계 추출 학습 자료가 적어 일부 관계는 학습 불가","딥러닝 추출기는 학습 맥락 밖(포럼 글)에서 일반화가 안 됨"]),
+  B.todo+" 결과가 나온 뒤 확정. 후보:<ul><li><b>설계</b>: 답 생성과 충실도 검증의 분리, 인물 자료가 늘면 온톨로지만 갱신</li><li><b>이론</b>: 근거 이론이 정해져야 쓸 수 있음</li><li><b>실무</b>: 트윈 답을 믿을지·버릴지·본인에게 물을지 가려 주는 근거 제시</li></ul>"]
+];
+document.getElementById('q4grid').innerHTML='<div></div><div class="hr">Etudo &amp; Yoon</div><div class="hm">내 연구</div>'+
+  q4.map(r=>'<div class="k">'+r[0]+'</div><div>'+r[1]+'</div><div>'+r[2]+'</div>').join('');
+
+/* 4. 7장면 대응 */
 const rows=[
- {n:1,nm:"문제 제기",grp:"서론",
-  ref:{h:"급진 콘텐츠에 구체적인 라벨을 붙여야 하는데, 이념이 너무 많아 일일이 학습시킬 수 없다",
-       d:["플랫폼은 계정 삭제 대신 콘텐츠 라벨을 붙이는 쪽으로 옮겨 가고 있다","라벨은 구체적일수록(어떤 이념인지) 효과가 있다","이념별로 손 라벨 학습 자료를 만드는 것은 건초 더미에서 바늘 찾기"]},
+ {n:1,nm:"문제와 한계",grp:"프롤로그",
+  ref:{h:"급진 선동은 퍼지는데, 기존 탐지는 손 라벨이 많이 들고 '어떤 이념인지'를 말해 주지 못한다",
+       d:["단어 빈도 기반 이분 분류가 주류","이념이 많아 이념별 학습 자료 구축은 불가능에 가까움"]},
   me:{st:"done",h:"트윈 답을 믿어도 되는지 본인 확인 없이는 알 수 없다",
-      d:["파일럿: 페르소나 정보를 더 넣어도 본인에 가까워지지 않음","부정 문항에서 긍정 쪽으로 쏠림, 자료에 없는 일화를 섞음","코더·본인 응답이 없어 매번 확인 불가"],
-      f:"긍정 쏠림이 다른 판정 모델·부정 문항 30개 이상에서도 유지되는지 확인. 누가 왜 이 트윈을 쓰는지(사용 맥락) 한 가지 확정"}},
- {n:2,nm:"문헌 공백",grp:"문헌 검토",
-  ref:{h:"기존 연구는 이분 분류뿐이고, 이념을 표현하는 공통 틀과 이론이 없다",
-       d:["탐지 연구 60여 편이 모두 '급진이냐 아니냐' 분류","연구마다 과업 정의가 달라 누적이 안 됨","이론에 기반하고 실제 구현까지 한 설계가 드묾"]},
-  me:{st:"todo",h:"기존 트윈 연구는 왜곡을 보고하는 데 그치고, 답 하나하나의 충실도를 가리는 장치가 없다 (확인 필요)",
-      d:["수업 논문들(Funhouse Mirrors, Twin-2K-500 등)은 집단 수준 왜곡 진단","개별 답을 원자료에 대조해 걸러내는 설계가 있는지 아직 모름"],
-      f:"세 갈래 문헌 검색 — ① LLM 페르소나·트윈의 충실도 평가 ② LLM 답변 검증·선택적 응답(보류) ③ 온톨로지·지식그래프 기반 사실 검증. 이미 있으면 차별점을 다시 잡음"}},
- {n:3,nm:"연구 질문",grp:"서론",
-  ref:{h:"RQ 3개 — 표현 → 채우기 → 분류",
-       d:["RQ1 급진 이념을 표현하려면 어떤 개념·관계가 필요한가","RQ2 텍스트에서 프레임을 찾아 온톨로지를 채우려면","RQ3 채운 온톨로지로 급진 게시물을 분류하려면"]},
-  me:{st:"draft",h:"RQ 3개 — 표현 → 채우기 → 검증",
-      d:["RQ1 한 인물의 입장을 표현하려면 어떤 개념·관계가 필요한가","RQ2 인터뷰에서 입장을 자동으로 뽑아 채울 수 있는가","RQ3 채운 온톨로지로 트윈의 불충실한 답을 탐지할 수 있는가","(응용) 탐지 결과로 트윈이 나아지는가"],
-      f:"문헌 공백(2)과 근거 이론(4)이 정해진 뒤 문장을 다듬음"}},
- {n:4,nm:"근거 이론",grp:"이론적 틀",
-  ref:{h:"집단행동 프레이밍 이론 — 이념 = 진단·예후·동기 프레임",
-       d:["통찰 1: 사회운동의 이념이 단독 범행자에게 영감을 준다(프레임 공명)","통찰 2: 이념은 세 가지 프레임으로 구조화할 수 있다","통찰 3: 그 프레임은 온라인 글에서 탐지된다","세 통찰이 각각 아티팩트의 설계 근거가 됨"]},
-  me:{st:"todo",h:"미정 — '왜 대상·극성·근거·말투인가'를 댈 이론이 필요",
-      d:["지금 태그는 파일럿에서 쓴 조작적 정의일 뿐","후보: 태도 이론(대상에 대한 평가), 논증 모형(주장–근거), 인상 관리·사회적 바람직성"],
-      f:"후보별 대표 문헌 2~3편을 읽고 중심 이론 1개 선택. 기준: 온톨로지 클래스를 그 이론의 용어로 설명할 수 있는가, '충실하다'를 그 이론으로 정의할 수 있는가"}},
- {n:5,nm:"전체 구조",grp:"설계",pipe:true,
-  ref:{h:"아티팩트 3개가 이어서 작동",
-       p:[["TBO","이념 온톨로지(틀)"],["FDS","선전물에서 프레임을 뽑아 TBO를 채움"],["FDS (재사용)","검사할 게시물에서도 프레임을 뽑음"],["FRDS","두 쪽을 비교 → 공명 프로필 → 분류"]],
-       d:["연구 질문 – 이론 – 아티팩트 – 평가 실험을 한 장의 '연구 틀' 그림으로 연결"]},
-  me:{st:"draft",h:"같은 3단 구조",
-      p:[["인물 입장 온톨로지","입장을 담는 틀"],["입장 추출기","Train 인터뷰에서 입장을 뽑아 채움"],["입장 추출기 (재사용)","트윈 답에서도 입장을 뽑음"],["충실도 검증기","두 쪽을 비교 → 충실도 프로필 → 충실/불충실"],["(응용)","불충실이면 재생성 또는 보류"]],
-      d:["같은 '연구 틀' 그림을 내 연구용으로 그릴 예정"],
-      f:"온톨로지 유무 소규모 비교를 통과한 뒤 구조 확정"}},
- {n:6,nm:"아티팩트 ①\n온톨로지",grp:"설계",
-  ref:{h:"TBO — 누가(Claimant) 어떤 프레임(Frame)으로 무엇(Entity)을 어떻게(Relation) 말하는가",
-       d:["최상위 클래스 4개: Claimant, Frame, FrameEntity, FrameRelation","온톨로지 개발 방법론(METHONTOLOGY) + 선전물 주제 코딩으로 개념 도출","'어떤 급진 이념이든' 담을 수 있는 일반 틀을 목표"]},
+      d:["파일럿: 페르소나 정보를 더 넣어도 본인에 가까워지지 않음","부정 문항에서 긍정 쏠림, 자료에 없는 일화를 섞음"],
+      f:"긍정 쏠림이 다른 판정 모델·부정 문항 30개 이상에서도 유지되는지 확인. 비슷한 설계가 이미 있는지 문헌 검색. 사용 맥락 한 가지 확정"}},
+ {n:2,nm:"이론적 기틀",grp:"근거 이론",
+  ref:{h:"집단행동 프레이밍 이론 — 이념 = 진단 · 예후 · 동기 프레임",
+       d:["진단: 문제와 비난 대상을 지목","예후: 해결책과 수단을 제시","동기: 행동을 촉구","이 이론이 온톨로지 클래스와 '공명' 개념의 근거"]},
+  me:{st:"todo",h:"미정 — '왜 주제·극성·근거·말투인가'를 댈 이론이 필요",
+      d:["지금 태그는 파일럿의 조작적 정의일 뿐","후보: 태도 이론, 논증 모형, 인상 관리·사회적 바람직성"],
+      f:"후보별 대표 문헌 2~3편을 읽고 중심 이론 1개 선택. 기준: 클래스를 그 이론 용어로 설명할 수 있는가, '충실하다'를 그 이론으로 정의할 수 있는가"}},
+ {n:3,nm:"아티팩트 ①\n온톨로지",grp:"TBO",
+  ref:{h:"누가(Claimant) 어떤 프레임(Frame)으로 무엇(Entity)을 어떻게(Relation) 말하는가",
+       d:["최상위 클래스 4개","온톨로지 개발 방법론 + 선전물 주제 코딩으로 개념 도출","급진화 연구자·실무자의 전문가 검토"]},
   me:{st:"draft",h:"인물이(Person) 무엇에 대해(Topic) 어떤 입장을(Stance) 어떤 근거와 말투로 말했는가",
-      d:["클래스 후보: Person, Statement, Topic, Stance(극성·강도), Ground(일화·원칙·사실), Voice","관계 후보: 주제, 입장 표현, 근거, 말투, 입장 변경","이전 온톨로지 설계안의 개념 9개를 줄인 것"],
-      f:"같은 개발 방법론을 따름. Train 발화 주제 코딩으로 Topic 목록을 만들고, 근거 이론(4)에 맞춰 클래스를 확정"}},
- {n:7,nm:"아티팩트 ②\n채우기",grp:"설계",
-  ref:{h:"FDS — 개체명 인식 + 관계 추출로 (주어, 관계, 목적어)를 뽑음",
+      d:["클래스 후보: Person, Statement, Topic, Stance, Ground, Voice","관계 후보: 주제, 입장 표현, 근거, 말투, 입장 변경"],
+      f:"Train 발화 주제 코딩으로 주제 목록을 만들고, 근거 이론에 맞춰 클래스 확정. 검토해 줄 사람 1~2명 섭외"}},
+ {n:4,nm:"아티팩트 ②\n추출",grp:"FDS",
+  ref:{h:"개체명 인식 + 관계 추출로 프레임을 자동 추출",
        d:["개체 인식: 통계 모델과 딥러닝 모델 비교","관계 추출: 특징 기반 모델과 신경망 비교","학습 자료는 저자·크라우드 주석"]},
-  me:{st:"draft",h:"LLM에 스키마를 주고 (주제, 극성, 근거, 말투)를 뽑음",
-      d:["파일럿의 태깅 프롬프트를 확장","Train 381개와 트윈 답 양쪽에 같은 추출기 사용"],
-      f:"프롬프트·출력 형식 설계 → 소량으로 시험 → 손 검수와 비교해 고침"}},
- {n:8,nm:"아티팩트 ③\n탐지",grp:"설계",
-  ref:{h:"FRDS — 게시물 프레임과 이념 프레임의 유사도 벡터(공명 프로필)로 분류",
-       d:["관계 종류마다 공명 점수를 계산해 벡터로","규칙 기반 점수로 학습 라벨을 자동 생성(원격 지도)","그 라벨로 여러 분류 모델을 학습"]},
-  me:{st:"draft",h:"트윈 답의 입장과 본인 입장의 차이 벡터(충실도 프로필)로 판정",
-      d:["프로필 요소 후보: 극성 편차, 근거 지지, 말투 편차, 자료 범위, 입장 변동","규칙 기반 점수 + 단순 분류기","검증기는 Holdout 본인 답을 보지 않음"],
+  me:{st:"draft",h:"LLM에 스키마를 주고 (주제, 극성, 근거, 말투)를 추출",
+      d:["파일럿의 태깅 프롬프트를 확장","Train과 트윈 답 양쪽에 같은 추출기"],
+      f:"프롬프트·출력 형식 설계 → 소량 시험 → 손 검수 정답 150개와 비교"}},
+ {n:5,nm:"아티팩트 ③\n원격 감독 탐지",grp:"FRDS",
+  ref:{h:"공명 프로필 → 규칙 기반 판정 → 자동 라벨",
+       d:["세부는 위 '2. 원격 감독 과정' 참고"]},
+  me:{st:"draft",h:"충실도 프로필 → 규칙 기반 판정 → 충실/불충실",
+      d:["프로필 요소 후보: 극성 편차, 근거 지지, 말투 편차, 자료 범위, 입장 변동","검증기는 Holdout 본인 답을 보지 않음"],
       f:"어떤 요소가 불충실을 잘 가리는지 기존 파일럿 출력으로 먼저 시험"}},
- {n:9,nm:"평가 ①\n온톨로지",grp:"평가",
-  ref:{h:"전문가 검토",
-       d:["급진화 연구자·대테러 실무자에게 클래스·관계 타당성 검증","세부는 온라인 부록"]},
-  me:{st:"todo",h:"역량 질문 + 표현 범위 + 전문가 의견",
-      d:["'이 인물은 X에 어떤 입장인가' 같은 질문에 답할 수 있는가","Train 발화 중 틀로 표현되는 비율"],
-      f:"검토해 줄 사람(지도교수·동료 연구자 1~2명) 섭외. 역량 질문 10~15개 작성"}},
- {n:10,nm:"평가 ②\n추출",grp:"평가",
-  ref:{h:"손 주석 대비 정밀도·재현율·F1",
-       d:["개체 유형별, 관계 유형별 성능 표","모델 간 비교(통계 모델 vs 딥러닝)"]},
-  me:{st:"todo",h:"손 검수 정답 대비 정확도",
-      d:["주제 대응, 극성 일치, 근거·말투 분류 성능","비교: 제약 없는 프롬프트 vs 스키마 추출, 모델 2종"],
-      f:"손 검수 정답 150개 만들기(Train 100 + 트윈 답 50). 미뤄 둔 태그 검수가 여기서 필요"}},
- {n:11,nm:"평가 ③\n탐지",grp:"평가 (핵심)",
-  ref:{h:"포럼 회원 602명 분류 — 기존 방식과 비교 + 요소 제거 실험",
-       d:["저자가 직접 읽고 라벨(동조 40명)","비교: 단어 빈도 특징, 사전학습 언어모델","손 라벨 학습 vs 자동 라벨 학습 성능이 비슷함을 보임","온톨로지 관계 종류를 절반쯤 빼기 전까지는 성능이 크게 떨어지지 않음"]},
-  me:{st:"todo",h:"트윈 답의 불충실 탐지 — 단순 검증기와 비교 + 요소 제거 실험",
-      d:["정답: Holdout 본인 답과의 불일치(자동) + 사람 채점 100쌍","비교: 무작위, 모델 자기 확신, 검색 유사도, 원문만 읽는 LLM 검증기, 온톨로지 기반 검증기","지표: 정밀도·재현율·F1, 보류 곡선"],
+ {n:6,nm:"실증 평가",grp:"평가",
+  ref:{h:"포럼 회원 602명 — 단어 빈도 방식과 비교, 손 라벨 학습과 자동 라벨 학습 비교, 요소 제거 실험",
+       d:["프로필 특징이 단어 빈도보다 정밀도가 꾸준히 높음","자동 라벨 학습이 손 라벨 학습과 비슷한 성능","추출 구성을 바꿔 가며 탐지 성능 변화 확인"]},
+  me:{st:"todo",h:"트윈 답의 불충실 탐지 — 단순 검증기와 비교, 요소 제거 실험",
+      d:["비교: 무작위, 모델 자기 확신, 검색 유사도, 원문만 읽는 LLM 검증기, 온톨로지 기반 검증기","지표: 정밀도·재현율·F1, 보류 곡선"],
       f:"가장 먼저 할 것 — 기존 파일럿 출력 300개로 '온톨로지 있는 검증 vs 없는 검증' 소규모 비교. 지면 온톨로지를 빼고 v2 설계로 복귀"}},
- {n:12,nm:"논의·기여",grp:"논의",
-  ref:{h:"손 라벨 없이 어떤 이념에도 적용되는 첫 설계 + 이론을 기계가 읽는 형식으로",
-       d:["설계 기여: 영역 지식 학습을 분류 알고리즘과 분리","이론 기여: 프레임 분석을 대규모로 할 수 있게 함","실무 기여: 플랫폼의 구체적 라벨링"]},
-  me:{st:"todo",h:"본인 확인 없이 트윈 답의 충실도를 가리는 설계 (결과에 따라 확정)",
-      d:["설계 기여 후보: 생성과 검증의 분리, 극성 균형 발췌, 근거 없으면 보류","이론 기여는 근거 이론(4)이 정해져야 쓸 수 있음","한계: 인물 1명, 행동 결과 없음"],
+ {n:7,nm:"의의",grp:"에필로그",
+  ref:{h:"손 라벨 없이, 어떤 이념인지 설명하며 탐지",
+       d:["새 이념이 나와도 온톨로지만 갱신","무분별한 계정 제재 대신 근거 있는 라벨"]},
+  me:{st:"todo",h:"본인 확인 없이, 어디서 벗어났는지 설명하며 검증 (결과에 따라 확정)",
+      d:["응용: 불충실이면 재생성 또는 보류, 극성 균형 발췌","한계: 인물 1명, 행동 결과 없음"],
       f:"평가 결과가 나온 뒤 작성. 두 번째 인물에 같은 틀을 적용해 일반성 근거 확보"}}
 ];
-const esc=s=>s;
 function cell(side,o){
   let h='<div class="cell '+side+'"><h3>'+(o.st?B[o.st]+' ':'')+o.h+'</h3>';
-  if(o.p){h+='<div class="pipe">'+o.p.map((x,i)=>(i?'<div class="d">▼</div>':'')+'<div class="p"><b>'+x[0]+'</b>'+x[1]+'</div>').join('')+'</div>';}
   if(o.f&&side==='me'){h+='<div class="find"><b>어떻게 찾을까</b> · '+o.f+'</div>';}
-  if(o.d&&o.d.length){h+='<details><summary>세부 설명</summary><ul>'+o.d.map(x=>'<li>'+x+'</li>').join('')+'</ul></details>';}
-  return h+'</div>';
+  return h+det(o.d)+'</div>';
 }
 document.getElementById('rows').innerHTML=rows.map((r,i)=>
   (i?'<div class="arrow"><i></i></div>':'')+
@@ -252,13 +323,14 @@ document.getElementById('rows').innerHTML=rows.map((r,i)=>
   cell('me',r.me)+'</div>').join('');
 
 const todos=[
- ["온톨로지가 값을 하는지 먼저 확인","기존 파일럿 출력 300개에 '원문만 읽는 검증기'와 '온톨로지 간이판 검증기'를 붙여 비교. 지면 이 틀을 접고 v2 설계로 돌아감. (단계 11)"],
- ["근거 이론 정하기","태도 이론, 논증 모형, 인상 관리 중 대표 문헌을 읽고 중심 이론 1개 선택. (단계 4)"],
- ["문헌 공백 확인","트윈 충실도 평가, LLM 답변 검증·보류, 온톨로지 기반 검증 세 갈래 검색. 비슷한 설계가 이미 있는지 확인. (단계 2)"],
- ["문제의 크기 재확인","긍정 쏠림이 다른 판정 모델과 부정 문항 30개 이상에서도 나오는지. 사용 맥락 한 가지 확정. (단계 1)"],
- ["온톨로지 클래스 확정","Train 발화 주제 코딩 → 주제 목록 → 이론에 맞춰 클래스·관계 정리 → 전문가 의견. (단계 6, 9)"],
- ["손 검수 정답 150개","추출 정확도 평가용. 태그 검수와 함께 진행. (단계 10)"],
- ["두 번째 인물 정하기","공개 인터뷰가 충분한 인물 1명. 같은 틀이 그대로 통하는지 확인용. (단계 12)"]
+ ["온톨로지가 값을 하는지 먼저 확인","기존 파일럿 출력 300개에 '원문만 읽는 검증기'와 '온톨로지 간이판 검증기'를 붙여 비교. 지면 이 틀을 접고 v2 설계로 돌아감. (장면 6)"],
+ ["근거 이론 정하기","태도 이론, 논증 모형, 인상 관리 중 대표 문헌을 읽고 중심 이론 1개 선택. (장면 2)"],
+ ["문헌 공백 확인","트윈 충실도 평가, LLM 답변 검증·보류, 온톨로지 기반 검증 세 갈래 검색. (장면 1)"],
+ ["문제의 크기 재확인","긍정 쏠림이 다른 판정 모델과 부정 문항 30개 이상에서도 나오는지. 사용 맥락 한 가지 확정. (장면 1)"],
+ ["원격 감독이 왜 필요한지 세우기","실험에서는 Holdout이 정답 역할을 하므로, '실제 사용 때는 새 질문에 본인 답이 없다'는 상황을 명확히 설정. (장면 5)"],
+ ["온톨로지 클래스 확정","Train 발화 주제 코딩 → 주제 목록 → 이론에 맞춰 클래스·관계 정리 → 전문가 의견. (장면 3)"],
+ ["손 검수 정답 150개","추출 정확도 평가용. 태그 검수와 함께 진행. (장면 4)"],
+ ["두 번째 인물 정하기","공개 인터뷰가 충분한 인물 1명. 같은 틀이 그대로 통하는지 확인용. (장면 7)"]
 ];
 document.getElementById('todos').innerHTML=todos.map((t,i)=>'<div class="todo"><div class="n">'+(i+1)+'</div><div><h3>'+t[0]+'</h3><p>'+t[1]+'</p></div></div>').join('');
 
