@@ -154,6 +154,8 @@
   .arch .nt{fill:#fff;font-size:12.5px;font-weight:700}
   .arch .bar{fill:#b9bdc7}
   .arch g.on .bar{fill:var(--hl)}
+  .cap .gl{margin:12px 0 2px}
+  .cap .gl .g{background:#fafbfc}
   .cap{margin-top:10px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--hl);border-radius:10px;padding:12px 16px;min-height:86px}
   .cap h3{margin:0 0 4px;font-size:15.5px}
   .cap p{margin:0;font-size:14.5px;color:#33353b}
@@ -175,7 +177,7 @@
 </head>
 <body>
 <div class="topbar"><div class="topbar-in">
-  <a href="#sum">논문 요약</a><a href="#arch">용어·시스템 구조</a><a href="#ds">단계별 세부</a><a href="#q4">배경·목적·RQ·시사점</a><a href="#flow">내 연구 대응</a><a href="#diff">차이점</a><a href="#next">앞으로 찾을 것</a>
+  <a href="#sum">논문 요약</a><a href="#arch">시스템 구조</a><a href="#ds">단계별 세부</a><a href="#q4">배경·목적·RQ·시사점</a><a href="#flow">내 연구 대응</a><a href="#diff">차이점</a><a href="#next">앞으로 찾을 것</a>
   <button id="tg" type="button">설명 모두 펼치기</button>
 </div></div>
 
@@ -209,9 +211,7 @@
 </section>
 
 <section id="arch">
-  <h2>2. 용어와 시스템 구조 — 번호 순서대로 작동 원리</h2>
-  <div class="glh">핵심 약어 — 아티팩트</div><div class="gl"><div class="g core"><span class="ab">TBO</span><span class="full">Terror Beliefs Ontology</span><div class="ko">테러 신념 온톨로지</div><ul><li>급진 이념을 담는 <b>틀(양식)</b></li><li>프레임 하나 = (주어 대상, 관계, 목적어 대상)</li><li>최상위 클래스 4개: 주체 · 프레임 · 대상 · 관계</li><li>그림의 ①, 채워진 것은 ②</li></ul><div class="mine">내 연구에서는 → 인물 입장 온톨로지</div></div><div class="g core"><span class="ab">FDS</span><span class="full">Frame Discovery System</span><div class="ko">프레임 발견 시스템</div><ul><li>글에서 프레임을 뽑아 틀을 <b>채우는 추출기</b></li><li>대상 찾기(NER) → 관계 찾기(RE) 두 단계</li><li>조직 선전물과 검사할 글 양쪽에 똑같이 적용</li><li>그림의 ②와 ④</li></ul><div class="mine">내 연구에서는 → 입장 추출기</div></div><div class="g core"><span class="ab">FRDS</span><span class="full">Frame Resonance Detection System</span><div class="ko">프레임 공명 탐지 시스템</div><ul><li>글이 특정 이념과 맞는지 가리는 <b>탐지 시스템 전체</b></li><li>FRP를 만들고 RBC로 판정하는 부분을 묶어 부르는 이름</li><li>그림의 ⑤~⑧</li></ul><div class="mine">내 연구에서는 → 충실도 검증기</div></div><div class="g core"><span class="ab">FRP</span><span class="full">Frame Resonance Profile</span><div class="ko">프레임 공명 프로필</div><ul><li>글과 이념이 관계 종류별로 얼마나 겹치는지 적은 <b>점수 벡터</b></li><li>글 1건 × 조직 1개마다 하나</li><li>어느 관계에서 겹쳤는지 보여 설명이 가능</li><li>그림의 ⑥</li></ul><div class="mine">내 연구에서는 → 충실도 프로필</div></div><div class="g core"><span class="ab">RBC</span><span class="full">Rule-Based Classifier</span><div class="ko">규칙 기반 분류기</div><ul><li>FRP를 점수 하나로 요약해 <b>자동으로 라벨</b>을 붙이는 규칙</li><li>규칙: 평균 점수가 충분히 높고, 관계 종류의 절반 이상에서 0이 아님</li><li>원격 감독이 실제로 일어나는 곳</li><li>그림의 ⑦</li></ul><div class="mine">내 연구에서는 → 규칙 기반 충실/불충실 판정</div></div></div><div class="glh">함께 나오는 용어</div><div class="gl"><div class="g"><span class="ab">CAFT</span><span class="full">Collective Action Framing Theory</span><div class="ko">집단행동 프레이밍 이론</div><ul><li>이 논문의 <b>근거 이론</b></li><li>이념 = 진단 프레임 + 예후 프레임 + 동기 프레임</li><li>"공명(resonance)" 개념의 출처</li></ul><div class="mine">내 연구에서는 → 미정 (찾아야 함)</div></div><div class="g"><span class="ab">DS</span><span class="full">Distant Supervision</span><div class="ko">원격 감독</div><ul><li>사람 대신 <b>지식 베이스</b>가 학습용 라벨을 만드는 방식</li><li>여기서는 채워진 TBO + RBC가 그 역할</li></ul><div class="mine">내 연구에서는 → 본인 답 없이 온톨로지로 판정</div></div><div class="g"><span class="ab">NER</span><span class="full">Named Entity Recognition</span><div class="ko">개체명 인식</div><ul><li>문장에서 <b>대상</b>(사람, 조직, 장소, 종교 등)을 찾는 기술</li><li>FDS의 첫 단계</li></ul><div class="mine">내 연구에서는 → 주제 찾기</div></div><div class="g"><span class="ab">RE</span><span class="full">Relation Extraction</span><div class="ko">관계 추출</div><ul><li>찾은 대상들 사이의 <b>관계</b>를 찾는 기술</li><li>FDS의 둘째 단계. 결과가 프레임 세 칸이 됨</li></ul><div class="mine">내 연구에서는 → 극성·근거·말투 추출</div></div><div class="g"><span class="ab">Claimant</span><span class="full">(약어 아님)</span><div class="ko">주장 주체</div><ul><li>프레임을 말한 <b>조직 또는 온라인 인물</b></li><li>TBO에서 "누구의 이념인가"를 구분하는 기준</li></ul><div class="mine">내 연구에서는 → Person (인물)</div></div><div class="g"><span class="ab">TF-IDF</span><span class="full">Term Frequency–Inverse Document Frequency</span><div class="ko">단어 빈도 기반 특징</div><ul><li>글을 단어 출현 빈도로 나타내는 <b>기존 방식</b></li><li>논문에서 FRP와 비교한 기준선</li></ul><div class="mine">내 연구에서는 → 파일럿에서 쓴 유사도 계산</div></div></div>
-  <div class="glh">구조 그림</div>
+  <h2>2. 시스템 구조 — 번호를 누르면 작동 원리와 용어 풀이</h2>
   <div class="archbar">
     <div class="seg"><button type="button" data-side="ref" class="on">Etudo &amp; Yoon</button><button type="button" data-side="me">내 연구 (가안)</button></div>
     <div class="chips" id="chips"></div>
@@ -239,7 +239,7 @@
 <g data-s="8"><polyline class="ar" points="905,413 905,473 792,473" marker-end="url(#ah)"/><text class="t2" x="848" y="466" text-anchor="middle">자동 라벨</text><rect class="bx" x="650" y="445" width="140" height="56" rx="8"/><text class="t1" data-k="clf1" x="720.0" y="471.0" text-anchor="middle"></text><text class="t2" data-k="clf2" x="720.0" y="488.0" text-anchor="middle"></text><circle class="nb" cx="926" cy="445" r="11"/><text class="nt" x="926" y="449.5" text-anchor="middle">8</text></g>
 <g data-s="9"><rect class="bx dash" x="430" y="445" width="170" height="56" rx="8"/><text class="t1" data-k="hum1" x="515.0" y="471.0" text-anchor="middle"></text><text class="t2" data-k="hum2" x="515.0" y="488.0" text-anchor="middle"></text><line class="ar dash" x1="600" y1="473" x2="648" y2="473" marker-end="url(#ah)"/><text class="t2" x="624" y="465" text-anchor="middle">평가만</text><circle class="nb" cx="414" cy="473" r="11"/><text class="nt" x="414" y="477.5" text-anchor="middle">9</text></g>
 </svg>
-  <figcaption>번호를 누르거나 "다음"을 누르면 해당 단계만 강조됩니다. 위 줄은 지식 베이스를 만드는 길, 아래 줄은 검사할 글이 지나가는 길이고, 둘이 ⑤에서 만납니다. 점선 상자는 저장되지 않거나 평가에만 쓰이는 것입니다.</figcaption></figure>
+  <figcaption>번호를 누르거나 "다음"을 누르면 해당 단계만 강조되고, 아래에 그 단계의 작동 원리와 관련 용어 풀이가 나옵니다. 위 줄은 지식 베이스를 만드는 길, 아래 줄은 검사할 글이 지나가는 길이고, 둘이 ⑤에서 만납니다. 점선 상자는 저장되지 않거나 평가에만 쓰이는 것입니다.</figcaption></figure>
   <div class="cap" id="cap"></div>
 </section>
 
@@ -310,7 +310,7 @@ me:{tmpl1:"인물 입장 온톨로지 틀",tmpl2:"주제·극성·근거·말투
  tmp1:"답의 입장",tmp2:"임시로만 만듦",cmp1:"주제별 비교",cmp2:"극성 편차 등",frp1:"충실도 프로필",frp2:"요소별 편차",
  rbc1:"규칙 판정",rbc2:"충실 / 불충실",clf1:"(선택) 검증 모델",clf2:"규칙으로 충분하면 생략",hum1:"Holdout 본인 답",hum2:"+ 사람 채점 100쌍"}};
 const CAP={ref:[
- ["전체 구조","조직의 문서와 검사할 글이 <b>같은 추출기</b>를 지나 각각 프레임이 되고, 둘을 비교한 점수에 규칙을 적용해 라벨을 자동으로 붙입니다.",""],
+ ["전체 구조","조직의 문서와 검사할 글이 <b>같은 추출기</b>를 지나 각각 프레임이 되고, 둘을 비교한 점수에 규칙을 적용해 라벨을 자동으로 붙입니다.","번호를 누르면 그 단계의 작동 원리와 용어(TBO, FDS, FRP 등) 풀이가 나옵니다."],
  ["① 틀을 준비한다 (TBO)","이념을 적을 빈 양식을 먼저 만듭니다. 프레임 하나는 (주어 대상, 관계, 목적어 대상) 세 칸입니다.","근거: 집단행동 프레이밍 이론. 클래스 87개, 대상 종류 34개."],
  ["② 조직 선전물로 틀을 채운다 (FDS)","추출기가 문장에서 대상을 찾고, 대상 사이의 관계를 찾아 프레임으로 저장합니다. 이것이 지식 베이스입니다.","예: \"A 세력이 B 지역을 점령한다\" → (A, 점령한다, B)"],
  ["③ 기준 인스턴스를 꺼낸다","조직 하나를 지정해 그 조직이 가진 관계별 주어·목적어 목록을 조회합니다. 이후 비교의 기준이 됩니다.",""],
@@ -321,7 +321,7 @@ const CAP={ref:[
  ["⑧ 자동 라벨로 분류 모델을 학습한다","자동 라벨을 정답 삼아 일반 분류 모델을 학습합니다. 규칙만 쓸 때보다 시험 자료에서 성능이 좋았습니다.",""],
  ["⑨ 사람 라벨은 평가에만 쓴다","저자가 직접 읽고 붙인 라벨과 비교해 성능을 잽니다. 자동 라벨 학습 F1 83~86%, 손 라벨 학습 최고 88%.",""]],
 me:[
- ["전체 구조 (가안)","본인 인터뷰와 트윈의 답이 <b>같은 추출기</b>를 지나 각각 입장이 되고, 둘의 차이에 규칙을 적용해 충실 여부를 가립니다.","클래스·요소는 모두 가안이며 근거 이론이 정해지면 바뀝니다."],
+ ["전체 구조 (가안)","본인 인터뷰와 트윈의 답이 <b>같은 추출기</b>를 지나 각각 입장이 되고, 둘의 차이에 규칙을 적용해 충실 여부를 가립니다.","클래스·요소는 모두 가안이며 근거 이론이 정해지면 바뀝니다. 번호를 누르면 단계별 설명과 대응하는 용어가 나옵니다."],
  ["① 틀을 준비한다","한 인물의 입장을 적을 양식. 입장 하나는 (주제, 극성, 근거 유형, 말투)입니다.","찾을 것: 이 네 요소를 뒷받침할 근거 이론."],
  ["② Train 인터뷰로 틀을 채운다","추출기가 발화마다 주제를 찾고 극성·근거·말투를 뽑아 저장합니다.","찾을 것: 주제 목록, 손 검수 정답 150개로 추출 정확도 확인."],
  ["③ 주제별 본인 입장을 꺼낸다","주제마다 본인 극성의 평균과 범위, 근거 요지, 발화 수를 조회합니다.","발화 수가 0인 주제는 '자료 밖' — 이후 보류 판단의 근거."],
@@ -331,6 +331,22 @@ me:[
  ["⑦ 규칙으로 충실/불충실을 가린다","편차가 본인 재답변의 변동 범위를 넘으면 불충실로 판정합니다. 본인 답을 보지 않고 이루어집니다.","불충실이면 재생성하거나 답을 보류하는 데 씁니다."],
  ["⑧ (선택) 검증 모델을 학습한다","규칙만으로 부족하면 자동 판정을 정답 삼아 검증 모델을 학습합니다.",""],
  ["⑨ 본인 답은 평가에만 쓴다","Holdout 본인 답과의 불일치, 사람 채점 100쌍으로 검증기의 성능을 잽니다.","찾을 것: 판정 모델 교체 후에도 라벨이 믿을 만한지."]]};
+
+const T={
+ TBO:["TBO","Terror Beliefs Ontology","테러 신념 온톨로지",["급진 이념을 담는 <b>틀(양식)</b>","프레임 하나 = (주어 대상, 관계, 목적어 대상)","최상위 클래스 4개: 주체 · 프레임 · 대상 · 관계"],"인물 입장 온톨로지"],
+ CAFT:["CAFT","Collective Action Framing Theory","집단행동 프레이밍 이론",["TBO의 <b>근거 이론</b>","이념 = 진단 프레임 + 예후 프레임 + 동기 프레임","'공명(resonance)' 개념의 출처"],"미정 (찾아야 함)"],
+ FDS:["FDS","Frame Discovery System","프레임 발견 시스템",["글에서 프레임을 뽑아 틀을 <b>채우는 추출기</b>","대상 찾기(NER) → 관계 찾기(RE) 두 단계","조직 선전물과 검사할 글 양쪽에 똑같이 적용"],"입장 추출기"],
+ NER:["NER","Named Entity Recognition","개체명 인식",["문장에서 <b>대상</b>(사람, 조직, 장소, 종교 등)을 찾는 기술","FDS의 첫 단계"],"주제 찾기"],
+ RE:["RE","Relation Extraction","관계 추출",["찾은 대상들 사이의 <b>관계</b>를 찾는 기술","FDS의 둘째 단계. 결과가 프레임 세 칸이 됨"],"극성·근거·말투 추출"],
+ Claimant:["Claimant","약어 아님","주장 주체",["프레임을 말한 <b>조직 또는 온라인 인물</b>","'누구의 이념인가'를 구분하는 기준 — 기준 인스턴스는 주체 하나를 지정해 꺼냄"],"Person (인물)"],
+ FRDS:["FRDS","Frame Resonance Detection System","프레임 공명 탐지 시스템",["글이 특정 이념과 맞는지 가리는 <b>탐지 시스템 전체</b>","비교(⑤) → FRP(⑥) → RBC(⑦) → 학습(⑧)을 묶어 부르는 이름"],"충실도 검증기"],
+ FRP:["FRP","Frame Resonance Profile","프레임 공명 프로필",["글과 이념이 관계 종류별로 얼마나 겹치는지 적은 <b>점수 벡터</b>","글 1건 × 조직 1개마다 하나","어느 관계에서 겹쳤는지 보여 설명이 가능"],"충실도 프로필"],
+ RBC:["RBC","Rule-Based Classifier","규칙 기반 분류기",["FRP를 점수 하나로 요약해 <b>자동으로 라벨</b>을 붙이는 규칙","평균 점수가 충분히 높고, 관계 종류의 절반 이상에서 0이 아니면 '공명함'"],"규칙 기반 충실/불충실 판정"],
+ DS:["DS","Distant Supervision","원격 감독",["사람 대신 <b>지식 베이스</b>가 학습용 라벨을 만드는 방식","여기서는 채워진 TBO + RBC가 그 역할","논문에서는 약어 없이 풀어서 씀"],"본인 답 없이 온톨로지로 판정"],
+ TFIDF:["TF-IDF","Term Frequency–Inverse Document Frequency","단어 빈도 기반 특징",["글을 단어 출현 빈도로 나타내는 <b>기존 방식</b>","FRP와 성능을 비교한 기준선"],"파일럿에서 쓴 유사도 계산"]
+};
+const ST=[[],["TBO","CAFT"],["FDS","NER","RE"],["Claimant"],["FDS"],["FRDS"],["FRP"],["RBC","DS"],["TFIDF"],[]];
+const tcard=k=>{const t=T[k];return '<div class="g core"><span class="ab">'+t[0]+'</span><span class="full">'+t[1]+'</span><div class="ko">'+t[2]+'</div><ul>'+t[3].map(x=>'<li>'+x+'</li>').join('')+'</ul><div class="mine">내 연구에서는 → '+t[4]+'</div></div>';};
 let side='ref',step=0;
 const sec=document.getElementById('arch'),fig=document.getElementById('archfig'),cap=document.getElementById('cap'),chips=document.getElementById('chips');
 chips.innerHTML='<button type="button" class="all" data-n="0">전체</button>'+[1,2,3,4,5,6,7,8,9].map(i=>'<button type="button" data-n="'+i+'">'+i+'</button>').join('');
@@ -341,7 +357,7 @@ function draw(){
   fig.querySelectorAll('g[data-s]').forEach(g=>g.classList.toggle('on',step>0&&g.dataset.s.split(' ').includes(String(step))));
   chips.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.n===step));
   document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.side===side));
-  const c=CAP[side][step];cap.innerHTML='<h3>'+c[0]+'</h3><p>'+c[1]+'</p>'+(c[2]?'<div class="ex">'+c[2]+'</div>':'');
+  const c=CAP[side][step];cap.innerHTML='<h3>'+c[0]+'</h3><p>'+c[1]+'</p>'+(c[2]?'<div class="ex">'+c[2]+'</div>':'')+(ST[step].length?'<div class="glh">'+(step?'이 단계의 용어':'핵심 약어 — 번호를 누르면 단계별로 나옵니다')+'</div><div class="gl">'+ST[step].map(tcard).join('')+'</div>':'');
 }
 chips.onclick=e=>{const b=e.target.closest('button');if(b){step=+b.dataset.n;draw();}};
 document.querySelector('.seg').onclick=e=>{const b=e.target.closest('button');if(b){side=b.dataset.side;draw();}};
