@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시스템 구조 — Etudo &amp; Yoon ↔ 내 연구</title>
+<style>
+  :root{
+    --ink:#1b1c20;--mute:#6a6d76;--line:#e3e5ea;--bg:#f7f7f9;--card:#fff;
+    --ref:#5b6475;--ref-bg:#f1f3f6;--ref-line:#cfd4dd;
+    --me:#2459d6;--me-bg:#eaf1ff;--me-line:#b9cdf8;
+    --done:#1f8a55;--done-bg:#e6f6ee;--draft:#b06a00;--draft-bg:#fff3de;--todo:#c0362c;--todo-bg:#fdeceb;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;line-height:1.55;font-size:15px}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 80px}
+  header h1{margin:0 0 6px;font-size:25px;letter-spacing:-.01em}
+  header p{margin:0;color:var(--mute)}
+  .topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+  .topbar-in{max-width:1080px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto;white-space:nowrap;align-items:center}
+  .topbar a{padding:13px 12px;font-size:14px;color:#2a2a2e;text-decoration:none;border-bottom:3px solid transparent}
+  .topbar a:hover{color:var(--me);border-bottom-color:var(--me)}
+  .topbar button{margin-left:auto;font:inherit;font-size:13px;padding:6px 12px;border:1px solid var(--line);border-radius:6px;background:#fff;cursor:pointer}
+  section{margin:38px 0;scroll-margin-top:60px}
+  h2{font-size:19px;margin:0 0 14px;padding-left:11px;border-left:4px solid var(--me)}
+
+  /* 한눈에 */
+  .one{display:grid;grid-template-columns:1fr 44px 1fr;gap:0;align-items:stretch;margin-top:20px}
+  .one .box{border-radius:10px;padding:14px 16px;border:1px solid}
+  .one .ref{background:var(--ref-bg);border-color:var(--ref-line)}
+  .one .me{background:var(--me-bg);border-color:var(--me-line)}
+  .one .mid{display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:20px}
+  .one b.lab{display:block;font-size:12px;letter-spacing:.04em;margin-bottom:4px}
+  .ref b.lab{color:var(--ref)} .me b.lab{color:var(--me)}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px;font-size:13px;color:var(--mute)}
+
+  .badge{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;vertical-align:middle;white-space:nowrap}
+  .b-done{background:var(--done-bg);color:var(--done)}
+  .b-draft{background:var(--draft-bg);color:var(--draft)}
+  .b-todo{background:var(--todo-bg);color:var(--todo)}
+
+  /* 세로 순서도 */
+  .colhead{display:grid;grid-template-columns:1fr 150px 1fr;gap:14px;margin-bottom:6px;position:sticky;top:46px;background:var(--bg);padding:8px 0;z-index:10}
+  .colhead div{font-weight:700;font-size:14px;text-align:center;padding:7px;border-radius:8px}
+  .colhead .r{background:var(--ref-bg);color:var(--ref)} .colhead .m{background:var(--me-bg);color:var(--me)}
+  .colhead .c{color:var(--mute);font-weight:500}
+  .row{display:grid;grid-template-columns:1fr 150px 1fr;gap:14px;align-items:stretch}
+  .cell{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 15px}
+  .cell.ref{border-left:4px solid var(--ref)}
+  .cell.me{border-left:4px solid var(--me)}
+  .cell h3{margin:0 0 4px;font-size:15px;line-height:1.4}
+  .cell p{margin:4px 0 0;color:#33353b;font-size:14px}
+  .stage{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative}
+  .stage .num{width:34px;height:34px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+  .stage .nm{font-size:13px;font-weight:600;margin-top:6px;line-height:1.3}
+  .stage .grp{font-size:11px;color:var(--mute);margin-top:2px}
+  .arrow{display:grid;grid-template-columns:1fr 150px 1fr;gap:14px;height:30px}
+  .arrow i{grid-column:2;justify-self:center;width:2px;background:#b9bdc7;position:relative}
+  .arrow i:after{content:"";position:absolute;bottom:-1px;left:-5px;border:6px solid transparent;border-top-color:#b9bdc7;border-bottom:0}
+  details{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+  summary{cursor:pointer;font-size:13px;color:var(--mute);list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary:before{content:"＋ ";font-weight:700}
+  details[open] summary:before{content:"－ "}
+  details ul{margin:6px 0 2px;padding-left:18px;font-size:13.5px;color:#3a3c43}
+  details li{margin:3px 0}
+  .find{background:var(--me-bg);border-radius:6px;padding:7px 10px;margin-top:6px;font-size:13.5px}
+  .find b{color:var(--me)}
+
+  /* 파이프라인 미니 순서도 */
+  .pipe{display:flex;flex-direction:column;align-items:stretch;margin-top:8px}
+  .pipe .p{border:1px solid var(--line);border-radius:7px;padding:6px 10px;font-size:13.5px;background:#fbfbfc}
+  .pipe .p b{font-size:12px;display:block}
+  .cell.ref .pipe .p b{color:var(--ref)} .cell.me .pipe .p b{color:var(--me)}
+  .pipe .d{align-self:center;color:#a3a7b1;font-size:13px;line-height:1.2}
+
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;vertical-align:top;text-align:left}
+  th{background:#f1f2f5;font-weight:600}
+  td.k{font-weight:600;white-space:nowrap}
+  .todo-list{display:grid;gap:10px}
+  .todo{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 15px;display:grid;grid-template-columns:34px 1fr;gap:10px}
+  .todo .n{width:28px;height:28px;border-radius:50%;background:var(--me);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .todo h3{margin:0;font-size:15px}
+  .todo p{margin:3px 0 0;font-size:14px;color:#33353b}
+  footer{color:var(--mute);font-size:12.5px;margin-top:40px;border-top:1px solid var(--line);padding-top:12px}
+
+  @media (max-width:760px){
+    .one{grid-template-columns:1fr}.one .mid{transform:rotate(90deg);height:30px}
+    .colhead{display:none}
+    .row{grid-template-columns:1fr}
+    .stage{flex-direction:row;gap:8px;justify-content:flex-start;order:-1}
+    .stage .nm{margin-top:0}
+    .arrow{grid-template-columns:1fr}.arrow i{grid-column:1}
+    .cell.ref:before{content:"Etudo & Yoon";display:block;font-size:11px;font-weight:700;color:var(--ref);margin-bottom:3px}
+    .cell.me:before{content:"내 연구";display:block;font-size:11px;font-weight:700;color:var(--me);margin-bottom:3px}
+  }
+
+  .sum{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--ref);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+  .sum p{margin:0}
+  .q4{display:grid;grid-template-columns:110px 1fr 1fr;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+  .q4>div{padding:11px 14px;border-top:1px solid var(--line);font-size:14px}
+  .q4>div:nth-child(-n+3){border-top:0;font-weight:700;font-size:13px}
+  .q4 .k{font-weight:700;background:#f4f5f7}
+  .q4 .hr{background:var(--ref-bg);color:var(--ref)} .q4 .hm{background:var(--me-bg);color:var(--me)}
+  .q4 ol,.q4 ul{margin:0;padding-left:18px}
+  .q4 details{margin-top:6px}
+  .ds{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;align-items:stretch}
+  .ds .cell h3 .s{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;align-items:center;justify-content:center;font-size:12.5px;margin-right:7px;vertical-align:1px}
+  .ds .cell.me h3{font-size:14px}
+  .dsarrow{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;height:24px}
+  .dsarrow i{justify-self:center;width:2px;background:#b9bdc7;position:relative}
+  .dsarrow i:after{content:"";position:absolute;bottom:-1px;left:-5px;border:6px solid transparent;border-top-color:#b9bdc7;border-bottom:0}
+  .phase{margin:18px 0 8px;font-size:12.5px;font-weight:700;letter-spacing:.03em;color:var(--mute);display:flex;align-items:center;gap:8px}
+  .phase:after{content:"";flex:1;height:1px;background:var(--line)}
+  .dshead{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;margin-bottom:6px}
+  .dshead div{font-weight:700;font-size:14px;text-align:center;padding:7px;border-radius:8px}
+  .dshead .r{background:var(--ref-bg);color:var(--ref)} .dshead .m{background:var(--me-bg);color:var(--me)}
+  .warn{background:#fff7e8;border:1px solid #f1d9a6;border-radius:10px;padding:11px 15px;margin-top:14px;font-size:14px}
+  .warn details{border-top:0;margin-top:2px;padding-top:2px}
+  .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+  .nums div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--mute)}
+  .nums b{display:block;font-size:19px;color:var(--ink)}
+  @media (max-width:760px){.q4{grid-template-columns:1fr}.q4>div:nth-child(-n+3){display:none}.ds,.dsarrow,.dshead{grid-template-columns:1fr}.dshead{display:none}.dsarrow i:nth-child(2){display:none}.nums{grid-template-columns:1fr}}
+
+  .archbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+  .seg button{font:inherit;font-size:13.5px;padding:7px 14px;border:0;background:#fff;cursor:pointer;color:var(--mute)}
+  .seg button.on[data-side=ref]{background:var(--ref);color:#fff}
+  .seg button.on[data-side=me]{background:var(--me);color:#fff}
+  .chips{display:flex;gap:4px;flex-wrap:wrap}
+  .chips button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink)}
+  .chips button.all{width:auto;border-radius:15px;padding:0 12px;font-weight:500}
+  .chips button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .nav2{margin-left:auto;display:flex;gap:6px}
+  .nav2 button{font:inherit;font-size:13.5px;padding:7px 14px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}
+  figure.arch{margin:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 10px 4px}
+  figure.arch svg{width:100%;height:auto;display:block;color:var(--ink)}
+  figure.arch figcaption{font-size:12.5px;color:var(--mute);padding:4px 8px 8px}
+  .arch g[data-s]{transition:opacity .2s}
+  .arch.focus g[data-s]{opacity:.18}
+  .arch.focus g[data-s].on{opacity:1}
+  .arch .bx{fill:#fff;stroke:currentColor;stroke-width:1.3}
+  .arch .dash{stroke-dasharray:5 4}
+  .arch g.on .bx{stroke:var(--hl);stroke-width:2.6;fill:var(--hlbg)}
+  .arch .ar{stroke:#6a6d76;stroke-width:1.6;fill:none}
+  .arch g.on .ar{stroke:var(--hl);stroke-width:2.4}
+  .arch text{font-family:inherit;fill:currentColor}
+  .arch .t1{font-size:14px;font-weight:700}
+  .arch .t2{font-size:11.5px;fill:#6a6d76}
+  .arch .nb{fill:#1b1c20}
+  .arch g.on .nb{fill:var(--hl)}
+  .arch .nt{fill:#fff;font-size:12.5px;font-weight:700}
+  .arch .bar{fill:#b9bdc7}
+  .arch g.on .bar{fill:var(--hl)}
+  .cap .gl{margin:12px 0 2px}
+  .cap .gl .g{background:#fafbfc}
+  .cap{margin-top:10px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--hl);border-radius:10px;padding:12px 16px;min-height:86px}
+  .cap h3{margin:0 0 4px;font-size:15.5px}
+  .cap p{margin:0;font-size:14.5px;color:#33353b}
+  .cap .ex{margin-top:6px;font-size:13.5px;color:var(--mute)}
+  #arch{--hl:var(--ref);--hlbg:var(--ref-bg)}
+  #arch.me{--hl:var(--me);--hlbg:var(--me-bg)}
+
+  .gl{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-bottom:16px}
+  .gl .g{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px}
+  .gl .ab{font-size:18px;font-weight:800;letter-spacing:.02em}
+  .gl .full{font-size:12.5px;color:var(--ref);font-weight:600;margin-left:6px}
+  .gl .ko{font-size:13px;color:var(--mute);margin:1px 0 5px}
+  .gl ul{margin:0;padding-left:17px;font-size:13.5px;color:#33353b}
+  .gl li{margin:2px 0}
+  .gl .mine{margin-top:6px;font-size:12.5px;color:var(--me);background:var(--me-bg);border-radius:6px;padding:3px 8px;display:inline-block}
+  .gl .g.core{border-left:4px solid var(--ref)}
+  .glh{font-size:13px;font-weight:700;color:var(--mute);margin:14px 0 6px}
+
+  .dir2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .dcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 16px}
+  .dcard h3{margin:0 0 6px;font-size:15px}
+  .dcard p{margin:4px 0;font-size:14px;color:#33353b}
+  .dcard.me{border-left:4px solid var(--me)} .dcard.warn2{border-left:4px solid #e0a13a}
+  .layers{display:grid;grid-template-columns:1fr 34px 1fr;gap:0 6px;align-items:center;margin-top:8px}
+  .layers .lh{font-size:12px;font-weight:700;text-align:center;padding-bottom:4px}
+  .layers .lh.r{color:var(--ref)} .layers .lh.m{color:var(--me)}
+  .lay{border-radius:8px;padding:8px 10px;font-size:13.5px;border:1px solid;margin:3px 0}
+  .lay.r{background:var(--ref-bg);border-color:var(--ref-line)} .lay.m{background:var(--me-bg);border-color:var(--me-line)}
+  .lay b{display:block;font-size:13.5px} .lay span{font-size:12.5px;color:var(--mute)}
+  .layers .eq{text-align:center;color:var(--mute)}
+  .ladder{display:grid;gap:6px;margin-top:8px}
+  .rung{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:#fff;font-size:14px}
+  .rung .lv{width:28px;height:28px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .rung .tag{font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
+  .rung small{display:block;color:var(--mute);font-size:12.5px}
+  .data2{display:grid;grid-template-columns:1.4fr 1fr;gap:8px;margin-top:8px}
+  .data2 div{border-radius:8px;padding:9px 12px;font-size:13.5px;border:1px solid var(--me-line);background:var(--me-bg)}
+  .data2 b{display:block}
+  @media (max-width:760px){.dir2,.data2{grid-template-columns:1fr}}
+
+  .eng{display:grid;grid-template-columns:1fr 26px 1fr 26px 1fr 26px 1fr;align-items:stretch;margin-top:8px}
+  .eng .e{border:1px solid var(--me-line);background:var(--me-bg);border-radius:8px;padding:9px 11px;font-size:13.5px}
+  .eng .e b{display:block;font-size:13.5px}
+  .eng .e span{font-size:12.5px;color:var(--mute)}
+  .eng .e.llm{background:#fff;border-style:dashed;border-color:#9aa1ad}
+  .eng .ar2{display:flex;align-items:center;justify-content:center;color:#9aa1ad}
+  @media (max-width:760px){.eng{grid-template-columns:1fr}.eng .ar2{transform:rotate(90deg);height:22px}}
+
+  .ev{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  .ev .p{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:#fafbfc}
+  .ev h4{margin:0 0 2px;font-size:13.5px}
+  .ev .q{font-size:12.5px;color:var(--mute);margin-bottom:6px}
+  .br{display:grid;grid-template-columns:150px 1fr 44px;gap:8px;align-items:center;font-size:12.5px;margin:3px 0}
+  .br i{display:block;height:12px;border-radius:3px;background:#b9bdc7}
+  .br.hl i{background:var(--me)} .br.top i{background:#1f8a55}
+  .br b{text-align:right;font-size:12.5px}
+  .ev .n{font-size:12.5px;color:#33353b;margin-top:6px}
+  @media (max-width:760px){.ev{grid-template-columns:1fr}}
+  .cap ul.pts{margin:8px 0 2px;padding-left:19px;font-size:14px;color:#33353b}
+  .cap ul.pts li{margin:4px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>시스템 구조 — Etudo &amp; Yoon ↔ 내 연구</h1>
+  <p>번호를 누르면 그 단계만 강조되고, 아래에 작동 원리와 관련 이론·용어가 나옵니다. 왼쪽 위 버튼으로 두 구조를 바꿔 볼 수 있습니다. 내 연구 쪽은 11/18 논의 기준 가안입니다.</p>
+</header>
+<section id="arch">
+  
+  <div class="archbar">
+    <div class="seg"><button type="button" data-side="ref" class="on">Etudo &amp; Yoon</button><button type="button" data-side="me">내 연구 (11/18 가안)</button></div>
+    <div class="chips" id="chips"></div>
+    <div class="nav2"><button type="button" id="prev">◀ 이전</button><button type="button" id="nextb">다음 ▶</button></div>
+  </div>
+  <figure class="arch" id="archfig"><svg viewBox="0 0 1000 520" role="img" aria-label="문서가 추출기를 거쳐 지식 베이스와 임시 프레임이 되고, 둘을 비교한 프로필에 규칙을 적용해 자동 라벨을 만드는 구조">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#6a6d76"/></marker></defs>
+<g data-s="1"><rect class="bx dash" x="430" y="14" width="170" height="48" rx="8"/><text class="t1" data-k="tmpl1" x="515.0" y="36.0" text-anchor="middle"></text><text class="t2" data-k="tmpl2" x="515.0" y="53.0" text-anchor="middle"></text><line class="ar" x1="515" y1="62" x2="515" y2="96" marker-end="url(#ah)"/><text class="t2" x="522" y="84" data-k="tmplA"></text><circle class="nb" cx="414" cy="38" r="11"/><text class="nt" x="414" y="42.5" text-anchor="middle">1</text></g>
+<g data-s="2"><rect class="bx" x="30" y="100" width="140" height="70" rx="8"/><text class="t1" data-k="docA1" x="100" y="132" text-anchor="middle"></text><text class="t2" data-k="docA2" x="100" y="150" text-anchor="middle"></text>
+<line class="ar" x1="170" y1="135" x2="228" y2="135" marker-end="url(#ah)"/><line class="ar" x1="380" y1="135" x2="428" y2="135" marker-end="url(#ah)"/>
+<path class="bx" d="M430 112a85 10 0 0 0 170 0a85 10 0 0 0-170 0zM430 112v58a85 10 0 0 0 170 0v-58"/><text class="t1" data-k="kb1" x="515" y="146" text-anchor="middle"></text><text class="t2" data-k="kb2" x="515" y="164" text-anchor="middle"></text><circle class="nb" cx="199" cy="116" r="11"/><text class="nt" x="199" y="120.5" text-anchor="middle">2</text></g>
+<g data-s="2 4"><rect class="bx" x="230" y="90" width="150" height="320" rx="10"/><text class="t1" data-k="fds1" x="305" y="205" text-anchor="middle"></text>
+<rect class="bx" x="248" y="222" width="114" height="36" rx="6"/><text class="t2" data-k="fdsa" x="305" y="244" text-anchor="middle"></text>
+<line class="ar" x1="305" y1="258" x2="305" y2="272" marker-end="url(#ah)"/>
+<rect class="bx" x="248" y="274" width="114" height="36" rx="6"/><text class="t2" data-k="fdsb" x="305" y="296" text-anchor="middle"></text>
+<text class="t2" x="305" y="332" text-anchor="middle">양쪽에 같은 추출기</text></g>
+<g data-s="3"><line class="ar" x1="600" y1="135" x2="648" y2="135" marker-end="url(#ah)"/><rect class="bx" x="650" y="105" width="140" height="60" rx="8"/><text class="t1" data-k="base1" x="720.0" y="133.0" text-anchor="middle"></text><text class="t2" data-k="base2" x="720.0" y="150.0" text-anchor="middle"></text><circle class="nb" cx="624" cy="116" r="11"/><text class="nt" x="624" y="120.5" text-anchor="middle">3</text></g>
+<g data-s="4"><rect class="bx" x="30" y="330" width="140" height="70" rx="8"/><text class="t1" data-k="docB1" x="100" y="362" text-anchor="middle"></text><text class="t2" data-k="docB2" x="100" y="380" text-anchor="middle"></text>
+<line class="ar" x1="170" y1="365" x2="228" y2="365" marker-end="url(#ah)"/><line class="ar" x1="380" y1="365" x2="428" y2="365" marker-end="url(#ah)"/><rect class="bx dash" x="430" y="335" width="170" height="60" rx="8"/><text class="t1" data-k="tmp1" x="515.0" y="363.0" text-anchor="middle"></text><text class="t2" data-k="tmp2" x="515.0" y="380.0" text-anchor="middle"></text><circle class="nb" cx="199" cy="346" r="11"/><text class="nt" x="199" y="350.5" text-anchor="middle">4</text></g>
+<g data-s="5"><line class="ar" x1="720" y1="165" x2="720" y2="223" marker-end="url(#ah)"/><polyline class="ar" points="600,365 720,365 720,297" marker-end="url(#ah)"/><rect class="bx" x="650" y="225" width="140" height="70" rx="8"/><text class="t1" data-k="cmp1" x="720.0" y="258.0" text-anchor="middle"></text><text class="t2" data-k="cmp2" x="720.0" y="275.0" text-anchor="middle"></text><circle class="nb" cx="634" cy="260" r="11"/><text class="nt" x="634" y="264.5" text-anchor="middle">5</text></g>
+<g data-s="6"><line class="ar" x1="790" y1="260" x2="828" y2="260" marker-end="url(#ah)"/><rect class="bx" x="830" y="200" width="150" height="120" rx="8"/><text class="t1" data-k="frp1" x="905" y="224" text-anchor="middle"></text>
+<rect class="bar" x="850" y="254" width="20" height="48"/><rect class="bar" x="882" y="272" width="20" height="30"/><rect class="bar" x="914" y="296" width="20" height="6"/><rect class="bar" x="946" y="262" width="20" height="40"/>
+<line class="ar" x1="844" y1="302" x2="972" y2="302"/><text class="t2" data-k="frp2" x="905" y="315" text-anchor="middle"></text><circle class="nb" cx="809" cy="242" r="11"/><text class="nt" x="809" y="246.5" text-anchor="middle">6</text></g>
+<g data-s="7"><line class="ar" x1="905" y1="320" x2="905" y2="353" marker-end="url(#ah)"/><rect class="bx" x="830" y="355" width="150" height="58" rx="8"/><text class="t1" data-k="rbc1" x="905.0" y="382.0" text-anchor="middle"></text><text class="t2" data-k="rbc2" x="905.0" y="399.0" text-anchor="middle"></text><circle class="nb" cx="926" cy="337" r="11"/><text class="nt" x="926" y="341.5" text-anchor="middle">7</text></g>
+<g data-s="8"><polyline class="ar" points="905,413 905,473 792,473" marker-end="url(#ah)"/><text class="t2" x="848" y="466" text-anchor="middle" data-k="auto"></text><rect class="bx" x="650" y="445" width="140" height="56" rx="8"/><text class="t1" data-k="clf1" x="720.0" y="471.0" text-anchor="middle"></text><text class="t2" data-k="clf2" x="720.0" y="488.0" text-anchor="middle"></text><circle class="nb" cx="926" cy="445" r="11"/><text class="nt" x="926" y="449.5" text-anchor="middle">8</text></g>
+<g data-s="9"><rect class="bx dash" x="430" y="445" width="170" height="56" rx="8"/><text class="t1" data-k="hum1" x="515.0" y="471.0" text-anchor="middle"></text><text class="t2" data-k="hum2" x="515.0" y="488.0" text-anchor="middle"></text><line class="ar dash" x1="600" y1="473" x2="648" y2="473" marker-end="url(#ah)"/><text class="t2" x="624" y="465" text-anchor="middle">평가만</text><circle class="nb" cx="414" cy="473" r="11"/><text class="nt" x="414" y="477.5" text-anchor="middle">9</text></g>
+</svg>
+  <figcaption>번호를 누르거나 "다음"을 누르면 해당 단계만 강조되고, 아래에 그 단계의 작동 원리와 관련 용어 풀이가 나옵니다. 위 줄은 지식 베이스를 만드는 길, 아래 줄은 검사할 대상(게시물 또는 새 제품)이 지나가는 길이고, 둘이 ⑤에서 만납니다. 점선 상자는 저장되지 않거나 평가에만 쓰이는 것입니다.</figcaption></figure>
+<figure class="arch" id="archfigMe" hidden><svg viewBox="0 0 1000 620" role="img" aria-label="열 명의 인터뷰로 사람마다 관계도를 만들고, 새 질문에는 본인 또는 비슷한 사람의 관계도에서 근거를 골라 트윈이 답한 뒤, 그 답을 본인 관계도와 맞대어 충실한지 가리는 구조">
+<defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#6a6d76"/></marker></defs>
+<g data-s="1"><rect class="bx dash" x="430" y="14" width="170" height="48" rx="8"/><text class="t1" x="515.0" y="36.0" text-anchor="middle">인물 온톨로지 틀</text><text class="t2" x="515.0" y="53.0" text-anchor="middle">특성 · 가치·입장 · 일화</text><line class="ar" x1="515" y1="62" x2="515" y2="96" marker-end="url(#ah2)"/><text class="t2" x="522" y="84">양식 제공</text><circle class="nb" cx="414" cy="38" r="11"/><text class="nt" x="414" y="42.5" text-anchor="middle">1</text></g>
+<g data-s="2"><rect class="bx" x="30" y="100" width="140" height="70" rx="8"/><text class="t1" x="100.0" y="133.0" text-anchor="middle">10명의 인터뷰</text><text class="t2" x="100.0" y="150.0" text-anchor="middle">앞 시기</text>
+<line class="ar" x1="170" y1="135" x2="228" y2="135" marker-end="url(#ah2)"/><line class="ar" x1="380" y1="135" x2="428" y2="135" marker-end="url(#ah2)"/>
+<path class="bx" d="M430 112a85 10 0 0 0 170 0a85 10 0 0 0-170 0zM430 112v58a85 10 0 0 0 170 0v-58"/><text class="t1" x="515" y="146" text-anchor="middle">10명의 관계도</text><text class="t2" x="515" y="164" text-anchor="middle">사람마다 하나씩</text><circle class="nb" cx="199" cy="116" r="11"/><text class="nt" x="199" y="120.5" text-anchor="middle">2</text></g>
+<g data-s="2 7"><rect class="bx" x="230" y="90" width="150" height="320" rx="10"/><text class="t1" x="305" y="205" text-anchor="middle">추출기</text>
+<rect class="bx" x="248" y="222" width="114" height="36" rx="6"/><text class="t2" x="305" y="244" text-anchor="middle">수준 가르기</text>
+<line class="ar" x1="305" y1="258" x2="305" y2="272" marker-end="url(#ah2)"/>
+<rect class="bx" x="248" y="274" width="114" height="36" rx="6"/><text class="t2" x="305" y="296" text-anchor="middle">관계 뽑기</text>
+<text class="t2" x="305" y="332" text-anchor="middle">인터뷰와 트윈 답 양쪽에</text></g>
+<g data-s="3"><line class="ar" x1="600" y1="135" x2="648" y2="135" marker-end="url(#ah2)"/><rect class="bx" x="650" y="105" width="140" height="60" rx="8"/><text class="t1" x="720.0" y="133.0" text-anchor="middle">대상 인물의 관계도</text><text class="t2" x="720.0" y="150.0" text-anchor="middle">한 명씩 돌아가며</text><circle class="nb" cx="624" cy="116" r="11"/><text class="nt" x="624" y="120.5" text-anchor="middle">3</text></g>
+<g data-s="4"><line class="ar" x1="515" y1="181" x2="515" y2="213" marker-end="url(#ah2)"/><rect class="bx" x="430" y="215" width="170" height="56" rx="8"/><text class="t1" x="515.0" y="241.0" text-anchor="middle">비슷한 사람 찾기</text><text class="t2" x="515.0" y="258.0" text-anchor="middle">나머지 9명 중 이웃</text><circle class="nb" cx="414" cy="243" r="11"/><text class="nt" x="414" y="247.5" text-anchor="middle">4</text></g>
+<g data-s="5"><rect class="bx dash" x="830" y="222" width="150" height="56" rx="8"/><text class="t1" x="905.0" y="248.0" text-anchor="middle">새 질문</text><text class="t2" x="905.0" y="265.0" text-anchor="middle">본인 기록에 없을 수도</text><line class="ar" x1="830" y1="250" x2="792" y2="250" marker-end="url(#ah2)"/>
+<line class="ar" x1="720" y1="165" x2="720" y2="213" marker-end="url(#ah2)"/><line class="ar" x1="600" y1="243" x2="648" y2="243" marker-end="url(#ah2)"/>
+<rect class="bx" x="650" y="215" width="140" height="70" rx="8"/><text class="t1" x="720.0" y="248.0" text-anchor="middle">근거 고르기</text><text class="t2" x="720.0" y="265.0" text-anchor="middle">본인 것 → 없으면 빌림</text><circle class="nb" cx="740" cy="196" r="11"/><text class="nt" x="740" y="200.5" text-anchor="middle">5</text></g>
+<g data-s="6"><line class="ar" x1="720" y1="285" x2="720" y2="328" marker-end="url(#ah2)"/><rect class="bx" x="650" y="330" width="140" height="60" rx="8"/><text class="t1" x="720.0" y="358.0" text-anchor="middle">트윈이 답 생성</text><text class="t2" x="720.0" y="375.0" text-anchor="middle">근거 출처 표시</text><circle class="nb" cx="740" cy="308" r="11"/><text class="nt" x="740" y="312.5" text-anchor="middle">6</text></g>
+<g data-s="7"><line class="ar" x1="650" y1="360" x2="382" y2="360" marker-end="url(#ah2)"/><text class="t2" x="516" y="352" text-anchor="middle">트윈의 답</text>
+<line class="ar" x1="305" y1="410" x2="305" y2="453" marker-end="url(#ah2)"/><rect class="bx dash" x="230" y="455" width="150" height="56" rx="8"/><text class="t1" x="305.0" y="481.0" text-anchor="middle">답에서 뽑은 내용</text><text class="t2" x="305.0" y="498.0" text-anchor="middle">임시로만 만듦</text><circle class="nb" cx="516" cy="378" r="11"/><text class="nt" x="516" y="382.5" text-anchor="middle">7</text></g>
+<g data-s="8"><line class="ar" x1="380" y1="483" x2="428" y2="483" marker-end="url(#ah2)"/><polyline class="ar" points="790,135 812,135 812,430 515,430 515,453" marker-end="url(#ah2)"/>
+<rect class="bx" x="430" y="455" width="170" height="56" rx="8"/><text class="t1" x="515.0" y="481.0" text-anchor="middle">수준별 비교</text><text class="t2" x="515.0" y="498.0" text-anchor="middle">본인 관계도와 맞댐</text><line class="ar" x1="600" y1="483" x2="648" y2="483" marker-end="url(#ah2)"/><rect class="bx" x="650" y="455" width="140" height="56" rx="8"/><text class="t1" x="720.0" y="481.0" text-anchor="middle">충실도 프로필</text><text class="t2" x="720.0" y="498.0" text-anchor="middle">수준별 점수</text><circle class="nb" cx="414" cy="483" r="11"/><text class="nt" x="414" y="487.5" text-anchor="middle">8</text></g>
+<g data-s="9"><line class="ar" x1="790" y1="483" x2="828" y2="483" marker-end="url(#ah2)"/><rect class="bx" x="830" y="455" width="150" height="56" rx="8"/><text class="t1" x="905.0" y="481.0" text-anchor="middle">규칙 판정</text><text class="t2" x="905.0" y="498.0" text-anchor="middle">충실 / 불충실 / 보류</text><circle class="nb" cx="809" cy="465" r="11"/><text class="nt" x="809" y="469.5" text-anchor="middle">9</text></g>
+<g data-s="10"><rect class="bx dash" x="430" y="548" width="170" height="56" rx="8"/><text class="t1" x="515.0" y="574.0" text-anchor="middle">뒤 시기 실제 본인 답</text><text class="t2" x="515.0" y="591.0" text-anchor="middle">+ 사람 채점</text><line class="ar dash" x1="600" y1="576" x2="648" y2="576" marker-end="url(#ah2)"/><text class="t2" x="624" y="568" text-anchor="middle">평가만</text>
+<rect class="bx" x="650" y="548" width="330" height="56" rx="8"/><text class="t1" x="815.0" y="574.0" text-anchor="middle">세 겹 평가</text><text class="t2" x="815.0" y="591.0" text-anchor="middle">PPL · 정답 고르기 · 수준별 비교 · 사람</text><circle class="nb" cx="414" cy="576" r="11"/><text class="nt" x="414" y="580.5" text-anchor="middle">10</text></g>
+</svg>
+  <figcaption>번호를 누르면 그 단계만 강조되고, 아래에 작동 원리와 그 단계에 쓰이는 이론·문헌이 나옵니다. Etudo &amp; Yoon에 없는 단계는 ④ 비슷한 사람 찾기, ⑤ 근거 고르기, ⑥ 답 생성입니다. 점선 상자는 저장되지 않거나 평가에만 쓰이는 것입니다. (11/18 논의 기준 가안)</figcaption></figure>
+  <div class="cap" id="cap"></div>
+</section>
+<footer>
+  참고: Etudo, U., &amp; Yoon, V. Y. (2024). Ontology-Based Information Extraction for Labeling Radical Online Content Using Distant Supervision. <i>Information Systems Research</i>, 35(1), 203–225. · McAdams, Homer &amp; Kahle 문헌은 원문 확인 전 · 2026-11-18
+</footer>
+</div>
+<script>
+/* 2. 시스템 구조 */
+const L={ref:{tmpl1:"TBO 틀",tmpl2:"주체·프레임·대상·관계",tmplA:"양식 제공",docA1:"조직 선전물",docA2:"예: AQAP 문서",kb1:"채워진 TBO",kb2:"(A, 점령한다, B)",
+ fds1:"FDS 추출기",fdsa:"대상 찾기",fdsb:"관계 찾기",base1:"기준 인스턴스",base2:"조직별 프레임 목록",docB1:"라벨 없는 글",docB2:"포럼 회원 602명",
+ tmp1:"글의 프레임",tmp2:"임시로만 만듦",cmp1:"관계별 비교",cmp2:"코사인 유사도",frp1:"공명 프로필 FRP",frp2:"관계 종류별 점수",
+ rbc1:"규칙 판정 RBC",rbc2:"공명함 / 아님",clf1:"분류 모델 학습",clf2:"SVM·로지스틱 등",hum1:"저자가 붙인 라벨",hum2:"동조 40 / 602명",auto:"자동 라벨"},
+me:{tmpl1:"소비 판단 온톨로지 틀",tmpl2:"속성·결과·가치·평가",tmplA:"양식 제공",docA1:"한 사람의 기록",docA2:"앞 시기 리뷰·인터뷰",kb1:"채워진 온톨로지",kb2:"(속성 → 결과 → 가치)",
+ fds1:"사슬 추출기",fdsa:"속성 찾기",fdsb:"결과·가치 연결",base1:"그 사람의 판단 사슬",base2:"속성별 평가·이유",docB1:"새 제품",docB2:"설명·속성 정보",
+ tmp1:"제품의 속성",tmp2:"임시로만 만듦",cmp1:"사슬 대조",cmp2:"속성이 닿는 사슬 찾기",frp1:"판단 프로필",frp2:"사슬별 점수 + 근거 등급",
+ rbc1:"선호 확률 계산",rbc2:"MNL · 불확실하면 보류",clf1:"베이즈 갱신",clf2:"LLM 재호출 없음",hum1:"뒤 시기 실제 평가",hum2:"별점·리뷰",auto:"예측 결과"}};
+const CAP={ref:[
+ ["전체 구조","조직의 문서와 검사할 글이 <b>같은 추출기</b>를 지나 각각 프레임이 되고, 둘을 비교한 점수에 규칙을 적용해 라벨을 자동으로 붙입니다.","번호를 누르면 그 단계의 작동 원리와 용어(TBO, FDS, FRP 등) 풀이가 나옵니다."],
+ ["① 틀을 준비한다 (TBO)","이념을 적을 빈 양식을 먼저 만듭니다. 프레임 하나는 (주어 대상, 관계, 목적어 대상) 세 칸입니다.","근거: 집단행동 프레이밍 이론. 클래스 87개, 대상 종류 34개."],
+ ["② 조직 선전물로 틀을 채운다 (FDS)","추출기가 문장에서 대상을 찾고, 대상 사이의 관계를 찾아 프레임으로 저장합니다. 이것이 지식 베이스입니다.","예: \"A 세력이 B 지역을 점령한다\" → (A, 점령한다, B)"],
+ ["③ 기준 인스턴스를 꺼낸다","조직 하나를 지정해 그 조직이 가진 관계별 주어·목적어 목록을 조회합니다. 이후 비교의 기준이 됩니다.",""],
+ ["④ 라벨 없는 글도 같은 추출기에 넣는다","포럼 회원의 글에서 프레임을 뽑습니다. 저장하지 않고 비교에만 쓰는 임시 결과입니다.","②와 같은 추출기를 쓰는 것이 핵심 — 양쪽이 같은 형식이라 비교할 수 있습니다."],
+ ["⑤ 관계별로 맞대어 비교한다","같은 관계가 양쪽에 있으면 주어끼리, 목적어끼리 글자 단위 빈도 벡터의 코사인 유사도를 구합니다. 한쪽에 없으면 0점.",""],
+ ["⑥ 공명 프로필(FRP)을 만든다","관계 종류별 점수를 한 줄로 늘어놓은 벡터입니다. 어느 관계에서 겹쳤는지 보이므로 판정 이유를 설명할 수 있습니다.","예: 점령한다 0.7 · 적으로 둔다 0.4 · 무기를 든다 0 · …"],
+ ["⑦ 규칙으로 자동 라벨을 붙인다 (RBC)","평균 점수가 충분히 높고, 그 이념이 가진 관계 종류의 절반 이상에서 0이 아니면 '공명함'으로 라벨합니다. 여기가 원격 감독입니다.","사람이 글을 읽지 않고 지식 베이스만으로 라벨이 생깁니다."],
+ ["⑧ 자동 라벨로 분류 모델을 학습한다","자동 라벨을 정답 삼아 일반 분류 모델을 학습합니다. 규칙만 쓸 때보다 시험 자료에서 성능이 좋았습니다.",""],
+ ["⑨ 사람 라벨은 평가에만 쓴다","저자가 직접 읽고 붙인 라벨과 비교해 성능을 잽니다. 자동 라벨 학습 F1 83~86%, 손 라벨 학습 최고 88%.",""]],
+me:[
+ ["전체 구조 (가안)","한 사람의 기록과 새 제품이 <b>같은 추출기</b>를 지나 각각 판단 사슬과 속성이 되고, 둘을 대조한 프로필에 규칙을 적용해 그 사람의 평가를 예측합니다.","이론 틀·클래스는 모두 가안입니다. 번호를 누르면 단계별 설명과 대응하는 용어가 나옵니다."],
+ ["① 틀을 준비한다","한 사람의 소비 판단을 적을 양식. 판단 하나는 (속성 → 결과 → 가치)와 그에 대한 평가입니다.","근거 이론 후보: 수단-목적 사슬 이론. 찾을 것: 원 문헌 확인."],
+ ["② 한 사람의 기록으로 틀을 채운다","추출기가 리뷰·인터뷰에서 그 사람이 본 속성을 찾고, 그것이 어떤 결과와 가치로 이어지는지 연결해 저장합니다.","찾을 것: 리뷰 30개로 사슬이 실제로 뽑히는지 시험. 리뷰에는 가치 층이 잘 안 나올 수 있음."],
+ ["③ 그 사람의 판단 사슬을 꺼낸다","사람 하나를 지정해 속성별 평가와 이유, 기록 수, 시점을 조회합니다.","기록이 없는 속성은 '자료 밖' — 이후 근거 등급 판단에 쓰임."],
+ ["④ 새 제품을 속성으로 쪼갠다","제품 설명과 상품 정보에서 속성을 뽑습니다. 처음 보는 제품이라도 속성 단위로는 저장된 사슬에 닿을 수 있습니다.",""],
+ ["⑤ 속성이 닿는 사슬을 대조한다","제품의 속성마다 그 사람의 사슬을 찾습니다. 본인 기록이 있으면 등급 1, 본인의 다른 사슬에서 추론하면 2, 비슷한 사람에서 빌리면 3, 없으면 4.","찾을 것: 언제 빌리고 언제 보류할지의 규칙."],
+ ["⑥ 판단 프로필을 만든다","사슬별 긍정·부정 점수와 근거 등급을 한 줄로 늘어놓습니다. 어떤 속성 때문에 좋아하거나 싫어할지, 그 판단이 무엇에 근거했는지 보입니다.",""],
+ ["⑦ 선호 확률을 계산한다 (후보: MNL)","제품 속성에 그 사람의 속성별 가중치를 곱해 선호 확률을 냅니다. 불확실성이 크거나 등급 4 비중이 크면 보류해 본인에게 직접 묻도록 표시합니다.","LLM을 부르지 않고 온톨로지에서 계산 — 원격 감독에 해당하는 자리. 단순 규칙으로 시작해 MNL로 바꿀 수 있음."],
+ ["⑧ 베이즈로 갱신한다","그 사람의 실제 평가가 새로 생기면 가중치만 고칩니다. 기록이 적을 때는 비슷한 사람들의 평균에 기대고, 쌓일수록 본인 쪽으로 옮겨 갑니다. LLM은 다시 부르지 않습니다.","근거: Arcanjo·Li·Stein (2026), Qiu 외 (2025). 비교 기준: 빈 LLM, 원문 발췌 트윈, 협업 필터링, 과거 기록 기반 계층 베이즈."],
+ ["⑨ 실제 평가는 평가에만 쓴다","뒤 시기에 그 사람이 실제로 매긴 별점·리뷰와 비교합니다. 인터뷰 인물은 이후 인터뷰 답과 비교합니다.","찾을 것: 차용(등급 3)이 그 사람이 부류와 다른 대목에서 해로운지."]]};
+
+const T={
+ TBO:["TBO","Terror Beliefs Ontology","테러 신념 온톨로지",["급진 이념을 담는 <b>틀(양식)</b>","프레임 하나 = (주어 대상, 관계, 목적어 대상)","최상위 클래스 4개: 주체 · 프레임 · 대상 · 관계"],"인물 온톨로지"],
+ CAFT:["CAFT","Collective Action Framing Theory","집단행동 프레이밍 이론",["TBO의 <b>근거 이론</b>","이념 = 진단 프레임 + 예후 프레임 + 동기 프레임","'공명(resonance)' 개념의 출처"],"McAdams 성격 3수준 (후보)"],
+ FDS:["FDS","Frame Discovery System","프레임 발견 시스템",["글에서 프레임을 뽑아 틀을 <b>채우는 추출기</b>","대상 찾기(NER) → 관계 찾기(RE) 두 단계","조직 선전물과 검사할 글 양쪽에 똑같이 적용"],"추출기"],
+ NER:["NER","Named Entity Recognition","개체명 인식",["문장에서 <b>대상</b>(사람, 조직, 장소, 종교 등)을 찾는 기술","FDS의 첫 단계"],"수준 가르기"],
+ RE:["RE","Relation Extraction","관계 추출",["찾은 대상들 사이의 <b>관계</b>를 찾는 기술","FDS의 둘째 단계. 결과가 프레임 세 칸이 됨"],"관계 뽑기"],
+ Claimant:["Claimant","약어 아님","주장 주체",["프레임을 말한 <b>조직 또는 온라인 인물</b>","'누구의 이념인가'를 구분하는 기준 — 기준 인스턴스는 주체 하나를 지정해 꺼냄"],"Person (대상 인물)"],
+ FRDS:["FRDS","Frame Resonance Detection System","프레임 공명 탐지 시스템",["글이 특정 이념과 맞는지 가리는 <b>탐지 시스템 전체</b>","비교(⑤) → FRP(⑥) → RBC(⑦) → 학습(⑧)을 묶어 부르는 이름"],"충실도 검증"],
+ FRP:["FRP","Frame Resonance Profile","프레임 공명 프로필",["글과 이념이 관계 종류별로 얼마나 겹치는지 적은 <b>점수 벡터</b>","글 1건 × 조직 1개마다 하나","어느 관계에서 겹쳤는지 보여 설명이 가능"],"충실도 프로필"],
+ RBC:["RBC","Rule-Based Classifier","규칙 기반 분류기",["FRP를 점수 하나로 요약해 <b>자동으로 라벨</b>을 붙이는 규칙","평균 점수가 충분히 높고, 관계 종류의 절반 이상에서 0이 아니면 '공명함'"],"규칙 판정 (충실/불충실/보류)"],
+ DS:["DS","Distant Supervision","원격 감독",["사람 대신 <b>지식 베이스</b>가 학습용 라벨을 만드는 방식","여기서는 채워진 TBO + RBC가 그 역할","논문에서는 약어 없이 풀어서 씀"],"본인 답 없이 관계도로 판정"],
+ TFIDF:["TF-IDF","Term Frequency–Inverse Document Frequency","단어 빈도 기반 특징",["글을 단어 출현 빈도로 나타내는 <b>기존 방식</b>","FRP와 성능을 비교한 기준선"],"비교 기준: 빈 LLM · 원문 발췌"]
+};
+const ST=[[],["TBO","CAFT"],["FDS","NER","RE"],["Claimant"],["FDS"],["FRDS"],["FRP"],["RBC","DS"],["TFIDF"],[]];
+const tcard=k=>{const t=T[k];return '<div class="g core"><span class="ab">'+t[0]+'</span><span class="full">'+t[1]+'</span><div class="ko">'+t[2]+'</div><ul>'+t[3].map(x=>'<li>'+x+'</li>').join('')+'</ul><div class="mine">내 연구에서는 → '+t[4]+'</div></div>';};
+const CAPME=[["전체 구조 (11/18 가안)", "10명의 인터뷰로 사람마다 관계도를 만들고, 새 질문이 오면 <b>본인 관계도</b> 또는 <b>성향이 비슷한 사람의 관계도</b>에서 근거를 골라 트윈이 답합니다. 그 답을 같은 추출기로 다시 뽑아 본인 관계도와 맞대어 충실한지 가립니다.", ["연구 주제: 인터뷰를 모아 만든 트윈이 실제 그 사람과 얼마나 같게 답하는가 (제품 판단 예측이 아님)", "Etudo &amp; Yoon과 같은 뼈대: 틀 → 채우기 → 기준 꺼내기 → 같은 추출기 → 비교 → 프로필 → 규칙 판정 → 사람 라벨로 평가", "새로 끼어든 단계: ④ 비슷한 사람 찾기, ⑤ 근거 고르기, ⑥ 답 생성. Etudo는 조직끼리 섞지 않았지만 여기서는 사람끼리 잇는 것이 핵심", "주 비교는 <b>본인 ↔ 본인의 트윈</b>. 다른 사람은 ① 빌려 올 근거 ② 바닥 기준 ③ 틀이 여러 사람에게 통하는지 확인, 세 가지로 쓰임", "이론이 둘로 나뉨: 틀은 McAdams 성격 3수준, 빌리기는 가치–태도–행동 위계. 둘 다 원문 확인 전"], ["MC", "ETUDO"]], ["① 틀을 준비한다", "한 사람을 담을 양식입니다. McAdams의 성격 3수준이 점의 종류를 정합니다 — 프레이밍 이론이 TBO의 칸을 정한 것과 같은 역할입니다.", ["<b>점</b>: Person, Topic(질문 대상), Trait(특성·말투, 1수준), Stance(입장)·Value(가치)·Goal/Habit(2수준), Episode(일화, 3수준), Statement(근거 발화)", "<b>선</b>: holdsStance(사람 → 주제), groundedIn(입장 → 가치), illustratedBy(입장·가치 → 일화), hasTrait/hasHabit/hasGoal, revises(입장 변화), evidencedBy(출처)", "<b>선에 붙는 라벨</b>: 극성(긍정/부정), 고유성(이 사람만/누구나), 근거 등급(본인/추론/차용), 시점", "<b>ACV의 자리</b>: 2수준 안의 선. 구체적 입장·선호(A) → 이유(C) → 가치(V)로 올라가는 사슬", "<b>말투</b>는 1수준의 점, <b>극성·시점</b>은 선의 꼬리표", "파일럿과의 연결: 본인 답의 근거가 일화 44%·원칙 26%였는데 일화는 3수준, 원칙은 2수준. 트윈은 일화가 16%로 줄었음", "가져오지 않는 것: PeaCoK의 다섯 관계 그대로(이론 근거가 얕음), 일반 상식(ATOMIC)을 개인의 것으로 넣기, 감정·인구통계"], ["MC", "ACV", "PEA"]], ["② 10명의 인터뷰로 틀을 채운다", "추출기가 발화마다 어느 수준의 내용인지 가르고, 점과 선을 뽑아 사람마다 관계도를 만듭니다. Etudo에서 조직별로 TBO를 채운 것과 같습니다.", ["모델이 후보를 뽑고 사람이 표본을 검증 — PeaCoK에서 모델 단독은 macro-F1 약 60%에 그쳐 사람 검증이 필요했음", "손 검수 정답 약 150개와 비교해 추출 정확도를 보고", "가치 층이 발화에 없으면 비워 둠. 모델이 추측해 채우지 않게 함", "같은 뜻의 다른 표현(\"튼튼하다\", \"오래간다\")을 한 점으로 묶는 기준이 필요", "10명을 고를 때 볼 것: 인터뷰 분량, 앞·뒤 시기가 모두 있는지, 주제가 서로 겹치는지"], ["PEA", "ETUDO"]], ["③ 대상 인물의 관계도를 꺼낸다", "한 명을 대상으로 정해 그 사람의 관계도를 기준으로 삼습니다. Etudo의 '조직 하나의 기준 인스턴스'에 해당합니다.", ["한 명씩 돌아가며 대상이 됨 → 열 번 돌리면 열 명분 결과", "주제마다 입장의 극성, 댄 가치, 일화, 발화 수, 시점을 조회", "발화 수가 0인 주제는 '자료 밖' — ⑤에서 빌릴지 보류할지 정하는 근거"], ["ETUDO"]], ["④ 성향이 비슷한 사람을 찾는다", "나머지 9명의 관계도와 맞대어 대상 인물과 가까운 사람을 고릅니다. 같은 점을 많이 공유할수록 비슷한 사람입니다. Etudo에는 없는 단계입니다.", ["같은 점을 공유해도 <b>방향이 같아야</b> 함 — 둘 다 '유행'을 말했어도 한쪽이 긍정, 다른 쪽이 부정이면 비슷한 사람이 아님", "<b>어느 수준에서 비슷함을 볼 것인가</b>: 겉 조건(나이·직업)은 전형으로 쏠릴 위험, 1수준(특성)은 말투만 맞을 수 있음, 2수준(가치·입장)이 새 주제의 입장을 가장 잘 맞힐 것이라는 가설", "PeaCoK의 '공유 속성으로 이어진 페르소나'와 같은 방식. PeaCoK은 극성 구분이 없었음", "한계: 후보가 9명뿐이라 '가장 비슷한 사람'도 꽤 다를 수 있음 → 같은 분야 인물로 모으는 것이 안전"], ["VAB", "PEA"]], ["⑤ 새 질문에 쓸 근거를 고른다", "본인 관계도에 그 주제가 있으면 본인 것을 쓰고, 없으면 비슷한 사람의 그 주제 입장을 빌려 옵니다. Etudo에는 없는 단계입니다.", ["근거마다 등급을 표시: 본인 발화 / 본인의 다른 내용에서 추론 / 비슷한 사람에게서 차용 / 없음", "본인 기록이 있는 주제에서는 빌리지 않음 — 빌린 답이 본인 답을 덮지 않게", "기록을 통째로 넣지 않고 근거만 골라 주는 이유: Qiu 외(2025)에서 LLM은 선택 기록을 더 보여 줘도 37% → 37%로 늘지 않았음", "<b>현실 문제</b>: 대상이 답한 적 없는 주제를 다른 사람은 답했어야 빌릴 수 있음. 주제 겹침이 적으면 빌릴 것이 없음", "<b>위험</b>: 빌리면 평균은 오르지만 그 사람이 부류와 다르게 생각하는 대목은 더 틀릴 수 있음 → ⑩에서 따로 확인"], ["QIU", "VAB"]], ["⑥ 트윈이 답을 만든다", "고른 근거를 받아 LLM이 그 사람으로서 답합니다. 답에는 무엇을 근거로 했는지 표시가 남습니다. Etudo에는 없는 단계입니다(그쪽은 글이 이미 쓰여 있음).", ["<b>비교 조건</b> (대상 인물마다)", "A — 아무것도 없음: 바닥", "B — 원문 발췌: 지난 파일럿 방식", "C — 본인 관계도만: 온톨로지의 효과", "D — 본인 관계도 + 비슷한 사람에게서 빌림: <b>빌리기의 효과</b>", "E — 본인 관계도 + 아무 사람에게서 빌림: 비슷함이 정말 중요한지", "D가 C보다 낫고 E보다도 나아야 '성향이 비슷한 사람을 참고한다'는 설계가 성립"], []], ["⑦ 트윈의 답도 같은 추출기에 넣는다", "트윈이 낸 답에서 입장, 가치, 일화, 말투를 뽑습니다. 저장하지 않고 비교에만 쓰는 임시 결과입니다. Etudo에서 라벨 없는 글에 같은 추출기를 쓴 것과 같습니다.", ["인터뷰와 트윈 답 양쪽에 같은 추출기를 써야 같은 형식으로 맞댈 수 있음", "추출이 틀리면 뒤 단계가 모두 틀리므로 ②의 추출 정확도 검증이 여기에도 적용됨"], ["ETUDO"]], ["⑧ 수준별로 맞대어 충실도 프로필을 만든다", "본인 관계도와 트윈 답에서 뽑은 내용을 관계 종류별로 비교해 점수를 한 줄로 늘어놓습니다. Etudo의 공명 프로필에 해당합니다.", ["입장(2수준): 극성이 같은가 — 숫자 차이", "가치(2수준): 같은 가치를 댔는가 — 겹침", "일화(3수준): 트윈이 든 일화가 본인 자료에 있는가 — 있음/없음", "말투(1수준): 문장 임베딩의 코사인 유사도", "Etudo는 글자 단위 코사인 유사도 하나였지만, 여기서는 관계 종류마다 맞는 방식이 다름", "어느 수준에서 벗어났는지 보이므로 판정 이유를 설명할 수 있음"], ["ETUDO", "MC"]], ["⑨ 규칙으로 충실/불충실/보류를 가린다", "프로필을 기준에 대어 판정합니다. 실제 본인 답을 보지 않고 관계도만으로 이루어지는, 원격 감독에 해당하는 자리입니다.", ["불충실의 기준: 편차가 본인이 같은 질문에 다시 답했을 때의 변동 범위를 넘는가", "보류: 본인 기록도 없고 빌릴 사람도 없는 주제 → 답하지 않고 '직접 물을 것'으로 표시", "쓰임: 불충실이면 다시 생성하거나 보류. 트윈 답을 믿을지 가려 줌"], ["ETUDO"]], ["⑩ 실제 본인 답으로 평가한다", "뒤 시기에 그 사람이 실제로 한 답과 비교합니다. 실제 답은 학습과 판정에 쓰지 않고 평가에만 씁니다. 리커트 척도가 아니므로 세 겹으로 잽니다.", ["<b>PPL</b> — 본인의 실제 답 문장을 모델이 얼마나 그럴듯하게 여기는가. 표현·말투 쪽 지표", "<b>정답 고르기</b> — 같은 주제에 대한 10명의 답 가운데 본인 답을 골라내는가. 우연 확률 10%. '전형으로 쏠리는가'를 직접 잼", "<b>수준별 구조 비교</b> — 입장 극성, 가치, 일화가 실제 답과 같은가. 이 연구만의 지표", "<b>사람 채점</b> — 두 조건의 답 중 어느 쪽이 본인 답에 가까운지 표본만 채점. 자동 지표가 믿을 만한지 확인", "<b>PPL만으로 부족한 이유</b>: 입장보다 표현을 잼, 원문 발췌 조건이 낱말 겹침으로 유리해짐, 자막 잡음에 끌려감, 정답 문장의 확률을 주는 계산 환경이 필요", "<b>기준</b>: 천장 = 본인이 다시 답했을 때의 일치, 바닥 = 다른 사람의 답과의 일치·조건 A, 그 사이 어디인가", "Twin-2K-500·Funhouse의 지표(정확도, 상관)는 척도형 응답이 필요해 쓰지 않음. 기준 구성(천장, 바닥, 개인화 대 전형)만 가져옴", "<b>질문을 세 구간으로</b>: 본인 기록이 있는 질문 / 없는 질문(빌린 답이 빈 LLM보다 나은가) / 본인이 비슷한 사람들과 다르게 답한 질문(빌린 답이 더 틀리는가)", "사람 검증은 Etudo처럼 세 군데: 틀의 타당성(전문가), 추출 정확도(손 검수 150), 최종 판정(답 쌍 약 100)", "한계: 10명은 통계 검정에는 적어 방향과 크기만 봄"], ["TWIN", "PEA"]]];
+const T2={"MC": ["McAdams 성격 3수준", "McAdams (1995); McAdams &amp; Pals (2006)", "틀을 정하는 이론", ["1수준 기질적 특성 — 성격 특질, 말하는 방식", "2수준 특징적 적응 — 가치, 목표, 신념, 입장, 습관", "3수준 삶의 이야기 — 본인이 의미를 부여한 일화", "Etudo의 프레이밍 이론 자리. 원문 확인 필요"], "① 틀, ⑧ 비교"], "ACV": ["ACV · 래더링", "Gutman (1982); Reynolds &amp; Gutman (1988)", "수단-목적 사슬", ["속성(A) → 결과(C) → 가치(V)로 '왜?'를 따라 올라감", "원래 제품용. 여기서는 구체적 입장 → 이유 → 가치로 읽음", "LadderTeam에서는 세 질문법 중 ACV가 가장 안정적이었음"], "① 2수준 안의 선, ② 추출"], "PEA": ["PeaCoK", "Gao 외 (ACL 2023)", "페르소나 상식 지식 그래프", ["(페르소나, 관계, 속성) 삼항. 관계는 특성·습관·목표·경험·대인관계 5종", "약 10만 개 사실, 모델이 생성하고 사람이 검증", "고유성 라벨(이 페르소나만 / 누구나), 공유 속성으로 페르소나를 이음", "평가는 PPL · 정답 고르기(Hits@1) · 사람의 승/패 채점", "개인이 아니라 유형이고, 근거가 디자인 지침과 대화 주제 분류라 이론은 얕음"], "① 형식·고유성, ④ 공유로 잇기, ⑩ 평가 구성"], "VAB": ["가치–태도–행동 위계", "Homer &amp; Kahle (1988)", "빌리기의 근거", ["가치가 태도를, 태도가 행동을 이끈다는 위계", "'가치가 비슷하면 새 주제의 입장도 비슷할 것'의 근거로 쓰려는 후보", "원문 확인 필요"], "④ 비슷한 사람 찾기, ⑤ 근거 고르기"], "QIU": ["Bayesian Teaching", "Qiu 외 (2025)", "LLM은 기록을 보여 줘도 잘 못 배움", ["선택을 5번 보여 줘도 37% → 37%, 베이즈 계산법은 81%", "기록을 통째로 넣기보다 근거를 골라 주는 설계의 이유", "수치는 수업 발표 자료 기준"], "⑤ 근거 고르기"], "TWIN": ["Twin-2K-500 · Funhouse Mirrors", "Toubia 외 (2025); Peng 외 (2026)", "평가의 기준 구성", ["천장: 본인 재응답과의 일치", "바닥: 정보 없는 LLM, 겉 조건만 준 조건", "개인화 대 전형: 트윈이 그 사람에게 가까운가, 부류에 가까운가", "지표 자체는 척도형이라 쓰지 않음"], "⑩ 평가"], "ETUDO": ["Etudo &amp; Yoon", "ISR 2024", "전체 뼈대", ["TBO 틀 ↔ 인물 온톨로지 틀", "FDS ↔ 추출기 (양쪽에 같은 것)", "기준 인스턴스 ↔ 대상 인물의 관계도", "공명 프로필(FRP) ↔ 충실도 프로필", "규칙 판정(RBC) ↔ 충실/불충실/보류", "사람 라벨은 평가에만"], "②③⑦⑧⑨, 사람 검증 세 군데"]};
+let side='me',step=0;
+const sec=document.getElementById('arch'),figR=document.getElementById('archfig'),figM=document.getElementById('archfigMe'),cap=document.getElementById('cap'),chips=document.getElementById('chips');
+const tcard2=k=>{const t=T2[k];return '<div class="g core"><span class="ab" style="font-size:15.5px">'+t[0]+'</span><span class="full">'+t[1]+'</span><div class="ko">'+t[2]+'</div><ul>'+t[3].map(x=>'<li>'+x+'</li>').join('')+'</ul><div class="mine">쓰이는 자리 → '+t[4]+'</div></div>';};
+function draw(){
+  const me=side==='me',fig=me?figM:figR,N=me?10:9;
+  if(step>N)step=0;
+  sec.classList.toggle('me',me);figR.hidden=me;figM.hidden=!me;
+  figR.querySelectorAll('[data-k]').forEach(t=>{t.textContent=L.ref[t.dataset.k]});
+  chips.innerHTML='<button type="button" class="all" data-n="0">전체</button>'+Array.from({length:N},(_,i)=>'<button type="button" data-n="'+(i+1)+'">'+(i+1)+'</button>').join('');
+  fig.classList.toggle('focus',step>0);
+  fig.querySelectorAll('g[data-s]').forEach(g=>g.classList.toggle('on',step>0&&g.dataset.s.split(' ').includes(String(step))));
+  chips.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.n===step));
+  document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.side===side));
+  if(me){
+    const c=CAPME[step];
+    cap.innerHTML='<h3>'+c[0]+'</h3><p>'+c[1]+'</p><ul class="pts">'+c[2].map(x=>'<li>'+x+'</li>').join('')+'</ul>'+(c[3].length?'<div class="glh">이 단계에 쓰이는 이론·문헌</div><div class="gl">'+c[3].map(tcard2).join('')+'</div>':'');
+  }else{
+    const c=CAP.ref[step];
+    cap.innerHTML='<h3>'+c[0]+'</h3><p>'+c[1]+'</p>'+(c[2]?'<div class="ex">'+c[2]+'</div>':'')+(ST[step].length?'<div class="glh">이 단계의 용어</div><div class="gl">'+ST[step].map(tcard).join('')+'</div>':'');
+  }
+}
+chips.onclick=e=>{const b=e.target.closest('button');if(b){step=+b.dataset.n;draw();}};
+document.querySelector('.seg').onclick=e=>{const b=e.target.closest('button');if(b){side=b.dataset.side;draw();}};
+document.getElementById('prev').onclick=()=>{const N=side==='me'?10:9;step=(step+N)%(N+1);draw();};
+document.getElementById('nextb').onclick=()=>{const N=side==='me'?10:9;step=(step+1)%(N+1);draw();};
+draw();
+
+
+</script>
+</body>
+</html>
