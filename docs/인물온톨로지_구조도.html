@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>인물 온톨로지 구조도 (v0.2)</title>
+<title>인물 온톨로지 구조도 (v0.3)</title>
 <style>
   :root{--ink:#1b1c20;--mute:#6a6d76;--line:#e3e5ea;--bg:#f7f7f9;--card:#fff;--me:#2459d6;--me-bg:#eaf1ff;--ref:#5b6475;--ref-bg:#f1f3f6;--ref-line:#cfd4dd;--done:#1f8a55;--done-bg:#e6f6ee;--draft:#b06a00;--draft-bg:#fff3de}
   *{box-sizing:border-box}
@@ -59,12 +59,12 @@
 <body>
 <div class="wrap">
 <header>
-  <h1>인물 온톨로지 구조도 (v0.2)</h1>
+  <h1>인물 온톨로지 구조도 (v0.3)</h1>
   <p>객체 유형마다 카드 하나(유형 · 예시 객체 · 속성)를 두고, 유형 사이의 관계를 화살표로 그렸습니다. 카드를 누르면 정의, 칸, 공리, 키 논문과의 대응이 아래에 나옵니다. 예시 객체는 설명용으로 지어낸 것입니다.</p>
   <div class="legend">
     <span><span class="sw c"></span>사람별 상자 (한 사람의 주장 한 건)</span>
     <span><span class="sw p"></span>공유되는 점 (여러 사람이 함께 가리킴)</span>
-    <span>화살표 = 관계 (앞자리 → 뒷자리)</span>
+    <span>화살표 = 관계 (앞자리 → 뒷자리)</span><span>ID: 상자 ST-0001 · 발화 P01-I03-012 (사람-자료-순번)</span>
   </div>
 </header>
 
@@ -75,7 +75,7 @@
 <figure><svg id="fig" viewBox="0 0 1100 800" role="img" aria-label="인물 온톨로지 구조도"></svg></figure>
 <div class="panel" id="panel"></div>
 
-<footer>기준: 인물 온톨로지 설계표 v0.2 (클래스 · 관계 · 공리). 이론: McAdams 3수준 뼈대, PACE의 이론(HEXACO · Schwartz · 자기결정 이론 · 조절 초점 · Mischel &amp; Shoda), ACV. 2026-11-21.</footer>
+<footer>기준: 인물 온톨로지 설계표 v0.3 (클래스 · 관계 · 공리). 이론: McAdams 3수준 뼈대, PACE의 이론(HEXACO · Schwartz · 자기결정 이론 · 조절 초점 · Mischel &amp; Shoda), ACV. 2026-11-21.</footer>
 </div>
 
 <script>
@@ -96,15 +96,15 @@ const IC={
 };
 /* node: [id, icon, x, y, w, type, objectLine, extraLines[], claim] */
 const VA=[
- ['stance','stance',550,350,290,'Stance (입장 상자)','P01_유행하는옷_반대_S012',['Properties: 근거 등급, 고유성'],1],
+ ['stance','stance',550,350,290,'Stance (입장 상자)','ST-0001',['label: P01 · 유행하는 옷 · 반대','Properties: 근거 등급, 고유성'],1],
  ['person','person',550,66,240,'Person','P01 (가명)',['Properties: 자료 범위, 매체 수'],0],
  ['situation','situation',940,74,230,'Situation','소비 습관을 묻는 질문',['Properties: 목록 5~7개 중 하나'],0],
  ['topic','topic',140,350,240,'Topic','유행하는 옷',['Properties: 범주, 공유 인원 수'],0],
- ['statement','doc',955,350,270,'Statement','S012 · 2023 인터뷰 · 답 12',['Properties: 날짜, 매체·형식, 원문 구절'],0],
+ ['statement','doc',955,350,270,'Statement','P01-I03-012',['= P01의 3번째 자료, 12번째 답','Properties: 날짜, 매체·형식, 원문 구절'],0],
  ['attribute','attr',180,640,240,'Attribute','일시성 (C04-01)',['Properties: 공유 인원 수'],0],
  ['consequence','cons',450,640,230,'Consequence','쓸모가 끝남',['Properties: 공유 인원 수'],0],
  ['value','value',720,640,250,'Value','안전 · "오래가는 것"',['Properties: Schwartz 칸, 본인의 말'],0],
- ['episode','episode',975,640,220,'Episode (일화)','밀라노 코트',['Properties: 때, 곳, 사건'],1]
+ ['episode','episode',975,640,220,'Episode (일화)','EP-0001',['label: P01 · 밀라노 코트','Properties: 때, 곳, 사건'],1]
 ];
 /* edge: [x1,y1,x2,y2,label,dashed,labelOffset] */
 const EA=[
@@ -112,33 +112,33 @@ const EA=[
  [592,328,821,154,'inSituation'],
  [508,350,180,350,'hasTopic'],
  [594,350,912,350,'evidencedBy'],
- [470,462,206,604,'hasAttribute'],
- [520,462,456,602,'hasConsequence'],
- [610,462,712,602,'hasValue · 지킴/해침'],
+ [470,480,206,604,'hasAttribute'],
+ [520,480,456,602,'hasConsequence'],
+ [610,480,712,602,'hasValue · 지킴/해침'],
  [762,640,933,640,'illustratedBy'],
  [955,314,955,192,'질문 상황',1]
 ];
 const VB=[
  ['person','person',550,380,240,'Person','P01 (가명)',['Properties: 자료 범위, 매체 수'],0],
- ['stance','stance',550,66,290,'Stance (입장 상자)','P01_유행하는옷_반대_S012',['→ Topic · Attribute · Consequence · Value'],1],
- ['traitclaim','trait',170,110,280,'TraitClaim (특질 상자)','P01_단정적이다',['→ Trait: 단정적이다 (HEXACO)','Properties: 상황 종류 수, 반복 횟수'],1],
- ['motiveclaim','motive',930,110,280,'MotivationClaim (동기 상자)','P01_자율',['→ Motivation: 자율 (자기결정 이론)','Properties: 근거 등급'],1],
- ['orientclaim','orient',150,380,270,'OrientationClaim (지향 상자)','P01_예방지향',['→ Orientation: 예방 지향 (조절 초점)'],1],
- ['policy','policy',950,380,270,'Policy (상황별 방침)','비판 받으면 → 짧고 단호하게',['→ Situation: 비판 받음','Properties: 근거 발화 수'],1],
- ['episode','episode',550,660,240,'Episode (일화)','밀라노 코트',['Properties: 때, 곳, 사건'],1]
+ ['stance','stance',550,66,290,'Stance (입장 상자)','ST-0001',['label: P01 · 유행하는 옷 · 반대','→ Topic · Attribute · Consequence · Value'],1],
+ ['traitclaim','trait',170,110,280,'TraitClaim (특질 상자)','TC-0001',['label: P01 · 단정적이다','→ Trait: 단정적이다 (HEXACO)','Properties: 상황 종류 수, 반복 횟수'],1],
+ ['motiveclaim','motive',930,110,280,'MotivationClaim (동기 상자)','MC-0001',['label: P01 · 자율','→ Motivation: 자율 (자기결정 이론)','Properties: 근거 등급'],1],
+ ['orientclaim','orient',150,380,270,'OrientationClaim (지향 상자)','OC-0001',['label: P01 · 예방 지향','→ Orientation: 예방 지향 (조절 초점)'],1],
+ ['policy','policy',950,380,270,'Policy (상황별 방침)','PO-0001',['label: P01 · 비판 받으면 → 짧고 단호하게','→ Situation: 비판 받음','Properties: 근거 발화 수'],1],
+ ['episode','episode',550,640,240,'Episode (일화)','EP-0001',['label: P01 · 밀라노 코트','Properties: 때, 곳, 사건'],1]
 ];
 const EB=[
- [550,182,550,344,'hasHolder'],
- [250,242,516,362,'hasHolder'],
- [850,242,584,362,'hasHolder'],
+ [550,198,550,344,'hasHolder'],
+ [250,262,516,362,'hasHolder'],
+ [850,262,584,362,'hasHolder'],
  [186,380,514,380,'hasHolder'],
  [914,380,586,380,'hasHolder'],
- [550,624,550,496,'hasHolder']
+ [550,604,550,496,'hasHolder']
 ];
 const DET={
- stance:{t:'Stance — 입장 상자',id:'C13',k:'c',d:'한 사람이 한 발화에서 한 대상에 대해 밝힌 입장과, 그 이유 사슬(A → C → V)을 묶은 상자입니다. 선에는 근거·시점·상황을 달 수 없기 때문에 주장 자체를 사물로 만들었습니다.',
-  s:[['hasHolder','Person','정확히 1'],['hasTopic','Topic','정확히 1'],['hasPolarity','찬성 / 반대 / 조건부','정확히 1'],['hasAttribute','Attribute','0~1 (빈칸 허용)'],['hasConsequence','Consequence','0~1 (빈칸 허용)'],['hasValue','Value','0~1 (빈칸 허용)'],['valueEffect','지킴 / 해침','hasValue가 있으면 1'],['inSituation','Situation','정확히 1'],['evidencedBy','Statement','1개 이상'],['revises','Stance (예전 입장)','0~1']],
-  a:['A01','A02','A03','A05','A10','A12','A15','A16'],r:'FrameRelation 상자 (Israel_besieges_WestBank). hasClaimant ↔ hasHolder, hasRange ↔ hasTopic, hasFrame ↔ hasPolarity. A·C·V 칸은 우리에게만 있음.',
+ stance:{t:'Stance — 입장 상자',id:'C13',k:'c',d:'한 사람이 한 발화에서 한 대상에 대해 밝힌 입장과, 그 이유 사슬(A → C → V)을 묶은 상자입니다. 선에는 근거·시점·상황을 달 수 없기 때문에 주장 자체를 사물로 만들었습니다. ID는 ST-0001처럼 내용과 무관한 번호이고, 사람이 읽는 이름은 label 속성입니다.',
+  s:[['hasHolder','Person','정확히 1'],['hasTopic','Topic','정확히 1'],['hasPolarity','찬성 / 반대 / 조건부','정확히 1'],['hasAttribute','Attribute','0~1 (빈칸 허용)'],['hasConsequence','Consequence','0~1 (빈칸 허용)'],['hasValue','Value','0~1 (빈칸 허용)'],['valueEffect','지킴 / 해침','hasValue가 있으면 1'],['inSituation','Situation','정확히 1'],['evidencedBy','Statement','1개 이상'],['revises','Stance (예전 입장)','0~1'],['label','글자 (사람 · 대상 · 찬반)','정확히 1']],
+  a:['A01','A02','A03','A05','A10','A12','A15','A16','A17','A18'],r:'FrameRelation 상자 (Israel_besieges_WestBank). hasClaimant ↔ hasHolder, hasRange ↔ hasTopic, hasFrame ↔ hasPolarity. A·C·V 칸은 우리에게만 있음.',
   x:['상자는 사람마다, 점은 공유: P01과 P02의 입장 상자가 같은 "일시성" 점을 가리키면 두 사람이 이어짐','새 질문에 답할 때 비슷한 사람의 상자를 통째로 빌려 옴 — 근거 발화가 함께 따라옴','입장이 바뀌면 새 상자를 만들고 revises로 예전 상자와 이음']},
  person:{t:'Person — 사람',id:'C01',k:'p',d:'온톨로지의 주인입니다. 모든 상자가 hasHolder로 한 사람을 가리킵니다. 사람 자체에는 성향을 직접 적지 않고, 성향은 상자로만 붙습니다.',
   s:[['(들어옴) hasHolder','모든 상자에서','상자마다 1']],a:['A16'],r:'Claimant (PFLP 같은 조직). 키 논문은 "누가 말했나"로 서랍을 정리했고, 우리는 "누구의 주장인가"로 정리.',
@@ -146,8 +146,8 @@ const DET={
  situation:{t:'Situation — 질문이 만든 상황',id:'C10',k:'p',d:'질문이 만든 상황입니다(조언 요청, 비판 받음, 회상, 찬반, 칭찬 받음 등 5~7개 목록). 매체·형식과 주변 맥락은 발화(Statement)에 따로 적습니다.',
   s:[['(들어옴) inSituation','Stance, Policy','상자마다 1']],a:['A09','A14'],r:'키 논문에는 상황 기록이 없었음.',x:['Mischel &amp; Shoda: 같은 사람도 상황이 같을 때 일관됨 → 비교와 빌리기를 같은 상황끼리 함']},
  topic:{t:'Topic — 대상',id:'C03',k:'p',d:'질문이나 입장의 대상입니다. 찬반을 붙일 수 있어야 합니다.',s:[['(들어옴) hasTopic','Stance','상자마다 1']],a:['A01'],r:'FrameEntity 중 hasRange 쪽 (West Bank). 다만 키 논문은 문장 속 명사를 클래스로 만들었고, 우리는 대상을 Topic의 인스턴스로 둠.',x:['같은 Topic에 찬성하는 사람과 반대하는 사람이 같은 점을 공유함 — 찬반은 상자의 칸']},
- statement:{t:'Statement — 근거 발화',id:'C02',k:'p',d:'근거가 된 발화 한 구절입니다. 날짜, 매체·형식, 질문이 만든 상황, 주변 맥락, 원문 구절이 붙어 있습니다. 상자의 시점과 상황은 여기서 옵니다.',
-  s:[['(들어옴) evidencedBy','모든 상자','상자마다 1개 이상']],a:['A05','A08','A11','A16'],r:'선언문·성명서의 문장.',x:['뒤 시기 발화는 평가용으로 떼어 두고 관계도에 넣지 않음 (A11)','지면 기사 문장은 특질의 근거로 쓰지 않음 (A08)']},
+ statement:{t:'Statement — 근거 발화',id:'C02',k:'p',d:'근거가 된 발화 한 구절입니다. 날짜, 매체·형식, 질문이 만든 상황, 주변 맥락, 원문 구절이 붙어 있습니다. 상자의 시점과 상황은 여기서 옵니다. ID는 사람-자료-순번입니다: P01-I03-012 = P01의 3번째 자료(영상·기사 한 건)의 12번째 답.',
+  s:[['(들어옴) evidencedBy','모든 상자','상자마다 1개 이상']],a:['A05','A08','A11','A16','A18'],r:'선언문·성명서의 문장.',x:['뒤 시기 발화는 평가용으로 떼어 두고 관계도에 넣지 않음 (A11)','지면 기사 문장은 특질의 근거로 쓰지 않음 (A08)']},
  attribute:{t:'Attribute — 대상에 대해 본 특징 (A)',id:'C04',k:'p',d:'대상의 성질입니다. 아래층(일시성, 획일성 …)은 이론이 아니라 자료에서 올라오며, 두 명 이상이 공유해야 클래스가 됩니다.',
   s:[['(들어옴) hasAttribute','Stance','상자마다 0~1']],a:['A13','A15'],r:'키 논문에서는 세부 꼬리표가 관계가 되었지만, 우리는 아래층 클래스가 됨.',x:['예: C04-01 일시성 (P01 · P02), C04-02 획일성 (P01 · P03)']},
  consequence:{t:'Consequence — 결과·이유 (C)',id:'C05',k:'p',d:'그 특징이 가져오는 결과나 이유입니다. "그래서 ~하다"로 읽힙니다.',s:[['(들어옴) hasConsequence','Stance','상자마다 0~1']],a:['A15'],r:'키 논문에 해당 칸 없음.',x:['아래층을 Attribute처럼 2명 규칙으로 만들지는 아직 결정 필요']},

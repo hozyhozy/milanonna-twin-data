@@ -142,7 +142,7 @@
 <div class="wrap">
 <header>
   <h1>꼬리표에서 관계도까지 — 예시로 보는 과정</h1>
-  <p>Etudo &amp; Yoon의 thematic coding(Atlas.ti) → 온톨로지 단계를 우리 연구에 옮긴 예시입니다. 발화 4개는 설명용으로 지어낸 것이고, 기준은 설계표 v0.2입니다. 번호를 누르면 그 단계의 그림과 설명이 아래에 나옵니다.</p>
+  <p>Etudo &amp; Yoon의 thematic coding(Atlas.ti) → 온톨로지 단계를 우리 연구에 옮긴 예시입니다. 발화 4개는 설명용으로 지어낸 것이고, 기준은 설계표 v0.3입니다. 번호를 누르면 그 단계의 그림과 설명이 아래에 나옵니다.</p>
   <div class="legend">
     <span>큰 꼬리표(칸):</span>
     <span class="k k-s">입장</span><span class="k k-a">특징 A</span><span class="k k-c">결과 C</span><span class="k k-v">가치 V</span>
@@ -223,8 +223,8 @@
   <circle class="nb" cx="24" cy="26" r="13"/><text class="nt" x="24" y="30.5" text-anchor="middle">5</text>
   <text class="t1" x="46" y="25">관계도로 옮기기</text><text class="t2" x="46" y="43">사람별 상자 → 공유 점</text>
   <path class="ln" d="M52 66 L52 56 L250 56 L250 64" stroke="#2459d6" marker-end="url(#ah2)"/>
-  <rect x="14" y="66" width="76" height="24" rx="5" fill="#1b1c20"/><text class="t3" x="52" y="82" text-anchor="middle" fill="#fff" font-weight="700">P01 상자</text>
-  <rect x="14" y="150" width="76" height="24" rx="5" fill="#1b1c20"/><text class="t3" x="52" y="166" text-anchor="middle" fill="#fff" font-weight="700">P02 상자</text>
+  <rect x="14" y="66" width="76" height="24" rx="5" fill="#1b1c20"/><text class="t3" x="52" y="82" text-anchor="middle" fill="#fff" font-weight="700">ST-0001</text>
+  <rect x="14" y="150" width="76" height="24" rx="5" fill="#1b1c20"/><text class="t3" x="52" y="166" text-anchor="middle" fill="#fff" font-weight="700">ST-0003</text>
   <rect x="120" y="66" width="64" height="24" rx="5" fill="#fff" stroke="#9ea2ac"/><text class="t3" x="152" y="82" text-anchor="middle">유행 옷</text>
   <rect x="120" y="150" width="64" height="24" rx="5" fill="#fff" stroke="#9ea2ac"/><text class="t3" x="152" y="166" text-anchor="middle">세일 구매</text>
   <rect x="210" y="104" width="62" height="28" rx="5" fill="#E1F5EE" stroke="#0F6E56" stroke-width="2"/><text class="t3" x="241" y="122" text-anchor="middle" fill="#0F6E56" font-weight="700">일시성</text>
@@ -252,7 +252,7 @@
 <div class="cap" id="cap"></div>
 
 <footer>
-  설계표: 인물 온톨로지 설계표 v0.2 (클래스·관계·공리). 발화와 인물은 모두 설명용으로 지어낸 것이며 실제 인터뷰 인용이 아닙니다. 2026-11-21.
+  설계표: 인물 온톨로지 설계표 v0.3 (클래스·관계·공리). 발화와 인물은 모두 설명용으로 지어낸 것이며 실제 인터뷰 인용이 아닙니다. 2026-11-21.
 </footer>
 </div>
 
@@ -262,21 +262,21 @@ const slot=(c,lab,body,tag)=>'<div class="slot '+c+'"><small>'+lab+(tag==='n'?'<
 const empty=lab=>'<div class="slot e"><small>'+lab+'</small>빈칸 (말하지 않음)</div>';
 
 const D1='<div class="g4">'+[
- ['P01','#2459d6','인터뷰 영상','소비 습관을 묻는 질문','본인 채널, 2023','"유행하는 옷은 안 사요. 한철 지나면 못 입거든요. 저는 오래 두고 입을 수 있는 걸 사요."'],
- ['P01','#2459d6','다른 인터뷰 영상','요즘 유행을 묻는 질문','방송 출연, 2023','"요즘 다들 똑같이 입어서 누가 누군지 모르겠어요."'],
- ['P02','#1f8a55','인터뷰 영상','쇼핑 습관을 묻는 질문','본인 채널, 2022','"세일한다고 막 사면 금방 질려서 결국 버리게 돼요."'],
- ['P03','#b06a00','인터뷰 기사(본인 답 그대로)','취향을 묻는 질문','잡지, 2024','"남들이 다 하는 건 저는 굳이 안 해요."']
-].map(u=>'<div class="ucard"><div class="who"><span class="dot" style="background:'+u[1]+'"></span> '+u[0]+'</div><div class="meta"><b>매체·형식</b><span>'+u[2]+'</span><b>질문 상황</b><span>'+u[3]+'</span><b>주변 맥락</b><span>'+u[4]+'</span></div><div class="quote">'+u[5]+'</div></div>').join('')+'</div>';
+ ['P01','#2459d6','인터뷰 영상','소비 습관을 묻는 질문','본인 채널, 2023','P01-I03-012','"유행하는 옷은 안 사요. 한철 지나면 못 입거든요. 저는 오래 두고 입을 수 있는 걸 사요."'],
+ ['P01','#2459d6','다른 인터뷰 영상','요즘 유행을 묻는 질문','방송 출연, 2023','P01-I04-007','"요즘 다들 똑같이 입어서 누가 누군지 모르겠어요."'],
+ ['P02','#1f8a55','인터뷰 영상','쇼핑 습관을 묻는 질문','본인 채널, 2022','P02-I05-031','"세일한다고 막 사면 금방 질려서 결국 버리게 돼요."'],
+ ['P03','#b06a00','인터뷰 기사(본인 답 그대로)','취향을 묻는 질문','잡지, 2024','P03-I02-004','"남들이 다 하는 건 저는 굳이 안 해요."']
+].map(u=>'<div class="ucard"><div class="who"><span class="dot" style="background:'+u[1]+'"></span> '+u[0]+'</div><div class="meta"><b>발화 ID</b><span style="color:var(--ink);font-weight:600">'+u[5]+'</span><b>매체·형식</b><span>'+u[2]+'</span><b>질문 상황</b><span>'+u[3]+'</span><b>주변 맥락</b><span>'+u[4]+'</span></div><div class="quote">'+u[6]+'</div></div>').join('')+'</div>';
 
 const dec=(who,col,q,sl)=>'<div class="dec"><div class="who"><span class="dot" style="background:'+col+'"></span> '+who+'</div><div class="quote">'+q+'</div><div class="slots">'+sl+'</div></div>';
 const D2=
- dec('P01 ① · 소비 습관 질문','#2459d6','<span class="hl hl-s">유행하는 옷은 안 사요</span>. <span class="hl hl-a">한철 지나면</span> <span class="hl hl-c">못 입거든요</span>. 저는 <span class="hl hl-v">오래 두고 입을 수 있는 걸</span> 사요.',
+ dec('P01 ① · P01-I03-012 · 소비 습관 질문','#2459d6','<span class="hl hl-s">유행하는 옷은 안 사요</span>. <span class="hl hl-a">한철 지나면</span> <span class="hl hl-c">못 입거든요</span>. 저는 <span class="hl hl-v">오래 두고 입을 수 있는 걸</span> 사요.',
    slot('s','입장','유행하는 옷 · 반대')+slot('a','특징 A','오래가지 않는다','n')+slot('c','결과 C','쓸모가 금방 끝난다','n')+slot('v','가치 V','본인 말 "오래가는 것"<br>Schwartz 칸: 안전 (후보)'))+
- dec('P01 ② · 요즘 유행 질문','#2459d6','<span class="hl hl-s">요즘</span> <span class="hl hl-a">다들 똑같이</span> 입어서 <span class="hl hl-c">누가 누군지 모르겠어요</span>.',
+ dec('P01 ② · P01-I04-007 · 요즘 유행 질문','#2459d6','<span class="hl hl-s">요즘</span> <span class="hl hl-a">다들 똑같이</span> 입어서 <span class="hl hl-c">누가 누군지 모르겠어요</span>.',
    slot('s','입장','요즘 옷차림 · 반대<br><span style="font-size:11.5px;color:var(--mute)">(말투에서 읽음)</span>')+slot('a','특징 A','남과 같아진다','n')+slot('c','결과 C','내가 드러나지 않는다','n')+empty('가치 V'))+
- dec('P02 · 쇼핑 습관 질문','#1f8a55','<span class="hl hl-s">세일한다고 막 사면</span> <span class="hl hl-a">금방 질려서</span> <span class="hl hl-c">결국 버리게 돼요</span>.',
+ dec('P02 · P02-I05-031 · 쇼핑 습관 질문','#1f8a55','<span class="hl hl-s">세일한다고 막 사면</span> <span class="hl hl-a">금방 질려서</span> <span class="hl hl-c">결국 버리게 돼요</span>.',
    slot('s','입장','세일 충동구매 · 반대')+slot('a','특징 A','오래가지 않는다','r')+slot('c','결과 C','쓸모가 금방 끝난다','r')+empty('가치 V'))+
- dec('P03 · 취향 질문','#b06a00','<span class="hl hl-a">남들이 다 하는</span> <span class="hl hl-s">건 저는 굳이 안 해요</span>.',
+ dec('P03 · P03-I02-004 · 취향 질문','#b06a00','<span class="hl hl-a">남들이 다 하는</span> <span class="hl hl-s">건 저는 굳이 안 해요</span>.',
    slot('s','입장','남들 다 하는 것 · 반대')+slot('a','특징 A','남과 같아진다','r')+empty('결과 C')+empty('가치 V'));
 
 const col=(h,src,items)=>'<div><h4>'+h+'</h4><div class="src">'+src+'</div><div class="stack">'+items.join('')+'</div></div>';
@@ -303,9 +303,9 @@ const box=(x,y,w,t1,t2)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="56" rx
 const ln=(x1,y1,x2,y2,c,d)=>'<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+c+'" stroke-width="1.8"'+(d?' stroke-dasharray="5 4"':'')+' marker-end="url(#m5)"/>';
 const G5='<div class="gwrap"><svg viewBox="0 0 960 430" role="img" aria-label="사람별 입장 상자 두 개가 공유된 점에 닿는 관계도">'+
  '<defs><marker id="m5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1L9 5L1 9z" fill="context-stroke"/></marker></defs>'+
- box(300,20,360,'P01_유행하는옷_반대_S012','입장 상자 · Stance (C13)')+box(300,354,360,'P02_세일충동구매_반대_S031','입장 상자 · Stance (C13)')+
+ box(300,20,360,'ST-0001','입장 상자 · label: P01 · 유행하는 옷 · 반대')+box(300,354,360,'ST-0003','입장 상자 · label: P02 · 세일 충동구매 · 반대')+
  node(40,24,120,'#eaf1ff','#2459d6','P01','Person',1.6)+node(40,358,120,'#e6f6ee','#1f8a55','P02','Person',1.6)+
- node(740,24,190,'#fbfbfc','#6a6d76','발화 S012','2023 · 인터뷰 · 소비 습관')+node(740,358,190,'#fbfbfc','#6a6d76','발화 S031','2022 · 인터뷰 · 쇼핑 습관')+
+ node(740,24,190,'#fbfbfc','#6a6d76','P01-I03-012','발화 · 2023 · 소비 습관 질문')+node(740,358,190,'#fbfbfc','#6a6d76','P02-I05-031','발화 · 2022 · 쇼핑 습관 질문')+
  ln(300,48,164,48,'#2459d6')+ln(300,382,164,382,'#1f8a55')+ln(660,48,736,48,'#2459d6')+ln(660,382,736,382,'#1f8a55')+
  '<text x="232" y="40" text-anchor="middle" font-size="11.5" fill="#2459d6">hasHolder</text><text x="698" y="40" text-anchor="middle" font-size="11.5" fill="#2459d6">evidencedBy</text>'+
  '<text x="232" y="374" text-anchor="middle" font-size="11.5" fill="#1f8a55">hasHolder</text><text x="698" y="374" text-anchor="middle" font-size="11.5" fill="#1f8a55">evidencedBy</text>'+
@@ -318,7 +318,7 @@ const G5='<div class="gwrap"><svg viewBox="0 0 960 430" role="img" aria-label="�
  '</svg></div>';
 const D5=G5+
  '<table class="cmp"><tr><th></th><th class="hr">Etudo &amp; Yoon</th><th class="hm">우리 연구</th></tr>'+
- '<tr><td><b>주장 하나의 표현</b></td><td><b>FrameRelation 상자</b> (Israel_besieges_WestBank)</td><td><b>Stance 상자</b> (P01_유행하는옷_반대_S012)</td></tr>'+
+ '<tr><td><b>주장 하나의 표현</b></td><td><b>FrameRelation 상자</b> (Israel_besieges_WestBank)</td><td><b>Stance 상자</b> (ID ST-0001, label: P01 · 유행하는 옷 · 반대)</td></tr>'+
  '<tr><td><b>상자의 칸</b></td><td>hasClaimant · hasDomain · hasRange · hasFrame</td><td>hasHolder · hasTopic · hasPolarity · hasAttribute · hasConsequence · hasValue (+ evidencedBy, inSituation)</td></tr>'+
  '<tr><td><b>칸은 어디서?</b></td><td>모인 문장의 구조에서 ("[누가] 공모한다 [누구와]")</td><td>ACV 이론에서 <b>미리</b> 정함 (A·C·V 칸은 비어도 됨)</td></tr>'+
  '<tr><td><b>세부 꼬리표는?</b></td><td>관계</td><td><b>아래층 클래스</b> (오래가지 않는다 → C04-01 일시성)</td></tr>'+
@@ -326,19 +326,19 @@ const D5=G5+
  '<tr><td><b>클래스가 되는 조건</b></td><td>연구자 판단</td><td>2명 이상 공유 (A13)</td></tr></table>'+
  '<div class="chk">'+
  '<div><b>A02</b> 상자마다 hasHolder · hasTopic · hasPolarity 하나씩<br><span class="ok">통과</span> 두 상자 모두</div>'+
- '<div><b>A03</b> hasValue = Value, 방향 표시 있음<br><span class="ok">통과</span> P01 상자: 안전 · 해침</div>'+
- '<div><b>A05 · A16</b> 상자마다 본인 발화가 근거<br><span class="ok">통과</span> S012는 P01, S031은 P02</div>'+
+ '<div><b>A03</b> hasValue = Value, 방향 표시 있음<br><span class="ok">통과</span> ST-0001: 안전 · 해침</div>'+
+ '<div><b>A05 · A18</b> 상자마다 본인 발화가 근거<br><span class="ok">통과</span> ST-0001 ← P01-I03-012, ST-0003 ← P02-I05-031</div>'+
  '<div><b>A04</b> Value는 Schwartz 칸 1~2개<br><span class="na">해당</span> 안전 = 후보, 사람이 확인</div>'+
  '<div><b>A13</b> 아래층 클래스는 2명 이상<br><span class="ok">통과</span> 일시성(P01·P02), 획일성(P01·P03)</div>'+
- '<div><b>A15</b> A·C·V 칸은 0~1개<br><span class="na">빈칸</span> P02 상자는 hasValue 없음</div></div>';
+ '<div><b>A15</b> A·C·V 칸은 0~1개<br><span class="na">빈칸</span> ST-0003은 hasValue 없음</div></div>';
 
 const D6='<div class="vflow">'+
  '<div class="vstep"><div class="n">1</div><div><h4>질문이 들어옴</h4><p>P01에게 "한정판 운동화 어때요?" — 관계도 어디에도 이 대상이 없습니다.</p></div></div><div class="vdown"></div>'+
  '<div class="vstep"><div class="n">2</div><div><h4>본인 관계도에서 쓸 수 있는 것</h4><p>대상은 없지만 가치는 있습니다: '+K('v','안전 · "오래가는 것"')+' 그리고 비슷한 대상(유행하는 옷 · 반대).</p></div></div><div class="vdown"></div>'+
  '<div class="vstep"><div class="n">3</div><div><h4>비슷한 사람 찾기</h4><p>설계 기준: 1차는 Schwartz 칸 + 극성, 2차는 세부 가치. 이 예시에서는 같은 점(일시성, 쓸모가 끝남)을 가리키는 상자를 가진 '+K('re','P02')+'로 단순화했습니다. 근거가 "추론"인 상자는 사람 찾기에 쓰지 않습니다(A10).</p></div></div><div class="vdown"></div>'+
- '<div class="vstep"><div class="n">4</div><div><h4>근거 꺼내기</h4><p>P02의 입장 상자를 통째로 꺼냅니다: 세일 충동구매 · 반대 · 일시성 · 쓸모가 끝남 · 가치 빈칸 · 근거 발화 S031. 일화는 빌리지 않습니다(A07).</p></div></div><div class="vdown"></div>'+
+ '<div class="vstep"><div class="n">4</div><div><h4>근거 꺼내기</h4><p>P02의 입장 상자 ST-0003을 통째로 꺼냅니다: 세일 충동구매 · 반대 · 일시성 · 쓸모가 끝남 · 가치 빈칸 · 근거 발화 P02-I05-031. 일화는 빌리지 않습니다(A07).</p></div></div><div class="vdown"></div>'+
  '<div class="vstep"><div class="n">5</div><div><h4>LLM에 주는 것</h4>'+
- '<div class="prompt"><span class="h">[본인 · P01]</span><br>가치: 안전 — "오래가는 것"<br>입장: 유행하는 옷 → 반대 (근거: 한철 지나면 못 입음)<br><span class="b">[빌린 근거 · P02, 성향 비슷]</span><br>세일 충동구매 → 반대 / 금방 질림 → 쓸모가 금방 끝남<br><span class="m">[지시] 본인 가치로 판단하고, 빌린 근거는 참고만 할 것. 본인 말투로 답할 것.</span></div></div></div><div class="vdown"></div>'+
+ '<div class="prompt"><span class="h">[본인 · P01의 ST-0001]</span><br>가치: 안전 — "오래가는 것"<br>입장: 유행하는 옷 → 반대 (근거: 한철 지나면 못 입음)<br><span class="b">[빌린 근거 · P02의 ST-0003, 성향 비슷]</span><br>세일 충동구매 → 반대 / 금방 질림 → 쓸모가 금방 끝남<br><span class="m">[지시] 본인 가치로 판단하고, 빌린 근거는 참고만 할 것. 본인 말투로 답할 것.</span></div></div></div><div class="vdown"></div>'+
  '<div class="vstep"><div class="n">6</div><div><h4>답이 나온 뒤</h4><p>트윈의 답을 같은 추출기로 다시 뽑아 본인 관계도와 맞대어 봅니다. 이 부분은 시스템 구조 페이지의 평가 단계에 해당합니다.</p></div></div>'+
  '</div>';
 
@@ -365,8 +365,8 @@ const S=[
   pts:['"오래가지 않는다"(P01·P02) → C04-01 일시성, "남과 같아진다"(P01·P03) → C04-02 획일성','한 사람에게서만 나온 꼬리표는 지우지 않고 대기 — 그 사람의 관계도에는 남되, 사람을 잇는 데는 아직 못 씀 (가안)','결과(C) 쪽에도 같은 규칙을 적용할지는 결정 필요'],
   ref:'모인 문장들이 늘 "[누가] 공모한다 [누구와]" 구조임을 보고 관계 하나로 만들었습니다(Table C1).',ids:['C04-01 일시성','C04-02 획일성','A13']},
  {t:'5. 관계도로 옮기기 — 입장을 상자로',p:'②에서 쪼갠 발화 하나를 <b>입장 상자(Stance)</b> 하나로 만들고, 상자의 칸마다 선을 뽑습니다. 선에는 꼬리표(근거·시점·상황)를 달 수 없으므로 주장 자체를 사물로 만든 것입니다. 키 논문의 Israel_besieges_WestBank 상자와 같은 방식입니다(W3C n-ary 패턴).',d:D5,
-  pts:['상자는 사람마다, 점은 공유: P01 상자와 P02 상자가 같은 "일시성" 점을 가리킴 → 그래서 두 사람이 이어짐','칸의 종류는 ACV 이론에서 미리 정함 — 이 단계에서 새로 생기는 것은 점(클래스)','빈칸은 칸을 비워 둘 뿐, 억지로 채우지 않음','입장이 바뀌면 상자와 상자를 revises로 이음 (선으로는 불가능했던 것)','사람과 무관한 클래스 위계(일시성 ⊂ Attribute, 안전 ⊂ Value)는 상자 없이 그냥 선'],
-  ref:'"포위 주장"을 상자 Israel_besieges_WestBank로 만들고 hasDomain(Israel) · hasRange(West Bank) · hasFrame(진단) · hasClaimant(PFLP) 네 칸을 뽑았습니다. 그 뒤 OWL로 쓰고 Pellet으로 검사했습니다.',ids:['C13 Stance','R11–R19','A02','A03','A05','A15','A16']},
+  pts:['상자는 사람마다, 점은 공유: P01의 ST-0001과 P02의 ST-0003이 같은 "일시성" 점을 가리킴 → 그래서 두 사람이 이어짐','칸의 종류는 ACV 이론에서 미리 정함 — 이 단계에서 새로 생기는 것은 점(클래스)','빈칸은 칸을 비워 둘 뿐, 억지로 채우지 않음','입장이 바뀌면 상자와 상자를 revises로 이음 (선으로는 불가능했던 것)','사람과 무관한 클래스 위계(일시성 ⊂ Attribute, 안전 ⊂ Value)는 상자 없이 그냥 선'],
+  ref:'"포위 주장"을 상자 Israel_besieges_WestBank로 만들고 hasDomain(Israel) · hasRange(West Bank) · hasFrame(진단) · hasClaimant(PFLP) 네 칸을 뽑았습니다. 그 뒤 OWL로 쓰고 Pellet으로 검사했습니다.',ids:['C13 Stance','R11–R19','R23 label','A02','A03','A05','A15','A16','A18','ID 규칙']},
  {t:'6. 새 질문에 쓰기',p:'기록에 없는 질문이 들어오면, 본인 관계도에서 쓸 수 있는 것을 먼저 꺼내고, 모자란 근거는 같은 점을 가리키는 비슷한 사람의 입장 상자에서 빌립니다.',d:D6,
   pts:['빌린 근거는 "빌린 것"으로 표시해서 LLM에 줌','상자째 빌리므로 근거 발화가 함께 따라옴','일화와 추론 상자는 빌리지 않음','이 단계가 키 논문에는 없는 우리 연구의 고유 부분'],
   ref:'채운 온톨로지로 새 글이 이념과 얼마나 공명하는지 점수를 매겼습니다(FRDS). 다른 대상의 근거를 빌려 답을 만들지는 않았습니다.',ids:['A07','A10']}
