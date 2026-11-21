@@ -88,3 +88,8 @@
 ## 2026-11-21 — 꼬리표→관계도 예시 페이지
 - docs/꼬리표에서_관계도까지_예시.html 추가: 발화 4개(지어낸 예시)로 ①발화 모으기 ②구절로 쪼개기(큰 꼬리표) ③세부 꼬리표(새로/재사용) ④꼬리표별 모으기→2명 규칙 클래스 ⑤관계도+공리 검사 ⑥새 질문에 비슷한 사람 근거 빌리기
 - 단계마다 그림·설명·"키 논문에서는"·설계표 ID 표시. 결과(C) 쪽 2명 규칙 적용 여부는 미정으로 표시
+
+## 2026-11-21 — 설계표 v0.2: 사람별 주장을 상자(n-ary)로
+- 설계표(Sheets) v0.2: C13 Stance, C14 TraitClaim, C15 MotivationClaim, C16 OrientationClaim 추가 / R01~R08 삭제, R13~R22 추가(hasHolder·hasTopic·hasPolarity·hasAttribute·hasConsequence·hasValue·valueEffect·asserts…) / R09·R11·R12 앞자리 수정 / 공리 A01~A03·A05·A06·A10·A12 재작성, A15·A16 추가
+- 이유: 선에는 근거·시점·상황을 달 수 없고, revises는 선끼리 못 잇고, 공유된 점에서 선의 주인을 구분 못 함 → Etudo & Yoon FrameRelation과 같은 W3C n-ary 패턴
+- 예시 페이지 5단계 그림을 Stance 상자 구조로 교체, 0·6단계 설명 수정
