@@ -93,3 +93,7 @@
 - 설계표(Sheets) v0.2: C13 Stance, C14 TraitClaim, C15 MotivationClaim, C16 OrientationClaim 추가 / R01~R08 삭제, R13~R22 추가(hasHolder·hasTopic·hasPolarity·hasAttribute·hasConsequence·hasValue·valueEffect·asserts…) / R09·R11·R12 앞자리 수정 / 공리 A01~A03·A05·A06·A10·A12 재작성, A15·A16 추가
 - 이유: 선에는 근거·시점·상황을 달 수 없고, revises는 선끼리 못 잇고, 공유된 점에서 선의 주인을 구분 못 함 → Etudo & Yoon FrameRelation과 같은 W3C n-ary 패턴
 - 예시 페이지 5단계 그림을 Stance 상자 구조로 교체, 0·6단계 설명 수정
+
+## 2026-11-21 — 시스템 구조 페이지 상자 구조 반영 + 온톨로지 구조도
+- 대응표·시스템구조 페이지: ① 틀의 "선/선의 꼬리표" 설명을 상자(n-ary) 설명으로 교체, ① 예시 그림을 TraitClaim·Stance 상자 구조로 다시 그림, ③ "점은 하나, 상자는 사람마다"로 수정 (/tmp/gen/upd_box.py)
+- docs/인물온톨로지_구조도.html 추가: 객체 유형 카드(유형·예시 객체·속성) + 관계 화살표. 입장 중심 보기 / 사람 중심 보기, 카드 클릭 시 정의·칸·공리·키 논문 대응

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>인물 온톨로지 구조도 (v0.2)</title>
+<style>
+  :root{--ink:#1b1c20;--mute:#6a6d76;--line:#e3e5ea;--bg:#f7f7f9;--card:#fff;--me:#2459d6;--me-bg:#eaf1ff;--ref:#5b6475;--ref-bg:#f1f3f6;--ref-line:#cfd4dd;--done:#1f8a55;--done-bg:#e6f6ee;--draft:#b06a00;--draft-bg:#fff3de}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;line-height:1.55;font-size:15px}
+  .wrap{max-width:1120px;margin:0 auto;padding:32px 20px 80px}
+  h1{margin:0 0 6px;font-size:25px;letter-spacing:-.01em}
+  header p{margin:0;color:var(--mute)}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;font-size:13px;color:var(--mute);align-items:center}
+  .sw{display:inline-block;width:26px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#fff}
+  .sw.c{border:2px solid var(--ink);box-shadow:inset 4px 0 0 var(--ink)}
+  .sw.p{border:1px solid #b9bdc7;background:#f4f5f7}
+  .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 10px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+  .seg button{font:inherit;font-size:14px;padding:8px 16px;border:0;background:#fff;cursor:pointer;color:var(--mute)}
+  .seg button.on{background:var(--ink);color:#fff}
+  .hint{font-size:13px;color:var(--mute)}
+  figure{margin:0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px}
+  figure svg{width:100%;height:auto;display:block}
+  svg text{font-family:inherit}
+  .ic{fill:none;stroke:#4a4d55;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .nd{cursor:pointer}
+  .nd .cd{fill:#f4f5f7;stroke:#b9bdc7;stroke-width:1}
+  .nd.claim .cd{fill:#fff;stroke:#1b1c20;stroke-width:1.8}
+  .nd .acc{fill:#1b1c20}
+  .nd:hover .cd{stroke:var(--me);stroke-width:2}
+  .nd.on .cd{stroke:var(--me);stroke-width:2.6;fill:#f8fbff}
+  .nd.on .ic{stroke:var(--me)}
+  .nd .halo{fill:#fff}
+  .ct{font-size:12.5px;fill:#33353b}
+  .ct b,.ct .b{font-weight:700;fill:var(--ink)}
+  .ed{stroke:#9ea2ac;stroke-width:1.6;fill:none}
+  .ed.d{stroke-dasharray:6 5}
+  .el{font-size:12.5px;font-weight:600;fill:#4a4d55;paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round}
+  .dim .nd:not(.on):not(.nb){opacity:.35}
+  .panel{margin-top:12px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--me);border-radius:10px;padding:16px 18px}
+  .panel h3{margin:0 0 2px;font-size:17px}
+  .panel .sub{font-size:13px;color:var(--mute);margin-bottom:8px}
+  .panel p{margin:4px 0;font-size:14.5px;color:#33353b}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;margin-right:6px;vertical-align:1px}
+  .tag.c{background:var(--ink);color:#fff}.tag.p{background:#eef0f4;color:var(--ref)}
+  table.sl{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:10px}
+  table.sl th,table.sl td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  table.sl th{background:#f1f2f5;font-weight:600;font-size:12.5px}
+  .ax{margin-top:10px;font-size:13px;color:var(--mute)}
+  .ax span{display:inline-block;background:#f1f2f5;border-radius:5px;padding:1px 7px;margin:2px 4px 0 0;color:var(--ink);font-weight:600}
+  .refbox{margin-top:10px;background:var(--ref-bg);border:1px solid var(--ref-line);border-radius:8px;padding:9px 13px;font-size:13.5px;color:#3a3f4b}
+  .refbox b{color:var(--ref)}
+  ul.pl{margin:8px 0 0;padding-left:18px;font-size:14px;color:#33353b}
+  ul.pl li{margin:3px 0}
+  footer{color:var(--mute);font-size:12.5px;margin-top:36px;border-top:1px solid var(--line);padding-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>인물 온톨로지 구조도 (v0.2)</h1>
+  <p>객체 유형마다 카드 하나(유형 · 예시 객체 · 속성)를 두고, 유형 사이의 관계를 화살표로 그렸습니다. 카드를 누르면 정의, 칸, 공리, 키 논문과의 대응이 아래에 나옵니다. 예시 객체는 설명용으로 지어낸 것입니다.</p>
+  <div class="legend">
+    <span><span class="sw c"></span>사람별 상자 (한 사람의 주장 한 건)</span>
+    <span><span class="sw p"></span>공유되는 점 (여러 사람이 함께 가리킴)</span>
+    <span>화살표 = 관계 (앞자리 → 뒷자리)</span>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="seg" id="seg"><button type="button" data-v="a" class="on">입장 중심 보기</button><button type="button" data-v="b">사람 중심 보기</button></div>
+  <span class="hint">카드를 누르면 설명이 바뀝니다</span>
+</div>
+<figure><svg id="fig" viewBox="0 0 1100 800" role="img" aria-label="인물 온톨로지 구조도"></svg></figure>
+<div class="panel" id="panel"></div>
+
+<footer>기준: 인물 온톨로지 설계표 v0.2 (클래스 · 관계 · 공리). 이론: McAdams 3수준 뼈대, PACE의 이론(HEXACO · Schwartz · 자기결정 이론 · 조절 초점 · Mischel &amp; Shoda), ACV. 2026-11-21.</footer>
+</div>
+
+<script>
+const IC={
+ person:'<circle cx="0" cy="-11" r="11"/><path d="M-22 24 C-22 4 22 4 22 24"/>',
+ stance:'<path d="M-24 -22 H24 a6 6 0 0 1 6 6 V8 a6 6 0 0 1 -6 6 H-4 L-16 25 V14 H-24 a6 6 0 0 1 -6 -6 V-16 a6 6 0 0 1 6 -6 Z"/><path d="M-16 -4 H-2 M-9 -11 V3 M6 -4 H20"/>',
+ topic:'<path d="M-24 -22 H2 L24 0 L0 24 L-24 0 Z"/><circle cx="-11" cy="-9" r="4"/>',
+ doc:'<path d="M-18 -26 H8 L20 -14 V26 H-18 Z M8 -26 V-14 H20"/><path d="M-10 -2 H12 M-10 8 H12 M-10 18 H4"/>',
+ situation:'<circle r="25"/><path d="M-7 -8 a8 8 0 1 1 10 8 c-3 1 -3 3 -3 6"/><circle cx="0" cy="13" r="1.4"/>',
+ attr:'<circle cx="-5" cy="-5" r="16"/><path d="M7 7 L23 23"/>',
+ cons:'<circle r="25"/><path d="M-13 0 H13 M4 -9 L13 0 L4 9"/>',
+ value:'<path d="M0 -26 L22 -18 V0 C22 13 12 21 0 27 C-12 21 -22 13 -22 0 V-18 Z"/><path d="M-9 0 L-2 8 L10 -7"/>',
+ episode:'<path d="M0 -14 C-8 -20 -18 -20 -27 -16 V18 C-18 14 -8 14 0 20 C8 14 18 14 27 18 V-16 C18 -20 8 -20 0 -14 Z M0 -14 V20"/>',
+ trait:'<path d="M0 -25 L7 -8 L25 -7 L11 4 L16 22 L0 12 L-16 22 L-11 4 L-25 -7 L-7 -8 Z"/>',
+ motive:'<path d="M0 -27 C10 -13 21 -4 21 8 C21 20 12 26 0 26 C-12 26 -21 20 -21 8 C-21 -2 -13 -7 -8 -16 C-5 -8 -2 -5 0 -27 Z"/>',
+ orient:'<circle r="25"/><path d="M0 -15 L6 0 L0 15 L-6 0 Z"/><path d="M0 -25 V-20 M0 20 V25"/>',
+ policy:'<path d="M-24 0 H-4 L14 -16 M-4 0 L14 16"/><path d="M6 -18 L15 -17 L13 -8 M6 18 L15 17 L13 8"/><circle cx="-24" cy="0" r="3"/>'
+};
+/* node: [id, icon, x, y, w, type, objectLine, extraLines[], claim] */
+const VA=[
+ ['stance','stance',550,350,290,'Stance (입장 상자)','P01_유행하는옷_반대_S012',['Properties: 근거 등급, 고유성'],1],
+ ['person','person',550,66,240,'Person','P01 (가명)',['Properties: 자료 범위, 매체 수'],0],
+ ['situation','situation',940,74,230,'Situation','소비 습관을 묻는 질문',['Properties: 목록 5~7개 중 하나'],0],
+ ['topic','topic',140,350,240,'Topic','유행하는 옷',['Properties: 범주, 공유 인원 수'],0],
+ ['statement','doc',955,350,270,'Statement','S012 · 2023 인터뷰 · 답 12',['Properties: 날짜, 매체·형식, 원문 구절'],0],
+ ['attribute','attr',180,640,240,'Attribute','일시성 (C04-01)',['Properties: 공유 인원 수'],0],
+ ['consequence','cons',450,640,230,'Consequence','쓸모가 끝남',['Properties: 공유 인원 수'],0],
+ ['value','value',720,640,250,'Value','안전 · "오래가는 것"',['Properties: Schwartz 칸, 본인의 말'],0],
+ ['episode','episode',975,640,220,'Episode (일화)','밀라노 코트',['Properties: 때, 곳, 사건'],1]
+];
+/* edge: [x1,y1,x2,y2,label,dashed,labelOffset] */
+const EA=[
+ [550,312,550,180,'hasHolder'],
+ [592,328,821,154,'inSituation'],
+ [508,350,180,350,'hasTopic'],
+ [594,350,912,350,'evidencedBy'],
+ [470,462,206,604,'hasAttribute'],
+ [520,462,456,602,'hasConsequence'],
+ [610,462,712,602,'hasValue · 지킴/해침'],
+ [762,640,933,640,'illustratedBy'],
+ [955,314,955,192,'질문 상황',1]
+];
+const VB=[
+ ['person','person',550,380,240,'Person','P01 (가명)',['Properties: 자료 범위, 매체 수'],0],
+ ['stance','stance',550,66,290,'Stance (입장 상자)','P01_유행하는옷_반대_S012',['→ Topic · Attribute · Consequence · Value'],1],
+ ['traitclaim','trait',170,110,280,'TraitClaim (특질 상자)','P01_단정적이다',['→ Trait: 단정적이다 (HEXACO)','Properties: 상황 종류 수, 반복 횟수'],1],
+ ['motiveclaim','motive',930,110,280,'MotivationClaim (동기 상자)','P01_자율',['→ Motivation: 자율 (자기결정 이론)','Properties: 근거 등급'],1],
+ ['orientclaim','orient',150,380,270,'OrientationClaim (지향 상자)','P01_예방지향',['→ Orientation: 예방 지향 (조절 초점)'],1],
+ ['policy','policy',950,380,270,'Policy (상황별 방침)','비판 받으면 → 짧고 단호하게',['→ Situation: 비판 받음','Properties: 근거 발화 수'],1],
+ ['episode','episode',550,660,240,'Episode (일화)','밀라노 코트',['Properties: 때, 곳, 사건'],1]
+];
+const EB=[
+ [550,182,550,344,'hasHolder'],
+ [250,242,516,362,'hasHolder'],
+ [850,242,584,362,'hasHolder'],
+ [186,380,514,380,'hasHolder'],
+ [914,380,586,380,'hasHolder'],
+ [550,624,550,496,'hasHolder']
+];
+const DET={
+ stance:{t:'Stance — 입장 상자',id:'C13',k:'c',d:'한 사람이 한 발화에서 한 대상에 대해 밝힌 입장과, 그 이유 사슬(A → C → V)을 묶은 상자입니다. 선에는 근거·시점·상황을 달 수 없기 때문에 주장 자체를 사물로 만들었습니다.',
+  s:[['hasHolder','Person','정확히 1'],['hasTopic','Topic','정확히 1'],['hasPolarity','찬성 / 반대 / 조건부','정확히 1'],['hasAttribute','Attribute','0~1 (빈칸 허용)'],['hasConsequence','Consequence','0~1 (빈칸 허용)'],['hasValue','Value','0~1 (빈칸 허용)'],['valueEffect','지킴 / 해침','hasValue가 있으면 1'],['inSituation','Situation','정확히 1'],['evidencedBy','Statement','1개 이상'],['revises','Stance (예전 입장)','0~1']],
+  a:['A01','A02','A03','A05','A10','A12','A15','A16'],r:'FrameRelation 상자 (Israel_besieges_WestBank). hasClaimant ↔ hasHolder, hasRange ↔ hasTopic, hasFrame ↔ hasPolarity. A·C·V 칸은 우리에게만 있음.',
+  x:['상자는 사람마다, 점은 공유: P01과 P02의 입장 상자가 같은 "일시성" 점을 가리키면 두 사람이 이어짐','새 질문에 답할 때 비슷한 사람의 상자를 통째로 빌려 옴 — 근거 발화가 함께 따라옴','입장이 바뀌면 새 상자를 만들고 revises로 예전 상자와 이음']},
+ person:{t:'Person — 사람',id:'C01',k:'p',d:'온톨로지의 주인입니다. 모든 상자가 hasHolder로 한 사람을 가리킵니다. 사람 자체에는 성향을 직접 적지 않고, 성향은 상자로만 붙습니다.',
+  s:[['(들어옴) hasHolder','모든 상자에서','상자마다 1']],a:['A16'],r:'Claimant (PFLP 같은 조직). 키 논문은 "누가 말했나"로 서랍을 정리했고, 우리는 "누구의 주장인가"로 정리.',
+  x:['비슷한 사람은 인구통계가 아니라 상자가 가리키는 점(Schwartz 칸 + 극성, 그다음 세부 가치)으로 찾음 — SCOPE 근거','대상 인물의 관계도 = hasHolder가 그 사람인 상자만 모은 것']},
+ situation:{t:'Situation — 질문이 만든 상황',id:'C10',k:'p',d:'질문이 만든 상황입니다(조언 요청, 비판 받음, 회상, 찬반, 칭찬 받음 등 5~7개 목록). 매체·형식과 주변 맥락은 발화(Statement)에 따로 적습니다.',
+  s:[['(들어옴) inSituation','Stance, Policy','상자마다 1']],a:['A09','A14'],r:'키 논문에는 상황 기록이 없었음.',x:['Mischel &amp; Shoda: 같은 사람도 상황이 같을 때 일관됨 → 비교와 빌리기를 같은 상황끼리 함']},
+ topic:{t:'Topic — 대상',id:'C03',k:'p',d:'질문이나 입장의 대상입니다. 찬반을 붙일 수 있어야 합니다.',s:[['(들어옴) hasTopic','Stance','상자마다 1']],a:['A01'],r:'FrameEntity 중 hasRange 쪽 (West Bank). 다만 키 논문은 문장 속 명사를 클래스로 만들었고, 우리는 대상을 Topic의 인스턴스로 둠.',x:['같은 Topic에 찬성하는 사람과 반대하는 사람이 같은 점을 공유함 — 찬반은 상자의 칸']},
+ statement:{t:'Statement — 근거 발화',id:'C02',k:'p',d:'근거가 된 발화 한 구절입니다. 날짜, 매체·형식, 질문이 만든 상황, 주변 맥락, 원문 구절이 붙어 있습니다. 상자의 시점과 상황은 여기서 옵니다.',
+  s:[['(들어옴) evidencedBy','모든 상자','상자마다 1개 이상']],a:['A05','A08','A11','A16'],r:'선언문·성명서의 문장.',x:['뒤 시기 발화는 평가용으로 떼어 두고 관계도에 넣지 않음 (A11)','지면 기사 문장은 특질의 근거로 쓰지 않음 (A08)']},
+ attribute:{t:'Attribute — 대상에 대해 본 특징 (A)',id:'C04',k:'p',d:'대상의 성질입니다. 아래층(일시성, 획일성 …)은 이론이 아니라 자료에서 올라오며, 두 명 이상이 공유해야 클래스가 됩니다.',
+  s:[['(들어옴) hasAttribute','Stance','상자마다 0~1']],a:['A13','A15'],r:'키 논문에서는 세부 꼬리표가 관계가 되었지만, 우리는 아래층 클래스가 됨.',x:['예: C04-01 일시성 (P01 · P02), C04-02 획일성 (P01 · P03)']},
+ consequence:{t:'Consequence — 결과·이유 (C)',id:'C05',k:'p',d:'그 특징이 가져오는 결과나 이유입니다. "그래서 ~하다"로 읽힙니다.',s:[['(들어옴) hasConsequence','Stance','상자마다 0~1']],a:['A15'],r:'키 논문에 해당 칸 없음.',x:['아래층을 Attribute처럼 2명 규칙으로 만들지는 아직 결정 필요']},
+ value:{t:'Value — 지키려는 것 (V)',id:'C06',k:'p',d:'결국 지키려는 것입니다. 두 층으로 적습니다: 큰 칸은 Schwartz 10가지(자기주도, 자극, 쾌락, 성취, 권력, 안전, 순응, 전통, 박애, 보편주의), 세부는 본인의 말.',
+  s:[['(들어옴) hasValue','Stance','상자마다 0~1'],['illustratedBy','Episode','0개 이상']],a:['A03','A04'],r:'키 논문에 해당 칸 없음.',x:['비슷한 사람 찾기 1차 기준: Schwartz 칸 + 극성','가치를 말하지 않았으면 칸을 비워 둠 — 추론해 채운 가치는 사람 찾기에 쓰지 않음 (A10)']},
+ episode:{t:'Episode — 일화 (선택)',id:'C12',k:'c',d:'본인이 겪은 구체적인 일입니다(때 · 곳 · 사건). McAdams 3수준이며, 이번 연구에서는 켭니다. 그 자체가 사람별 상자라 hasHolder와 근거 발화를 가집니다.',
+  s:[['hasHolder','Person','정확히 1'],['evidencedBy','Statement (본인 것만)','1개 이상'],['(들어옴) illustratedBy','Value','—']],a:['A07'],r:'키 논문에 해당 없음.',x:['절대 빌리지 않음 — 남의 일화를 빌려 오면 지어낸 이야기가 됨','평가에 "트윈이 일화를 지어냈는가"를 넣음']},
+ traitclaim:{t:'TraitClaim — 특질 상자',id:'C14',k:'c',d:'한 사람이 어떤 특질(1수준, HEXACO)을 가진다는 주장입니다. 근거 발화와 상황 수를 붙이려고 상자로 만들었습니다.',
+  s:[['hasHolder','Person','정확히 1'],['assertsTrait','Trait','정확히 1'],['evidencedBy','Statement','서로 다른 상황 2종 이상']],a:['A05','A06','A08'],r:'키 논문에 해당 없음.',x:['말투·길이는 상황마다 달라지므로 발화에 적고, 여러 상황에서 반복되는 것(단정성 등)만 특질로 올림']},
+ motiveclaim:{t:'MotivationClaim — 동기 상자',id:'C15',k:'c',d:'한 사람이 어떤 동기(자기결정 이론: 자율·유능·관계 / McClelland: 성취·권력·친교)를 가진다는 주장입니다.',s:[['hasHolder','Person','정확히 1'],['assertsMotivation','Motivation','정확히 1'],['evidencedBy','Statement','1개 이상']],a:['A05'],r:'키 논문의 "동기 프레임"과 이름만 같고 뜻은 다름 (그쪽은 행동 촉구 문장).',x:['인터뷰에서 안 드러나면 만들지 않음']},
+ orientclaim:{t:'OrientationClaim — 지향 상자',id:'C16',k:'c',d:'얻으려는 쪽인가, 잃지 않으려는 쪽인가(조절 초점, Higgins)에 대한 주장입니다.',s:[['hasHolder','Person','정확히 1'],['assertsOrientation','Orientation','정확히 1'],['evidencedBy','Statement','1개 이상']],a:['A05'],r:'키 논문에 해당 없음.',x:['PACE는 이 차원을 뽑으려 질문을 직접 설계했음 — 이미 있는 인터뷰에서는 잘 안 드러날 수 있음']},
+ policy:{t:'Policy — 상황별 방침',id:'C11',k:'c',d:'"만약 [상황]이면 [반응]" 규칙입니다(Mischel &amp; Shoda). 같은 상황의 발화가 2개 이상일 때 만듭니다. 그 자체가 사람별 상자입니다.',s:[['hasHolder','Person','정확히 1'],['inSituation','Situation','정확히 1'],['evidencedBy','Statement','2개 이상']],a:['A05','A14'],r:'키 논문에 해당 없음.',x:['예: 조언을 요청받으면 길고 따뜻하게 / 비판을 받으면 짧고 단호하게']}
+};
+const OV={a:{t:'입장 중심 보기',d:'입장 상자 하나를 가운데 두고, 그 상자의 칸이 가리키는 객체 유형을 둘러 그렸습니다. Etudo &amp; Yoon Figure 4에서 FrameRelation 상자 하나가 네 칸을 뽑는 것과 같은 모양입니다.',x:['검은 테두리 카드는 사람마다 따로 생기는 상자, 회색 카드는 여러 사람이 함께 가리키는 점','Attribute · Consequence · Value 칸은 비어도 됨 — 말하지 않은 것은 채우지 않음','점선은 상자에서 직접 나가는 선이 아니라, 근거 발화가 가진 정보(질문 상황)']},
+ b:{t:'사람 중심 보기',d:'한 사람을 가운데 두고, 그 사람에 대한 주장 상자 여섯 종류를 둘러 그렸습니다. 모든 상자가 hasHolder로 사람을 가리키고, evidencedBy로 근거 발화에 닿습니다(입장 중심 보기 참고).',x:['사람에게 성향을 직접 붙이지 않음 — 반드시 근거 발화를 가진 상자를 거침','특질·동기·지향 상자는 공유되는 점(Trait · Motivation · Orientation)을 가리킴 → 사람끼리 이어지는 또 다른 길','일화는 이 사람만의 것이라 빌리지 않음']}};
+
+const fig=document.getElementById('fig'),panel=document.getElementById('panel');
+let view='a',sel=null;
+const esc=s=>s.replace(/&(?!amp;)/g,'&amp;');
+function nodeSVG(n){
+  const [id,ic,x,y,w,type,obj,ex,claim]=n;
+  const lines=1+1+ex.length, h=18+lines*17, cy=y+42, cx=x-w/2;
+  let t='<g class="nd'+(claim?' claim':'')+(sel===id?' on':'')+'" data-id="'+id+'">';
+  t+='<circle class="halo" cx="'+x+'" cy="'+y+'" r="34"/><g class="ic" transform="translate('+x+','+y+')">'+IC[ic]+'</g>';
+  t+='<rect class="cd" x="'+cx+'" y="'+cy+'" width="'+w+'" height="'+h+'" rx="6"/>';
+  if(claim)t+='<rect class="acc" x="'+cx+'" y="'+cy+'" width="5" height="'+h+'" rx="2"/>';
+  t+='<text class="ct" x="'+(cx+14)+'" y="'+(cy+20)+'">Object Type: <tspan class="b">'+esc(type)+'</tspan></text>';
+  t+='<text class="ct" x="'+(cx+14)+'" y="'+(cy+37)+'">Object: '+esc(obj)+'</text>';
+  ex.forEach((e,i)=>{t+='<text class="ct" x="'+(cx+14)+'" y="'+(cy+54+i*17)+'">'+esc(e)+'</text>';});
+  return t+'</g>';
+}
+function edgeSVG(e){
+  const [x1,y1,x2,y2,lab,d]=e; const mx=(x1+x2)/2,my=(y1+y2)/2;
+  let ang=Math.atan2(y2-y1,x2-x1)*180/Math.PI; if(ang>90)ang-=180; if(ang<-90)ang+=180;
+  return '<line class="ed'+(d?' d':'')+'" x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" marker-end="url(#ah)"/>'+
+   '<text class="el" text-anchor="middle" transform="translate('+mx+','+my+') rotate('+ang.toFixed(1)+')" dy="-7">'+lab+'</text>';
+}
+function draw(){
+  const N=view==='a'?VA:VB,E=view==='a'?EA:EB;
+  let s='<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#9ea2ac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>';
+  s+=E.map(edgeSVG).join('');
+  if(view==='a')s+='<path class="ed" d="M512 330 C455 262 420 330 506 356" marker-end="url(#ah)"/><text class="el" x="478" y="292" text-anchor="end">revises (예전 입장 → 새 입장)</text>';
+  s+=N.map(nodeSVG).join('');
+  if(view==='b')s+='<text class="ct" x="550" y="790" text-anchor="middle" style="fill:#6a6d76">모든 상자는 evidencedBy로 근거 발화(Statement)에 닿음 — 입장 중심 보기에서 확인</text>';
+  fig.innerHTML=s; fig.classList.toggle('dim',!!sel);
+  fig.querySelectorAll('.nd').forEach(g=>g.onclick=()=>{sel=(sel===g.dataset.id)?null:g.dataset.id;draw();});
+  document.querySelectorAll('#seg button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
+  if(sel&&DET[sel]){const D=DET[sel];
+    panel.innerHTML='<h3>'+D.t+'</h3><div class="sub"><span class="tag '+D.k+'">'+(D.k==='c'?'사람별 상자':'공유되는 점')+'</span>설계표 '+D.id+'</div><p>'+D.d+'</p>'+
+     '<table class="sl"><tr><th>칸 (관계)</th><th>가리키는 것</th><th>개수</th></tr>'+D.s.map(r=>'<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>').join('')+'</table>'+
+     '<ul class="pl">'+D.x.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
+     '<div class="refbox"><b>키 논문에서는</b> '+D.r+'</div><div class="ax">관련 공리: '+D.a.map(x=>'<span>'+x+'</span>').join('')+'</div>';
+  }else{const O=OV[view];
+    panel.innerHTML='<h3>'+O.t+'</h3><p>'+O.d+'</p><ul class="pl">'+O.x.map(x=>'<li>'+x+'</li>').join('')+'</ul>';}
+}
+document.getElementById('seg').onclick=e=>{const b=e.target.closest('button');if(b){view=b.dataset.v;sel=null;draw();}};
+draw();
+</script>
+</body>
+</html>
