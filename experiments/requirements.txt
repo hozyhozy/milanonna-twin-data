@@ -1,4 +1,4 @@
 requests>=2.31
 scikit-learn>=1.3
 numpy
-# 더 좋은 검색(권장): pip install sentence-transformers  → retrieve.py --backend st (모델 intfloat/multilingual-e5-small 자동 다운로드)
+# 임베딩(검색 retrieve.py --backend st, 유사도 sim_emb/sim_bs): sentence-transformers — Intel 맥은 Python 3.12 + torch==2.2.2 별도 venv(.venv-st), README 참고

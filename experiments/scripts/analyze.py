@@ -3,14 +3,15 @@
 
 표 1  조건별 agree(stance/ground/valence/voice)·sim_emb 평균 (+ Retest 천장 대비 비율)
 표 2  층별(stratum)·유명/신규(fame)·엄격(strict) 분해
-표 3  거리 삼각형: dist(G2–본인) vs dist(G2–G0/G1/G3) — 같은 문항·같은 rep의 응답 간 임베딩 거리
+표 3  거리 삼각형: dist(G2–본인) vs dist(G2–G0/G1/G3) — 같은 문항·같은 rep의 응답 간 거리(1−sim, --metric)
 표 4  A3 분산: 조건·온도별 20회 응답 간 상호 거리 ÷ Retest 거리
 표 5  A2 valence_gap, C1 근거 유형 분포·환각 후보 (judge --tag 실행 시)
 표 6  B1 충돌/일치 집합(G0 stance 하위/상위 1/3)에서 G2 일치도와 끌림 지수
 표 7  E1 leak_index = G3−G0, 순기여 = G2−G3 (유명/신규별)
 표 8  F2 acc (돌렸을 때만)
 
-python3 experiments/scripts/analyze.py --exp A1
+python3 experiments/scripts/analyze.py --exp A1 [--metric bertscore]
+  --metric cos(기본, e5 코사인 sim_emb) | bertscore(토큰 정렬 F1 sim_bs, .venv-st 필요) — 표3·4·6 거리와 천장 거리에 사용
 """
 import json, os, sys, argparse, glob, collections, statistics as st, itertools
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -42,8 +43,10 @@ def load_jsonl(path):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--exp", default="A1"); ap.add_argument("--backend", default="auto")
+    ap.add_argument("--metric", default="cos", choices=["cos", "bertscore"])
     ap.add_argument("--max-rep", type=int, default=5, help="T>0 반복은 rep < max_rep 만 사용(조건 간 반복 수 균형)")
     a = ap.parse_args()
+    SK = "sim_bs" if a.metric == "bertscore" else "sim_emb"
     items = {x["item_id"]: x for x in json.load(open(P("experiments/items/holdout50.json"), encoding="utf-8"))["items"]}
     J, R = [], []
     for base in ["experiments/runs", "experiments/runs_local"]:
@@ -65,19 +68,21 @@ def main():
         c = [x for x in json.load(open(ceil_p, encoding="utf-8")) if x["scores"]]
         if c:
             ceil = {"stance": mean([x["scores"]["stance"] for x in c]), "sim": mean([x["sim_emb"] for x in c]),
-                    "dist": round(1 - st.mean([x["sim_emb"] for x in c]), 4)}
+                    "sim_bs": mean([x.get("sim_bs") for x in c])}
+            ds = [x.get(SK) for x in c if x.get(SK) is not None]
+            ceil["dist"] = round(1 - st.mean(ds), 4) if ds else None
 
     # 표1
-    out.append("## 표1. 조건별 일치도 (F1, T>0 평균)\n\n| 조건 | n | stance | ground | valence | voice | sim_emb | stance/천장 |\n|---|---:|---:|---:|---:|---:|---:|---:|")
+    out.append("## 표1. 조건별 일치도 (F1, T>0 평균)\n\n| 조건 | n | stance | ground | valence | voice | sim_emb | sim_bs | stance/천장 |\n|---|---:|---:|---:|---:|---:|---:|---:|---:|")
     for c in conds:
         js = [j for j in J if j["cond"] == c and j["temp"] > 0 and j["scores"]]
         m = {k: item_mean(js, lambda j, k=k: j["scores"][k]) for k in KEYS}
-        se = item_mean(js, lambda j: j["sim_emb"])
+        se = item_mean(js, lambda j: j["sim_emb"]); sb = item_mean(js, lambda j: j.get("sim_bs"))
         ratio = round(m["stance"] / ceil["stance"], 2) if ceil and m["stance"] else ""
-        out.append(f"| {c} | {len(js)} | {m['stance']} | {m['ground']} | {m['valence']} | {m['voice']} | {se} | {ratio} |")
-        rows.append({"table": "cond", "cond": c, "n": len(js), **m, "sim_emb": se})
+        out.append(f"| {c} | {len(js)} | {m['stance']} | {m['ground']} | {m['valence']} | {m['voice']} | {se} | {sb} | {ratio} |")
+        rows.append({"table": "cond", "cond": c, "n": len(js), **m, "sim_emb": se, "sim_bs": sb})
     if ceil:
-        out.append(f"\n본인 Retest 천장: stance {ceil['stance']}, sim_emb {ceil['sim']}")
+        out.append(f"\n본인 Retest 천장: stance {ceil['stance']}, sim_emb {ceil['sim']}, sim_bs {ceil['sim_bs']}")
     # 판정 자기 일관성
     sw = [j for j in J if j.get("scores_swap") and j["scores"]]
     if sw:
@@ -102,7 +107,9 @@ def main():
     # 표3 거리 삼각형 (응답 텍스트 필요)
     resp = {(r["item_id"], r["cond"], r["temp"], r["rep"]): r["response"] for r in R if r["format"] == "F1"}
     if resp and "G2" in conds:
-        emb = Embedder(a.backend, fit_corpus=list(resp.values()) + [x["answer_truth"] for x in items.values()])
+        truths = [x["answer_truth"] for x in items.values()]
+        # bertscore idf·baseline은 judge.py와 같은 말뭉치(본인 답)로 맞춰야 천장 거리와 비교 가능
+        emb = Embedder(a.backend, fit_corpus=truths if a.metric == "bertscore" else list(resp.values()) + truths, metric=a.metric)
         pairs = collections.defaultdict(list)
         keys2 = [k for k in resp if k[1] == "G2" and k[2] > 0]
         A, B, lab = [], [], []
@@ -115,7 +122,7 @@ def main():
         sims = emb.sim(A, B)
         for l, s in zip(lab, sims):
             pairs[l].append(1 - s)
-        out.append("\n## 표3. 거리 삼각형 — G2 응답과의 평균 거리(1−sim_emb, 작을수록 가까움)\n\n| 상대 | n | dist |\n|---|---:|---:|")
+        out.append(f"\n## 표3. 거리 삼각형 — G2 응답과의 평균 거리(1−sim, {emb.name}, 작을수록 가까움)\n\n| 상대 | n | dist |\n|---|---:|---:|")
         for l, v in pairs.items():
             out.append(f"| G2–{l} | {len(v)} | {round(st.mean(v), 4)} |")
         out.append("\n해석: dist(G2–G0) < dist(G2–본인) → 개인화 부족 / dist(G2–G1) < dist(G2–본인) → 전형 의존 / dist(G2–G3) < dist(G2–본인) → 사전지식 지배")
@@ -131,7 +138,7 @@ def main():
                         pa, pb = zip(*itertools.combinations(rs, 2))
                         ds.append(st.mean([1 - s for s in emb.sim(list(pa), list(pb))]))
                 if ds:
-                    ratio = round(st.mean(ds) / ceil["dist"], 2) if ceil else ""
+                    ratio = round(st.mean(ds) / ceil["dist"], 2) if ceil and ceil["dist"] else ""
                     out.append(f"| {c} | {t} | {len(ds)} | {round(st.mean(ds), 4)} | {ratio} |")
 
     # 표5 A2/C1
@@ -202,7 +209,7 @@ def main():
     open(md, "w", encoding="utf-8").write("\n".join(out) + "\n")
     import csv
     with open(P("experiments/results", f"{a.exp}_summary.csv"), "w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["table", "cond", "n", *KEYS, "sim_emb"]); w.writeheader(); w.writerows(rows)
+        w = csv.DictWriter(f, fieldnames=["table", "cond", "n", *KEYS, "sim_emb", "sim_bs"]); w.writeheader(); w.writerows(rows)
     print("\n".join(out)); print(f"\n→ {md}")
 
 

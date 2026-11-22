@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """⑤-2 채점. runs/<exp>/*.jsonl (+ runs_local) 의 F1 응답마다
   (1) 판정 모델 눈가림 A/B 채점 → stance/ground/valence/voice (0~100)
-  (2) 임베딩 유사도 sim_emb (응답 ↔ 본인 답)
+  (2) 임베딩 유사도 sim_emb(e5 코사인) · sim_bs(BERTScore F1, st 설치 시) (응답 ↔ 본인 답)
   (3) --tag: 응답 자체의 valence/ground/일화 태깅 (A2·C1용)
   (4) --retest: Retest 14쌍(시즌1 Train 답 vs 시즌2 답)을 같은 판정에 넣어 본인 천장 계산
   (5) --swap: A/B 순서를 바꿔 한 번 더 채점 → 판정 자기 일관성
+  (6) --resim: LLM 호출 없이 기존 judge_*.jsonl·retest 천장의 sim_emb/sim_bs만 다시 계산
 결과: runs/<exp>/judge_<cond>.jsonl, results/<exp>_retest_ceiling.json
 G3 응답은 채점 전에 가명 사전으로 치환(조건 눈가림).
 
-python3 experiments/scripts/judge.py --exp A1 [--tag] [--retest] [--swap]
+python3 experiments/scripts/judge.py --exp A1 [--tag] [--retest] [--swap] [--resim]
+(sentence-transformers는 Intel 맥에서 Python ≤3.12만 가능 → .venv-st/bin/python 으로 실행)
 """
 import json, os, sys, argparse, glob, random, re, unicodedata
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -62,16 +64,32 @@ def main():
     ap.add_argument("--tag", action="store_true"); ap.add_argument("--retest", action="store_true")
     ap.add_argument("--swap", action="store_true"); ap.add_argument("--backend", default="auto")
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--resim", action="store_true", help="유사도만 재계산 (LLM 호출 없음)")
     a = ap.parse_args()
 
     items = {x["item_id"]: x for x in json.load(open(P("experiments/items/holdout50.json"), encoding="utf-8"))["items"]}
     pseudo = load_pseudo()
-    llm = LLM(role="judge"); tagger = LLM(role="tagger") if a.tag else None
+    llm = None if a.resim else LLM(role="judge"); tagger = LLM(role="tagger") if a.tag and not a.resim else None
     files = glob.glob(P("experiments/runs", a.exp, "*.jsonl")) + glob.glob(P("experiments/runs_local", a.exp, "*.jsonl"))
     files = [f for f in files if not os.path.basename(f).startswith("judge_")]
     corpus = [x["answer_truth"] for x in items.values()]
     emb = Embedder(a.backend, fit_corpus=corpus)
-    print("embedding:", emb.backend, emb.name)
+    bs = Embedder("st", fit_corpus=corpus, metric="bertscore") if emb.backend == "st" else None
+    print("embedding:", emb.backend, emb.name, "| bertscore:", bs.name if bs else "없음(st 미설치)")
+
+    def sims(xs, ys):
+        """[(sim_emb, sim_bs|None)]"""
+        c = emb.sim(xs, ys); b = bs.sim(xs, ys) if bs else [None] * len(c)
+        return list(zip(c, b))
+
+    def put(rec, s):
+        rec["sim_emb"] = round(s[0], 4); rec["emb_model"] = emb.name
+        if s[1] is not None:
+            rec["sim_bs"] = round(s[1], 4); rec["bs_model"] = bs.name
+        return rec
+
+    if a.resim:
+        resim(a, files, items, pseudo, sims, put); return
 
     for f in files:
         recs = [json.loads(l) for l in open(f, encoding="utf-8")]
@@ -87,15 +105,15 @@ def main():
             print(f"{os.path.basename(f)}: 완료"); continue
         truths = [items[r["item_id"]]["answer_truth"] for r in todo]
         resps = [pseudo(r["response"]) if r["cond"] == "G3" else r["response"] for r in todo]
-        sims = emb.sim(resps, truths)
+        ss = sims(resps, truths)
         def work(args):
             r, resp, s = args
             it = items[r["item_id"]]
             seed = f"{r['item_id']}|{r['cond']}|{r['temp']}|{r['rep']}"
             sc, a_truth, meta = judge_pair(llm, it["question"], it["answer_truth"], resp, seed)
             rec = {**{k: r[k] for k in ["exp", "item_id", "stratum", "cond", "format", "cot", "temp", "rep"]},
-                   "sim_emb": round(s, 4), "emb_model": emb.name, "judge_model": meta["model"],
-                   "truth_was_A": a_truth, "scores": sc}
+                   "judge_model": meta["model"], "truth_was_A": a_truth, "scores": sc}
+            put(rec, s)
             if a.swap:
                 sc2, _, _ = judge_pair(llm, it["question"], it["answer_truth"], resp, seed, swap=True)
                 rec["scores_swap"] = sc2
@@ -112,7 +130,7 @@ def main():
         from concurrent.futures import ThreadPoolExecutor, as_completed
         n = 0
         with open(out, "a", encoding="utf-8") as fo, ThreadPoolExecutor(max_workers=a.workers) as ex:
-            futs = [ex.submit(work, x) for x in zip(todo, resps, sims)]
+            futs = [ex.submit(work, x) for x in zip(todo, resps, ss)]
             for fu in as_completed(futs):
                 try:
                     rec = fu.result()
@@ -135,13 +153,40 @@ def main():
         for r in rt:
             for t in by_group.get(r["dup_group"], []):
                 sc, _, _ = judge_pair(llm, r["question"], r["answer"], t["answer"], f"retest|{r['id']}|{t['id']}")
-                s = emb.sim([r["answer"]], [t["answer"]])[0]
-                res.append({"retest_id": r["id"], "train_id": t["id"], "dup_group": r["dup_group"], "sim_emb": round(s, 4), "scores": sc})
+                s = sims([r["answer"]], [t["answer"]])[0]
+                res.append(put({"retest_id": r["id"], "train_id": t["id"], "dup_group": r["dup_group"], "scores": sc}, s))
         os.makedirs(P("experiments/results"), exist_ok=True)
         json.dump(res, open(P("experiments/results", f"{a.exp}_retest_ceiling.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
         ok = [x for x in res if x["scores"]]
         if ok:
             print(f"Retest 천장: {len(ok)}쌍, stance 평균 {sum(x['scores']['stance'] for x in ok)/len(ok):.1f}, sim_emb 평균 {sum(x['sim_emb'] for x in ok)/len(ok):.3f}")
+
+
+def resim(a, files, items, pseudo, sims, put):
+    for f in files:
+        out = os.path.join(os.path.dirname(f), "judge_" + os.path.basename(f))
+        if not os.path.exists(out):
+            continue
+        resp = {(r["item_id"], r["temp"], r["rep"]): r for r in map(json.loads, open(f, encoding="utf-8")) if r["format"] == "F1"}
+        js = [json.loads(l) for l in open(out, encoding="utf-8")]
+        ok = [j for j in js if (j["item_id"], j["temp"], j["rep"]) in resp]
+        rs = [resp[(j["item_id"], j["temp"], j["rep"])] for j in ok]
+        xs = [pseudo(r["response"]) if r["cond"] == "G3" else r["response"] for r in rs]
+        for j, s in zip(ok, sims(xs, [items[j["item_id"]]["answer_truth"] for j in ok])):
+            put(j, s)
+        with open(out + ".tmp", "w", encoding="utf-8") as fo:
+            fo.writelines(json.dumps(j, ensure_ascii=False) + "\n" for j in js)
+        os.replace(out + ".tmp", out)
+        print(f"{os.path.basename(out)}: {len(ok)}/{len(js)}건 유사도 재계산")
+    cp = P("experiments/results", f"{a.exp}_retest_ceiling.json")
+    if os.path.exists(cp):
+        rt = {x["id"]: x for x in json.load(open(P("data/anon/Retest.json"), encoding="utf-8"))["items"]}
+        tr = {x["id"]: x for x in json.load(open(P("data/anon/Train.json"), encoding="utf-8"))["items"]}
+        res = json.load(open(cp, encoding="utf-8"))
+        for x, s in zip(res, sims([rt[x["retest_id"]]["answer"] for x in res], [tr[x["train_id"]]["answer"] for x in res])):
+            put(x, s)
+        json.dump(res, open(cp, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        print(f"retest 천장: {len(res)}쌍 유사도 재계산")
 
 
 if __name__ == "__main__":
