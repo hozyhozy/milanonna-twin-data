@@ -170,7 +170,7 @@
 <div class="wrap">
 <header>
   <h1>꼬리표에서 관계도까지 — 예시로 보는 과정</h1>
-  <p>Etudo &amp; Yoon의 thematic coding(Atlas.ti) → 온톨로지 단계를 우리 연구에 옮긴 예시입니다. 발화 4개는 설명용으로 지어낸 것이고, 기준은 설계표 v0.4입니다. 번호를 누르면 그 단계의 그림과 설명이 아래에 나옵니다.</p>
+  <p>Etudo &amp; Yoon의 thematic coding(Atlas.ti) → 온톨로지 단계를 우리 연구에 옮긴 예시입니다. 발화 4개는 설명용으로 지어낸 것이고, 기준은 설계표 v0.5입니다. 번호를 누르면 그 단계의 그림과 설명이 아래에 나옵니다.</p>
   <div class="legend">
     <span>큰 꼬리표(칸):</span>
     <span class="k k-s">입장</span><span class="k k-a">특징 A</span><span class="k k-c">결과 C</span><span class="k k-v">가치 V</span>
@@ -280,7 +280,7 @@
 <div class="cap" id="cap"></div>
 
 <footer>
-  설계표: 인물 온톨로지 설계표 v0.4 (클래스·관계·공리). 발화와 인물은 모두 설명용으로 지어낸 것이며 실제 인터뷰 인용이 아닙니다. 2026-11-21 작성, 2026-11-22 개정(5단계에 클래스 승격 데이터 예시 추가), 2026-11-23 개정(설계표 v0.4: 결과 C도 공유 개념).
+  설계표: 인물 온톨로지 설계표 v0.5 (클래스·관계·공리). 발화와 인물은 모두 설명용으로 지어낸 것이며 실제 인터뷰 인용이 아닙니다. 2026-11-21 작성, 2026-11-22 개정(5단계에 클래스 승격 데이터 예시 추가), 2026-11-23 개정(설계표 v0.4: 결과 C도 공유 개념 / v0.5: 입장 상자 중심으로 범위 축소).
 </footer>
 </div>
 
@@ -324,7 +324,7 @@ const D4='<div class="g2"><div><div class="search"><div class="q">꼬리표 검�
  '<tr><td>'+K('a','남과 같아진다')+'</td><td><span class="dot d1"></span></td><td class="dx">–</td><td><span class="dot d3"></span></td><td>2</td><td>'+K('re','C04-02 획일성')+'</td></tr>'+
  '<tr><td>'+K('c','쓸모가 금방 끝난다')+'</td><td><span class="dot d1"></span></td><td><span class="dot d2"></span></td><td class="dx">–</td><td>2</td><td>'+K('re','C05-01 쓸모가 끝남')+'</td></tr>'+
  '<tr><td>'+K('c','내가 드러나지 않는다')+'</td><td><span class="dot d1"></span></td><td class="dx">–</td><td class="dx">–</td><td>1</td><td>'+K('old','대기')+'</td></tr></table>'+
- '<p style="font-size:13px;color:var(--mute);margin:8px 0 0">이 표가 Etudo &amp; Yoon의 Table C1에 해당합니다. 특징(A)과 결과(C) 모두 같은 2명 규칙을 씁니다(설계표 v0.4, A13).</p></div></div>';
+ '<p style="font-size:13px;color:var(--mute);margin:8px 0 0">이 표가 Etudo &amp; Yoon의 Table C1에 해당합니다. 특징(A)과 결과(C) 모두 같은 2명 규칙을 씁니다(설계표 v0.5, A13).</p></div></div>';
 
 const node=(x,y,w,fill,stroke,t1,t2,sw,dash)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="48" rx="7" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+(sw||1.2)+'"'+(dash?' stroke-dasharray="5 4"':'')+'/><text x="'+(x+w/2)+'" y="'+(y+21)+'" text-anchor="middle" font-size="14" font-weight="700" fill="'+(dash?'#9a9da6':stroke)+'">'+t1+'</text><text x="'+(x+w/2)+'" y="'+(y+38)+'" text-anchor="middle" font-size="11.5" fill="#6a6d76">'+t2+'</text>';
 const box=(x,y,w,t1,t2)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="56" rx="8" fill="#1b1c20"/><text x="'+(x+w/2)+'" y="'+(y+24)+'" text-anchor="middle" font-size="14.5" font-weight="700" fill="#fff">'+t1+'</text><text x="'+(x+w/2)+'" y="'+(y+43)+'" text-anchor="middle" font-size="11.5" fill="#c9ccd4">'+t2+'</text>';
@@ -424,7 +424,7 @@ const D6='<div class="vflow">'+
 
 const D0='<table class="cmp" style="margin-top:0"><tr><th></th><th class="hr">Etudo &amp; Yoon</th><th class="hm">우리 연구</th></tr>'+
  '<tr><td><b>꼬리표를 붙이는 단위</b></td><td>문장 하나</td><td>발화를 구절로 쪼갠 조각</td></tr>'+
- '<tr><td><b>큰 꼬리표</b></td><td>진단 · 예후 · 동기 중 <b>하나</b></td><td>입장 · 특징 · 결과 · 가치 · 특질 · 동기 · 지향 · 방침 · 일화 중 <b>해당하는 칸 전부</b> (빈칸 허용)</td></tr>'+
+ '<tr><td><b>큰 꼬리표</b></td><td>진단 · 예후 · 동기 중 <b>하나</b></td><td>입장 · 특징 · 결과 · 가치 (+ 보조로 일화) 중 <b>해당하는 칸 전부</b> (빈칸 허용). 특질 · 동기 · 지향 · 방침은 후속 연구</td></tr>'+
  '<tr><td><b>세부 꼬리표</b></td><td>읽으며 생기고 재사용 → <b>관계</b>가 됨</td><td>읽으며 생기고 재사용 → 2명 이상이면 <b>아래층 클래스</b>가 됨</td></tr>'+
  '<tr><td><b>주장 하나</b></td><td>FrameRelation 상자 (누가 · 누구를 · 프레임 · 말한 조직)</td><td>Stance 상자 (누가 · 대상 · 찬반 · A · C · V · 근거)</td></tr>'+
  '<tr><td><b>상자의 칸</b></td><td>모인 문장 구조에서 도출</td><td>ACV 이론에서 미리 정함</td></tr>'+
@@ -433,8 +433,8 @@ const D0='<table class="cmp" style="margin-top:0"><tr><th></th><th class="hr">Et
 const S=[
  {t:'전체 과정',p:'발화 → 구절로 쪼개기 → 세부 꼬리표 → 꼬리표별로 모으기 → 관계도 → 새 질문. 키 논문이 Atlas.ti로 한 일을 우리 자료에 옮긴 흐름입니다. 위 그림의 상자나 번호를 누르면 그 단계가 확대됩니다.',d:D0,pts:[],ref:'',ids:[]},
  {t:'1. 발화 모으기',p:'질문 하나에 대한 답 한 대목을 발화(Statement) 하나로 봅니다. 사람과 함께 상황을 세 층으로 기록합니다.',d:D1,
-  pts:['상황 세 층: 매체·형식 / 질문이 만든 상황(5–7개 목록) / 주변 맥락','뒤 시기 발화는 평가용으로 떼어 두고 관계도에 넣지 않음','기사는 본인 답이 그대로 실린 경우만, 그리고 표시해 둠 (특질 근거로는 못 씀)'],
-  ref:'네 조직(AQAP · ALF · PFLP · KKK)의 선언문과 성명서 문장을 모았습니다. 상황 기록은 없었습니다.',ids:['C01 Person','C02 Statement','C10 Situation','A08','A11']},
+  pts:['상황 세 층: 매체·형식 / 질문이 만든 상황(5–7개 목록) / 주변 맥락','뒤 시기 발화는 평가용으로 떼어 두고 관계도에 넣지 않음','기사는 본인 답이 그대로 실린 경우만, 그리고 표시해 둠 (말투 판단에는 쓰지 않음)'],
+  ref:'네 조직(AQAP · ALF · PFLP · KKK)의 선언문과 성명서 문장을 모았습니다. 상황 기록은 없었습니다.',ids:['C01 Person','C02 Statement','C10 Situation','A11']},
  {t:'2. 구절로 쪼개기 — 큰 꼬리표',p:'발화 하나를 큰 꼬리표 하나로 분류하지 않고, 구절로 쪼개 해당하는 칸에 넣습니다(분해). 말하지 않은 칸은 빈칸으로 둡니다.',d:D2,
   pts:['큰 꼬리표 = 설계표의 위층 클래스 (이론에서 옴)','한 발화에서 여러 칸이 나올 수 있고, 하나도 안 나올 수도 있음','가치 칸은 두 층: 본인의 말 + Schwartz 칸 (칸은 사람이 확인)','말투는 사람이 아니라 이 발화에 붙여 둠'],
   ref:'"누가 문제인가"를 말하는 문장 → <b>진단</b> 하나만 붙였습니다.',ids:['C03 Topic','C04 Attribute','C05 Consequence','C06 Value','A02','A04']},

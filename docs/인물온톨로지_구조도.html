@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>인물 온톨로지 구조도 (v0.4)</title>
+<title>인물 온톨로지 구조도 (v0.5)</title>
 <style>
   :root{--ink:#1b1c20;--mute:#6a6d76;--line:#e3e5ea;--bg:#f7f7f9;--card:#fff;--me:#2459d6;--me-bg:#eaf1ff;--ref:#5b6475;--ref-bg:#f1f3f6;--ref-line:#cfd4dd;--done:#1f8a55;--done-bg:#e6f6ee;--draft:#b06a00;--draft-bg:#fff3de}
   *{box-sizing:border-box}
@@ -38,6 +38,11 @@
   .ed.d{stroke-dasharray:6 5}
   .el{font-size:12.5px;font-weight:600;fill:#4a4d55;paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round}
   .dim .nd:not(.on):not(.nb){opacity:.35}
+  .nd.fut{opacity:.42}
+  .nd.fut .cd{stroke-dasharray:5 4;stroke:#9ea2ac}
+  .nd.fut .acc{fill:#9ea2ac}
+  .futl{font-size:11.5px;font-weight:700;fill:#7a5cc4}
+  .tag.f{background:#f1ecfb;color:#7a5cc4}
   .panel{margin-top:12px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--me);border-radius:10px;padding:16px 18px}
   .panel h3{margin:0 0 2px;font-size:17px}
   .panel .sub{font-size:13px;color:var(--mute);margin-bottom:8px}
@@ -59,8 +64,8 @@
 <body>
 <div class="wrap">
 <header>
-  <h1>인물 온톨로지 구조도 (v0.4)</h1>
-  <p>객체 유형마다 카드 하나(유형 · 예시 객체 · 속성)를 두고, 유형 사이의 관계를 화살표로 그렸습니다. 카드를 누르면 정의, 칸, 공리, 키 논문과의 대응이 아래에 나옵니다. 예시 객체는 설명용으로 지어낸 것입니다.</p>
+  <h1>인물 온톨로지 구조도 (v0.5)</h1>
+  <p>객체 유형마다 카드 하나(유형 · 예시 객체 · 속성)를 두고, 유형 사이의 관계를 화살표로 그렸습니다. v0.5부터 범위는 <b>입장 상자 중심</b>입니다: 입장 상자가 온톨로지의 중심이고, 일화는 보조 모듈이며, 특질 · 동기 · 지향 · 상황별 방침 상자는 후속 연구로 미뤘습니다(흐리게 표시). 카드를 누르면 정의, 칸, 공리, 키 논문과의 대응이 아래에 나옵니다. 예시 객체는 설명용으로 지어낸 것입니다.</p>
   <div class="legend">
     <span><span class="sw c"></span>사람별 상자 (한 사람의 주장 한 건)</span>
     <span><span class="sw p"></span>공유되는 점 (여러 사람이 함께 가리킴)</span>
@@ -75,7 +80,7 @@
 <figure><svg id="fig" viewBox="0 0 1100 800" role="img" aria-label="인물 온톨로지 구조도"></svg></figure>
 <div class="panel" id="panel"></div>
 
-<footer>기준: 인물 온톨로지 설계표 v0.4 (클래스 · 관계 · 공리). 이론: McAdams 3수준 뼈대, PACE의 이론(HEXACO · Schwartz · 자기결정 이론 · 조절 초점 · Mischel &amp; Shoda), ACV. 2026-11-21.</footer>
+<footer>기준: 인물 온톨로지 설계표 v0.5 (클래스 · 관계 · 공리). 범위: 입장 상자 중심(일화는 보조, 특질 · 동기 · 지향 · 상황별 방침은 후속 연구). 근거 이론: 수단-목적 사슬(ACV) + Schwartz 가치 + 태도 이론. McAdams 3수준은 위치 설명(2수준 중 대상에 대한 평가 부분을 모델링). 2026-11-21 작성, 2026-11-23 v0.5.</footer>
 </div>
 
 <script>
@@ -121,18 +126,18 @@ const EA=[
 const VB=[
  ['person','person',550,380,240,'Person','P01 (가명)',['Properties: 자료 범위, 매체 수'],0],
  ['stance','stance',550,66,290,'Stance (입장 상자)','ST-0001',['label: P01 · 유행하는 옷 · 반대','→ Topic · Attribute · Consequence · Value'],1],
- ['traitclaim','trait',170,110,280,'TraitClaim (특질 상자)','TC-0001',['label: P01 · 단정적이다','→ Trait: 단정적이다 (HEXACO)','Properties: 상황 종류 수, 반복 횟수'],1],
- ['motiveclaim','motive',930,110,280,'MotivationClaim (동기 상자)','MC-0001',['label: P01 · 자율','→ Motivation: 자율 (자기결정 이론)','Properties: 근거 등급'],1],
- ['orientclaim','orient',150,380,270,'OrientationClaim (지향 상자)','OC-0001',['label: P01 · 예방 지향','→ Orientation: 예방 지향 (조절 초점)'],1],
- ['policy','policy',950,380,270,'Policy (상황별 방침)','PO-0001',['label: P01 · 비판 받으면 → 짧고 단호하게','→ Situation: 비판 받음','Properties: 근거 발화 수'],1],
- ['episode','episode',550,640,240,'Episode (일화)','EP-0001',['label: P01 · 밀라노 코트','Properties: 때, 곳, 사건'],1]
+ ['traitclaim','trait',170,110,280,'TraitClaim (특질 상자)','TC-0001',['label: P01 · 단정적이다','→ Trait: 단정적이다 (HEXACO)','Properties: 상황 종류 수, 반복 횟수'],1,1],
+ ['motiveclaim','motive',930,110,280,'MotivationClaim (동기 상자)','MC-0001',['label: P01 · 자율','→ Motivation: 자율 (자기결정 이론)','Properties: 근거 등급'],1,1],
+ ['orientclaim','orient',150,380,270,'OrientationClaim (지향 상자)','OC-0001',['label: P01 · 예방 지향','→ Orientation: 예방 지향 (조절 초점)'],1,1],
+ ['policy','policy',950,380,270,'Policy (상황별 방침)','PO-0001',['label: P01 · 비판 받으면 → 짧고 단호하게','→ Situation: 비판 받음','Properties: 근거 발화 수'],1,1],
+ ['episode','episode',550,640,240,'Episode (일화 · 보조)','EP-0001',['label: P01 · 밀라노 코트','Properties: 때, 곳, 사건'],1]
 ];
 const EB=[
  [550,198,550,344,'hasHolder'],
- [250,262,516,362,'hasHolder'],
- [850,262,584,362,'hasHolder'],
- [186,380,514,380,'hasHolder'],
- [914,380,586,380,'hasHolder'],
+ [250,262,516,362,'hasHolder',1],
+ [850,262,584,362,'hasHolder',1],
+ [186,380,514,380,'hasHolder',1],
+ [914,380,586,380,'hasHolder',1],
  [550,604,550,496,'hasHolder']
 ];
 const DET={
@@ -153,24 +158,25 @@ const DET={
  consequence:{t:'Consequence — 결과·이유 (C)',id:'C05',k:'p',d:'그 특징 때문에 본인에게 생기는 결과입니다. "그래서 나에게 무엇이 생기나"로 읽힙니다. Attribute와 같이 아래층(쓸모가 끝남 …)은 자료에서 올라오며, 두 명 이상이 공유해야 클래스가 됩니다. 본인의 말(원문 구절)은 상자에 함께 남습니다.',s:[['(들어옴) hasConsequence','Stance','상자마다 0~1']],a:['A13','A15','A19'],r:'키 논문에 해당 칸 없음.',x:['예: C05-01 쓸모가 끝남 (P01 · P02)','Schwartz 가치를 그대로 말하는 결과("안전해진다")는 Value로 옮김 (A19)']},
  value:{t:'Value — 지키려는 것 (V)',id:'C06',k:'p',d:'결국 지키려는 것입니다. 두 층으로 적습니다: 큰 칸은 Schwartz 10가지(자기주도, 자극, 쾌락, 성취, 권력, 안전, 순응, 전통, 박애, 보편주의), 세부는 본인의 말.',
   s:[['(들어옴) hasValue','Stance','상자마다 0~1'],['illustratedBy','Episode','0개 이상']],a:['A03','A04'],r:'키 논문에 해당 칸 없음.',x:['비슷한 사람 찾기 1차 기준: Schwartz 칸 + 극성','가치를 말하지 않았으면 칸을 비워 둠 — 추론해 채운 가치는 사람 찾기에 쓰지 않음 (A10)']},
- episode:{t:'Episode — 일화 (선택)',id:'C12',k:'c',d:'본인이 겪은 구체적인 일입니다(때 · 곳 · 사건). McAdams 3수준이며, 이번 연구에서는 켭니다. 그 자체가 사람별 상자라 hasHolder와 근거 발화를 가집니다.',
+ episode:{t:'Episode — 일화 (보조 모듈)',id:'C12',k:'c',d:'본인이 겪은 구체적인 일입니다(때 · 곳 · 사건). 입장 상자 중심 범위에서 보조 모듈로 남깁니다: 트윈이 일화를 지어냈는지 판정하는 근거로만 씁니다. 그 자체가 사람별 상자라 hasHolder와 근거 발화를 가집니다.',
   s:[['hasHolder','Person','정확히 1'],['evidencedBy','Statement (본인 것만)','1개 이상'],['(들어옴) illustratedBy','Value','—']],a:['A07'],r:'키 논문에 해당 없음.',x:['절대 빌리지 않음 — 남의 일화를 빌려 오면 지어낸 이야기가 됨','평가에 "트윈이 일화를 지어냈는가"를 넣음']},
- traitclaim:{t:'TraitClaim — 특질 상자',id:'C14',k:'c',d:'한 사람이 어떤 특질(1수준, HEXACO)을 가진다는 주장입니다. 근거 발화와 상황 수를 붙이려고 상자로 만들었습니다.',
+ traitclaim:{t:'TraitClaim — 특질 상자',id:'C14',k:'c',f:1,d:'이번 논문 범위 밖(후속 연구)입니다. 설계에는 자리만 남겨 두었고 추출하지 않습니다. 한 사람이 어떤 특질(1수준, HEXACO)을 가진다는 주장입니다. 근거 발화와 상황 수를 붙이려고 상자로 만들었습니다.',
   s:[['hasHolder','Person','정확히 1'],['assertsTrait','Trait','정확히 1'],['evidencedBy','Statement','서로 다른 상황 2종 이상']],a:['A05','A06','A08'],r:'키 논문에 해당 없음.',x:['말투·길이는 상황마다 달라지므로 발화에 적고, 여러 상황에서 반복되는 것(단정성 등)만 특질로 올림']},
- motiveclaim:{t:'MotivationClaim — 동기 상자',id:'C15',k:'c',d:'한 사람이 어떤 동기(자기결정 이론: 자율·유능·관계 / McClelland: 성취·권력·친교)를 가진다는 주장입니다.',s:[['hasHolder','Person','정확히 1'],['assertsMotivation','Motivation','정확히 1'],['evidencedBy','Statement','1개 이상']],a:['A05'],r:'키 논문의 "동기 프레임"과 이름만 같고 뜻은 다름 (그쪽은 행동 촉구 문장).',x:['인터뷰에서 안 드러나면 만들지 않음']},
- orientclaim:{t:'OrientationClaim — 지향 상자',id:'C16',k:'c',d:'얻으려는 쪽인가, 잃지 않으려는 쪽인가(조절 초점, Higgins)에 대한 주장입니다.',s:[['hasHolder','Person','정확히 1'],['assertsOrientation','Orientation','정확히 1'],['evidencedBy','Statement','1개 이상']],a:['A05'],r:'키 논문에 해당 없음.',x:['PACE는 이 차원을 뽑으려 질문을 직접 설계했음 — 이미 있는 인터뷰에서는 잘 안 드러날 수 있음']},
- policy:{t:'Policy — 상황별 방침',id:'C11',k:'c',d:'"만약 [상황]이면 [반응]" 규칙입니다(Mischel &amp; Shoda). 같은 상황의 발화가 2개 이상일 때 만듭니다. 그 자체가 사람별 상자입니다.',s:[['hasHolder','Person','정확히 1'],['inSituation','Situation','정확히 1'],['evidencedBy','Statement','2개 이상']],a:['A05','A14'],r:'키 논문에 해당 없음.',x:['예: 조언을 요청받으면 길고 따뜻하게 / 비판을 받으면 짧고 단호하게']}
+ motiveclaim:{t:'MotivationClaim — 동기 상자',id:'C15',k:'c',f:1,d:'이번 논문 범위 밖(후속 연구)입니다. 설계에는 자리만 남겨 두었고 추출하지 않습니다. 한 사람이 어떤 동기(자기결정 이론: 자율·유능·관계 / McClelland: 성취·권력·친교)를 가진다는 주장입니다.',s:[['hasHolder','Person','정확히 1'],['assertsMotivation','Motivation','정확히 1'],['evidencedBy','Statement','1개 이상']],a:['A05'],r:'키 논문의 "동기 프레임"과 이름만 같고 뜻은 다름 (그쪽은 행동 촉구 문장).',x:['인터뷰에서 안 드러나면 만들지 않음']},
+ orientclaim:{t:'OrientationClaim — 지향 상자',id:'C16',k:'c',f:1,d:'이번 논문 범위 밖(후속 연구)입니다. 설계에는 자리만 남겨 두었고 추출하지 않습니다. 얻으려는 쪽인가, 잃지 않으려는 쪽인가(조절 초점, Higgins)에 대한 주장입니다.',s:[['hasHolder','Person','정확히 1'],['assertsOrientation','Orientation','정확히 1'],['evidencedBy','Statement','1개 이상']],a:['A05'],r:'키 논문에 해당 없음.',x:['PACE는 이 차원을 뽑으려 질문을 직접 설계했음 — 이미 있는 인터뷰에서는 잘 안 드러날 수 있음']},
+ policy:{t:'Policy — 상황별 방침',id:'C11',k:'c',f:1,d:'이번 논문 범위 밖(후속 연구)입니다. 설계에는 자리만 남겨 두었고 추출하지 않습니다. "만약 [상황]이면 [반응]" 규칙입니다(Mischel &amp; Shoda). 같은 상황의 발화가 2개 이상일 때 만듭니다. 그 자체가 사람별 상자입니다.',s:[['hasHolder','Person','정확히 1'],['inSituation','Situation','정확히 1'],['evidencedBy','Statement','2개 이상']],a:['A05','A14'],r:'키 논문에 해당 없음.',x:['예: 조언을 요청받으면 길고 따뜻하게 / 비판을 받으면 짧고 단호하게']}
 };
 const OV={a:{t:'입장 중심 보기',d:'입장 상자 하나를 가운데 두고, 그 상자의 칸이 가리키는 객체 유형을 둘러 그렸습니다. Etudo &amp; Yoon Figure 4에서 FrameRelation 상자 하나가 네 칸을 뽑는 것과 같은 모양입니다.',x:['검은 테두리 카드는 사람마다 따로 생기는 상자, 회색 카드는 여러 사람이 함께 가리키는 점','Attribute · Consequence · Value 칸은 비어도 됨 — 말하지 않은 것은 채우지 않음','점선은 상자에서 직접 나가는 선이 아니라, 근거 발화가 가진 정보(질문 상황)']},
- b:{t:'사람 중심 보기',d:'한 사람을 가운데 두고, 그 사람에 대한 주장 상자 여섯 종류를 둘러 그렸습니다. 모든 상자가 hasHolder로 사람을 가리키고, evidencedBy로 근거 발화에 닿습니다(입장 중심 보기 참고).',x:['사람에게 성향을 직접 붙이지 않음 — 반드시 근거 발화를 가진 상자를 거침','특질·동기·지향 상자는 공유되는 점(Trait · Motivation · Orientation)을 가리킴 → 사람끼리 이어지는 또 다른 길','일화는 이 사람만의 것이라 빌리지 않음']}};
+ b:{t:'사람 중심 보기',d:'한 사람을 가운데 두고, 그 사람에 대한 주장 상자를 둘러 그렸습니다. v0.5 범위에서 쓰는 것은 <b>입장 상자</b>(중심)와 <b>일화</b>(보조) 둘뿐이고, 흐리게 그린 넷(특질 · 동기 · 지향 · 상황별 방침)은 McAdams 틀에서의 자리만 보여 주는 후속 연구입니다.',x:['키 논문도 주장 상자(FrameRelation) 하나만 온톨로지로 만들고, 주체(조직)는 점으로만 둠 — 우리도 Person은 점, 주장은 입장 상자','사람에게 성향을 직접 붙이지 않음 — 반드시 근거 발화를 가진 상자를 거침','일화는 이 사람만의 것이라 빌리지 않음','말투와 상황별 반응은 온톨로지로 만들지 않고, 트윈 프롬프트에 넣는 말투 메모(style)로 씀']}};
 
 const fig=document.getElementById('fig'),panel=document.getElementById('panel');
 let view='a',sel=null;
 const esc=s=>s.replace(/&(?!amp;)/g,'&amp;');
 function nodeSVG(n){
-  const [id,ic,x,y,w,type,obj,ex,claim]=n;
+  const [id,ic,x,y,w,type,obj,ex,claim,fut]=n;
   const lines=1+1+ex.length, h=18+lines*17, cy=y+42, cx=x-w/2;
-  let t='<g class="nd'+(claim?' claim':'')+(sel===id?' on':'')+'" data-id="'+id+'">';
+  let t='<g class="nd'+(claim?' claim':'')+(fut?' fut':'')+(sel===id?' on':'')+'" data-id="'+id+'">';
+  if(fut)t+='<text class="futl" x="'+(x+40)+'" y="'+(y-18)+'">후속 연구</text>';
   t+='<circle class="halo" cx="'+x+'" cy="'+y+'" r="34"/><g class="ic" transform="translate('+x+','+y+')">'+IC[ic]+'</g>';
   t+='<rect class="cd" x="'+cx+'" y="'+cy+'" width="'+w+'" height="'+h+'" rx="6"/>';
   if(claim)t+='<rect class="acc" x="'+cx+'" y="'+cy+'" width="5" height="'+h+'" rx="2"/>';
@@ -196,7 +202,7 @@ function draw(){
   fig.querySelectorAll('.nd').forEach(g=>g.onclick=()=>{sel=(sel===g.dataset.id)?null:g.dataset.id;draw();});
   document.querySelectorAll('#seg button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
   if(sel&&DET[sel]){const D=DET[sel];
-    panel.innerHTML='<h3>'+D.t+'</h3><div class="sub"><span class="tag '+D.k+'">'+(D.k==='c'?'사람별 상자':'공유되는 점')+'</span>설계표 '+D.id+'</div><p>'+D.d+'</p>'+
+    panel.innerHTML='<h3>'+D.t+'</h3><div class="sub">'+(D.f?'<span class="tag f">후속 연구</span>':'')+'<span class="tag '+D.k+'">'+(D.k==='c'?'사람별 상자':'공유되는 점')+'</span>설계표 '+D.id+'</div><p>'+D.d+'</p>'+
      '<table class="sl"><tr><th>칸 (관계)</th><th>가리키는 것</th><th>개수</th></tr>'+D.s.map(r=>'<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>').join('')+'</table>'+
      '<ul class="pl">'+D.x.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
      '<div class="refbox"><b>키 논문에서는</b> '+D.r+'</div><div class="ax">관련 공리: '+D.a.map(x=>'<span>'+x+'</span>').join('')+'</div>';
