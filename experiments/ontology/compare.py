@@ -104,7 +104,19 @@ def main():
             done[(item, cond)] = rec
             f.write(json.dumps(rec, ensure_ascii=False) + "\n"); f.flush()
             print(item, cond, rec["topic_match"], rec["polarity"], rec["value"], rec["ep_invented"])
+    # 기준선: 질문과 상관없이 '이 사람이 가장 자주 지키는 가치 2개'를 늘 답했다고 볼 때의 가치 겹침
+    from collections import Counter
+    top2 = [k for k, _ in Counter(x for b in g["boxes"] if b["type"] == "Stance" for x in b.get("schwartz", [])
+                                  if x != "해당 없음").most_common(2)]
+    base = defaultdict(lambda: defaultdict(list))
+    for (item, cond), r in done.items():
+        if cond == "B0":
+            tv = [y for x in r["truth_ext"]["stances"] if x["value"] for y in x["value"]["schwartz"] if y != "해당 없음"]
+            j = jac(tv, top2)
+            if j is not None:
+                base["최빈 가치"]["value"].append(j)
     agg = defaultdict(lambda: defaultdict(list))
+    agg.update(base)
     for r in done.values():
         for k in ["topic_match", "polarity", "attr", "value", "ep_reused", "ep_invented", "char_sim"]:
             if r.get(k) is not None:
@@ -113,12 +125,13 @@ def main():
     L = ["# 같은 추출기로 비교한 충실도 프로필 (v2 지표)", "",
          "| 조건 | 대상 맞음 | 찬반 일치(맞은 대상 중) | 특징 겹침 | 가치 겹침 | 본인 일화 재사용 | 근거 없는 일화 | 표면 유사도 |",
          "|---|---|---|---|---|---|---|---|"]
-    order = [c for c in ["천장", "O1", "B1", "B0"] if c in agg] + [c for c in sorted(agg) if c not in ("천장", "O1", "B1", "B0")]
+    order = [c for c in ["천장", "O1", "B1", "B0", "최빈 가치"] if c in agg] + [c for c in sorted(agg) if c not in ("천장", "O1", "B1", "B0", "최빈 가치")]
     for c in order:
         m = agg[c]
         L.append(f"| {c} | {mean(m['topic_match'])} | {mean(m['polarity'])} | {mean(m['attr'])} | {mean(m['value'])} | "
                  f"{mean(m['ep_reused'])} | {mean(m['ep_invented'])} | {mean(m['char_sim'])} |")
-    L += ["", "천장 = 같은 질문에 본인이 다른 때 한 답끼리 비교(Retest). 트윈이 천장에 가까울수록 좋음.",
+    L += ["", f"최빈 가치 = 질문과 상관없이 늘 {', '.join(top2)}라고 답했다고 칠 때의 가치 겹침. 트윈의 가치 겹침이 이보다 높아야 의미가 있음.",
+          "천장 = 같은 질문에 본인이 다른 때 한 답끼리 비교(Retest). 트윈이 천장에 가까울수록 좋음. 단, 천장의 일화는 관계도에 들어간 발화가 적으면 '근거 없음'으로 잘못 잡힘.",
           "B0 = 기본 소개만, B1 = 원문 발췌, O1 = 관계도 근거.",
           "특징 겹침은 꼬리표를 합친(코드북) 뒤에 의미가 있습니다. 근거 없는 일화는 Train 일화와 문자 유사도로만 판정하니 손으로 확인이 필요합니다."]
     open(os.path.join(d, "compare.md"), "w", encoding="utf-8").write("\n".join(L))

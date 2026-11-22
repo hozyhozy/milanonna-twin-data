@@ -12,7 +12,7 @@ python3 experiments/ontology/clean.py --split Holdout --ids-from-holdout50
 출력: experiments/runs/ontology/_clean/<split>.jsonl   (모든 run이 같이 씀)
 """
 import argparse, difflib, json, os
-from common import load_split, read_jsonl, parse_json, CLEAN_DIR, ROOT
+from common import load_split, read_jsonl, parse_json, video_index, CLEAN_DIR, ROOT
 
 SYSTEM = """너는 한국어 자동 자막을 교정하는 편집자다. 잘못 인식된 단어만 문맥에 맞게 고친다.
 말을 다듬거나 요약하거나 문장을 새로 쓰지 않는다. 말버릇·반복·어순·구어체 어미는 그대로 둔다.
@@ -42,6 +42,8 @@ def main():
     out_p = os.path.join(CLEAN_DIR, f"{a.split}.jsonl")
     done = {r["id"] for r in read_jsonl(out_p)}
     items = load_split(a.split)
+    vidx = video_index()
+    items.sort(key=lambda x: (vidx[x["video_id"]], x["id"]))   # extract.py 와 같은 순서 (--limit 이 같은 발화를 가리키게)
     if a.ids_from_holdout50:
         keep = {x["item_id"] for x in json.load(open(os.path.join(ROOT, "experiments/items/holdout50.json"), encoding="utf-8"))["items"]}
         items = [x for x in items if x["id"] in keep]
