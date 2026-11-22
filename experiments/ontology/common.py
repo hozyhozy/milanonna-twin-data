@@ -6,6 +6,7 @@ import json, os, re, random, csv, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.join(ROOT, "experiments/scripts"))
+CFG_MODELS = json.load(open(os.path.join(ROOT, "experiments/config/models.json"), encoding="utf-8"))
 
 DATA = os.path.join(ROOT, "data/anon")
 RUNS = os.path.join(ROOT, "experiments/runs/ontology")

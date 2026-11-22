@@ -3,23 +3,47 @@
 
   B0  기본 소개만 (빈 LLM에 가까운 바닥)
   B1  원문 발췌 — Train 질문·답 중 비슷한 k개 (기존 G2 방식, 비교 기준)
-  O1  관계도 근거 — 비슷한 입장 상자 k개 + 본인 일화 + 자주 지키는 가치 요약 (이 연구의 방식)
+  O1  관계도 근거 — 비슷한 입장 상자 k개 + 본인 일화 + 말투 메모 (이 연구의 방식)
 
-python3 experiments/ontology/answer.py --run pilot1 --n 30 --k 8
-출력: answers.jsonl, prompts_sample.md
+.venv-st/bin/python experiments/ontology/answer.py --run pilot4 --n 50 --k 8
+출력: answers.jsonl, answer_meta.json, prompts_sample.md
+
+v3 (2026-11-23, 파일럿3 진단 반영)
+  - 찾기: B1 발췌와 O1 상자 모두 e5 임베딩(query:/passage:)으로 찾는다. 두 조건이 같은 찾기 방식을 쓰므로
+    차이는 '무엇을 주느냐'(원문 vs 상자)에서만 난다. --retrieval tfidf 로 예전 방식 재현 가능.
+  - O1의 '[자주 지키는 가치] 자기주도(287)…' 줄을 뺐다. 매 문항 같은 가치를 밀어 넣어 '최빈 가치 찍기'와
+    비슷해졌기 때문. 대신 각 상자의 가치에 근거 등급(직접/추론)을 붙인다.
+  - 말투 메모에서 자막 오류를 말하는 문장을 거른다 (STYLE_NOISE).
 """
-import argparse, json, os
+import argparse, json, os, re
 from collections import Counter
 from common import ROOT, run_dir, load_split, load_clean, PERSON_NAME
 
+STYLE_NOISE = re.compile(r"자막|오류|오타|인식|알아보기|알아듣기|불명확|깨진|끊김|끊어진|잘린|잡음|ASR|\[\?\]|'예 아'|“예 아”|예 아")
+
+
+def clean_style(note):
+    """말투 메모를 문장 단위로 나눠 자막 오류를 말하는 문장을 뺀다. 남는 게 없으면 ''."""
+    out = []
+    for sent in re.split(r"(?<=[.!?])\s+|\s*/\s*", note or ""):
+        parts = [p.strip() for p in sent.split(",") if p.strip()]
+        keep = [p for p in parts if not STYLE_NOISE.search(p)]
+        if keep:
+            out.append(", ".join(keep).rstrip(".") + ".")
+    return " ".join(out).strip()
+
+
+def rank(queries, docs, how):
+    """문항×문서 유사도 행렬. emb = e5(query:/passage:), tfidf = 문자 n-gram."""
+    from retrieve import embed_st, embed_tfidf
+    if how == "emb":
+        from embed import require_st
+        from common import CFG_MODELS
+        if require_st("answer.py 찾기"):
+            return embed_st(queries, docs, CFG_MODELS["roles"]["embedding"]["model"])
+    return embed_tfidf(queries, docs)
+
 RULE = "\n\n[답하는 법]\n아래 근거를 참고하되 질문에 맞게 새로 답하세요. 근거에 없는 구체적인 일화(때·곳·사건)는 지어내지 마세요."
-
-
-def tfidf_rank(queries, docs):
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    v = TfidfVectorizer(analyzer="char_wb", ngram_range=(2, 4), sublinear_tf=True)
-    D = v.fit_transform(docs)
-    return (v.transform(queries) @ D.T).toarray()
 
 
 def box_text(b, g):
@@ -33,7 +57,8 @@ def box_text(b, g):
 def box_line(b):
     if b["type"] == "Episode":
         return f"- [{b['id']} 일화] {b['label'].split(' · ', 1)[1]}: \"{b['phrase']}\""
-    v = f"{b['hasValue']}({', '.join(b['schwartz'])}, {b['valueEffect']})" if b["hasValue"] else "-"
+    ve = "추론" if (b.get("valueEvidence") or "").startswith("추론") else "직접"
+    v = f"{b['hasValue']}({', '.join(b['schwartz'])}, {b['valueEffect']}, 근거 {ve})" if b["hasValue"] else "-"
     return (f"- [{b['id']}] {b['hasTopic']} → {b['hasPolarity']} | 특징: {b['hasAttribute'] or '-'} | "
             f"결과: {b['hasConsequence'] or '-'} | 가치: {v} | 원문: \"{(b['phrases']['topic'] or '')[:80]}\"")
 
@@ -45,6 +70,7 @@ def main():
     ap.add_argument("--k", type=int, default=8)
     ap.add_argument("--conds", default="B0,B1,O1")
     ap.add_argument("--clean", action="store_true", help="B1 원문 발췌에 교정본 사용")
+    ap.add_argument("--retrieval", default="emb", choices=["emb", "tfidf"], help="B1·O1 근거 찾기 방식")
     a = ap.parse_args()
     d = run_dir(a.run)
     g = json.load(open(os.path.join(d, "graph.json"), encoding="utf-8"))
@@ -58,17 +84,18 @@ def main():
         cl = load_clean()
         for x in train:
             x["answer"] = cl.get(x["id"], x["answer"])
-    sim_t = tfidf_rank(qs, [x["question"] + " " + x["answer"][:200] for x in train])
+    sim_t = rank(qs, [x["question"] + " " + x["answer"][:200] for x in train], a.retrieval)
     # O1: 관계도 상자
     boxes = g["boxes"]
     stance = [b for b in boxes if b["type"] == "Stance"]
     eps = [b for b in boxes if b["type"] == "Episode"]
-    sim_s = tfidf_rank(qs, [box_text(b, g) for b in stance]) if stance else None
-    sim_e = tfidf_rank(qs, [box_text(b, g) for b in eps]) if eps else None
-    sch = Counter(x for b in stance for x in b["schwartz"] if x != "해당 없음").most_common(4)
-    styles = Counter(s["style"] for s in g["statements"].values() if s["style"]).most_common(3)
-    profile = ("[자주 지키는 가치] " + ", ".join(f"{k}({v})" for k, v in sch) +
-               "\n[말투 메모] " + " / ".join(s for s, _ in styles))
+    sim_s = rank(qs, [box_text(b, g) for b in stance], a.retrieval) if stance else None
+    sim_e = rank(qs, [box_text(b, g) for b in eps], a.retrieval) if eps else None
+    styles = Counter(c for c in (clean_style(s["style"]) for s in g["statements"].values()) if c).most_common(3)
+    profile = "[말투 메모] " + " / ".join(s for s, _ in styles)
+    json.dump({"version": "v3", "retrieval": a.retrieval, "k": a.k, "n": a.n, "style_notes": [s for s, _ in styles],
+               "value_profile_line": False}, open(os.path.join(d, "answer_meta.json"), "w", encoding="utf-8"),
+              ensure_ascii=False, indent=1)
 
     if os.environ.get("MOCK_LLM") == "1":
         llm = None

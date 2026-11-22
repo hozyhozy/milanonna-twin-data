@@ -54,17 +54,10 @@ def main():
     backend = a.backend
     model_name = CFG["roles"]["embedding"]["model"]
     if backend == "auto":
-        try:
-            import sentence_transformers  # noqa
-            backend = "st"
-        except Exception:
-            backend = "tfidf"
+        from embed import require_st
+        backend = "st" if require_st("retrieve") else "tfidf"
     if backend == "st":
-        try:
-            S = embed_st(queries, docs, model_name)
-        except Exception as e:
-            print(f"[경고] sentence-transformers 실패({e.__class__.__name__}) → tfidf로 대체")
-            backend = "tfidf"
+        S = embed_st(queries, docs, model_name)   # 실패하면 조용히 대체하지 않고 멈춤
     if backend == "tfidf":
         S = embed_tfidf(queries, docs)
         model_name = "tfidf-char_wb-2_4"

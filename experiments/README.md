@@ -26,6 +26,10 @@ VIRTUAL_ENV=.venv-st uv pip install "torch==2.2.2" "numpy<2" "transformers<4.50"
 .venv-st/bin/python experiments/scripts/analyze.py --exp A1 --metric bertscore # 표3·4·6 거리를 BERTScore로
 ```
 
+**실행 환경 규칙**: 임베딩이 들어가는 단계(`judge`, `analyze`, `retrieve`, 온톨로지 `answer`·`compare`, `run_pilot`)는 반드시 `.venv-st/bin/python`으로 실행한다.
+기존 `.venv`(Python 3.14)에는 sentence-transformers가 없다. 예전에는 조용히 TF-IDF로 대체되고 `sim_bs`가 빠졌지만, 이제 `embed.require_st()`가 시작할 때 멈추고 어떤 파이썬으로 실행했는지 알려 준다.
+일부러 TF-IDF로 돌릴 때만 `--backend tfidf`(온톨로지는 `--retrieval tfidf --match char`) 또는 `EMBED_ALLOW_TFIDF=1`.
+
 - `sim_emb`: e5 문장 임베딩 코사인 (양쪽 `query: ` 접두어). 무관한 문장끼리도 0.8대가 나와 범위가 좁다.
 - `sim_bs`: BERTScore F1 — 같은 e5의 토큰 임베딩끼리 greedy 정렬, idf 가중(본인 답 말뭉치), baseline 재스케일 `(F−b)/(1−b)`. 무관 쌍 ≈ 0, 같은 뜻 쌍 ≈ 0.5 이상으로 벌어진다.
 - st가 없으면 자동으로 TF-IDF 문자 n-gram으로 대체되고 `sim_bs`는 기록되지 않는다(`emb_model` 필드로 확인).

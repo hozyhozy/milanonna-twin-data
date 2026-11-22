@@ -19,17 +19,17 @@
 
 ```
 # 1) 교정 + 추출 + 비교 (pilot1과 같은 30발화·20문항)
-.venv/bin/python experiments/ontology/run_pilot.py --run pilot2 --limit 30 --n 20 --clean
+.venv-st/bin/python experiments/ontology/run_pilot.py --run pilot2 --limit 30 --n 20 --clean
 
 # 2) 꼬리표 합치기 제안 → CSV를 열어 고침(묶음 쪼개기·합치기, 대표 이름, 상태)
-.venv/bin/python experiments/ontology/merge.py --run pilot2
+.venv-st/bin/python experiments/ontology/merge.py --run pilot2
 
 # 3) 고친 CSV를 적용해 새 run으로 → 관계도·공리·통계 다시
-.venv/bin/python experiments/ontology/merge.py --run pilot2 --apply experiments/runs/ontology/pilot2/merge_proposal.csv --to pilot2m
-.venv/bin/python experiments/ontology/run_pilot.py --run pilot2m --stages build,check,stats
+.venv-st/bin/python experiments/ontology/merge.py --run pilot2 --apply experiments/runs/ontology/pilot2/merge_proposal.csv --to pilot2m
+.venv-st/bin/python experiments/ontology/run_pilot.py --run pilot2m --stages build,check,stats
 
 # 4) 다음 추출부터는 확정한 코드북에서 고르게
-.venv/bin/python experiments/ontology/run_pilot.py --run pilot3 --limit 0 --n 50 --clean --tags experiments/runs/ontology/pilot2/merge_proposal.csv
+.venv-st/bin/python experiments/ontology/run_pilot.py --run pilot3 --limit 0 --n 50 --clean --tags experiments/runs/ontology/pilot2/merge_proposal.csv
 ```
 
 교정본은 `experiments/runs/ontology/_clean/`에 한 번만 만들어 모든 run이 같이 씁니다. 유사도가 0.75 미만인 교정은 '고쳐 쓴 것'으로 보고 버립니다(원문 사용).
@@ -38,13 +38,13 @@
 
 ```
 # API 없이 형식만 점검
-MOCK_LLM=1 python3 experiments/ontology/run_pilot.py --run mock
+MOCK_LLM=1 .venv-st/bin/python experiments/ontology/run_pilot.py --run mock
 
 # 작은 시험: Train 앞 30발화로 관계도, Holdout 20문항으로 답변 비교
-python3 experiments/ontology/run_pilot.py --run pilot1 --limit 30 --n 20
+.venv-st/bin/python experiments/ontology/run_pilot.py --run pilot1 --limit 30 --n 20
 
 # Train 전체(381발화) — 이어서 실행되므로 pilot1을 그대로 늘려도 됨
-python3 experiments/ontology/run_pilot.py --run pilot1 --limit 0 --n 50
+.venv-st/bin/python experiments/ontology/run_pilot.py --run pilot1 --limit 0 --n 50
 ```
 
 중간에 끊겨도 다시 실행하면 이어서 합니다(LLM 응답은 `experiments/.cache/`에 저장).
@@ -94,3 +94,28 @@ DeepSeek 기준: 30발화 시험은 호출 약 30 + 60 + 80회, Train 전체 + H
 | compare.py | "결과 겹침"(C 꼬리표 자카드) 지표 추가 |
 
 graph.json에서 상자의 `hasValue`는 지금 본인 말(정리된 말)이고 Schwartz 칸은 `schwartz`에 있습니다. 설계표 v0.4 기준으로는 Schwartz 칸이 hasValue, 본인 말은 R24(phrase/valueWords)에 해당합니다. OWL로 옮길 때 이 대응으로 바꿉니다.
+
+
+## v3 (2026-11-23, 파일럿3 진단 반영)
+
+**실행 환경**: 모든 단계를 `.venv-st/bin/python`으로 실행합니다. answer·compare가 e5 임베딩을 쓰고, `.venv`(Python 3.14)로 실행하면 시작할 때 멈춥니다(`embed.require_st`). 일부러 예전 방식으로 돌릴 때만 `--retrieval tfidf --match char` 또는 `EMBED_ALLOW_TFIDF=1`.
+
+| 파일 | 바뀐 것 | 이유 (파일럿3) |
+|---|---|---|
+| answer.py | B1 발췌와 O1 상자를 모두 e5(query:/passage:)로 찾음 (`--retrieval`) | 문자 TF-IDF가 "영어 공부" 질문에 명품백·상사 폭언 상자를 가져옴 |
+| answer.py | O1의 "[자주 지키는 가치] 자기주도(287)…" 줄 삭제, 상자 가치에 근거 등급(직접/추론) 표시 | 매 문항 같은 가치를 밀어 넣어 O1이 '최빈 가치 찍기'와 비슷해짐 |
+| answer.py | 말투 메모에서 자막 오류 문장 제거 (`clean_style`) | "자막 오류로 알아보기 어려운…", "'예 아'"가 트윈에게 전달됨 |
+| compare.py | 대상·일화 맞추기를 e5 코사인으로, 기준값은 무관한 쌍의 95번째 백분위수 (`--match`) | 문자 유사도는 "영어"와 "외국어"를 다르게 봄 |
+| compare.py | 가치 겹침을 정답 가치가 직접 진술인 문항 / 추론뿐인 문항으로 나눠 보고 | 정답 가치의 64%가 추론이라 지표가 흔들림 |
+| compare.py | 조건 간 차이를 같은 문항끼리 짝지어 95% 부트스트랩 구간으로 | 평균만으로는 차이가 우연인지 알 수 없음 |
+| compare.py | 추출과 채점 분리: `--rescore`(LLM 호출 없이 다시 채점), `--reuse-truth-from`(정답 추출·천장 재사용) | 같은 정답을 다시 뽑으면 비교가 흔들리고 비용도 듦 |
+| run_pilot.py | `--copy-extract-from`, `--reuse-truth-from`, `--retrieval`, `--match`, 시작할 때 환경 점검 | |
+
+```bash
+# 1) 파일럿3을 새 채점 방식으로만 다시 보기 (LLM 호출 없음)
+.venv-st/bin/python experiments/ontology/compare.py --run pilot3 --clean --ceiling --rescore
+
+# 2) 파일럿4: 추출은 파일럿3 것 그대로, 답 생성(150회)과 비교(트윈 답 150회)만 새로
+.venv-st/bin/python experiments/ontology/run_pilot.py --run pilot4 --copy-extract-from pilot3 \
+    --stages build,check,stats,answer,compare --n 50 --clean --reuse-truth-from pilot3
+```

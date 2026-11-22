@@ -7,16 +7,43 @@ metric
              idf 가중(fit_corpus 기준) + baseline 재스케일((F−b)/(1−b), b = 무관한 쌍의 평균 F).
 backend
   st     sentence-transformers (모델: config roles.embedding.model, 기본 intfloat/multilingual-e5-small)
-  tfidf  문자 n-gram TF-IDF 코사인 (st 미설치 시 대체, bertscore 불가)
+  tfidf  문자 n-gram TF-IDF 코사인 (bertscore 불가). backend="tfidf"로 직접 고를 때만 씀.
+
+실행 환경: 임베딩이 들어가는 단계(judge, analyze, retrieve, 온톨로지 answer·compare)는 `.venv-st/bin/python`으로.
+  기존 `.venv`(Python 3.14)에는 sentence-transformers가 없어 예전에는 조용히 TF-IDF로 대체되고 sim_bs가 빠졌다.
+  이제 backend="auto"에서 sentence-transformers가 없으면 멈춘다(require_st). 일부러 TF-IDF로 돌리려면
+  --backend tfidf 를 주거나 EMBED_ALLOW_TFIDF=1.
 
 sim(texts_a, texts_b) → 같은 인덱스끼리의 유사도 리스트. dist = 1 − sim.
 """
-import json, os, math, random, collections
+import json, os, sys, math, random, collections
 import numpy as np
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CFG = json.load(open(os.path.join(ROOT, "experiments/config/models.json"), encoding="utf-8"))
 E5_PREFIX = "query: "
+
+
+def has_st():
+    try:
+        import sentence_transformers  # noqa
+        return True
+    except Exception:
+        return False
+
+
+def require_st(where="임베딩 단계"):
+    """sentence-transformers가 없으면 멈춘다. EMBED_ALLOW_TFIDF=1이면 False를 돌려 TF-IDF 대체를 허용."""
+    if has_st():
+        return True
+    if os.environ.get("EMBED_ALLOW_TFIDF") == "1":
+        print(f"[경고] {where}: sentence-transformers 없음 → EMBED_ALLOW_TFIDF=1 이라 TF-IDF로 대체", file=sys.stderr)
+        return False
+    raise SystemExit(
+        f"[멈춤] {where}에는 sentence-transformers가 필요합니다. 지금 실행한 파이썬: {sys.executable}\n"
+        "  저장소 루트에서 .venv-st/bin/python 으로 다시 실행하세요. 예)\n"
+        "  .venv-st/bin/python experiments/ontology/run_pilot.py ...\n"
+        "  (일부러 TF-IDF로 돌리려면 --backend tfidf 또는 EMBED_ALLOW_TFIDF=1)")
 
 
 class Embedder:
@@ -25,11 +52,7 @@ class Embedder:
         self._cache = {}   # text → 벡터(cos) 또는 (토큰 id, 토큰 임베딩)(bertscore). 같은 응답 반복 인코딩 방지
         self.name = model or CFG["roles"]["embedding"]["model"]
         if backend == "auto":
-            try:
-                import sentence_transformers  # noqa
-                self.backend = "st"
-            except Exception:
-                self.backend = "tfidf"
+            self.backend = "st" if require_st("Embedder(backend=auto)") else "tfidf"
         if metric == "bertscore" and self.backend != "st":
             raise RuntimeError("bertscore는 sentence-transformers가 필요합니다 (.venv-st 사용)")
         if self.backend == "st":
