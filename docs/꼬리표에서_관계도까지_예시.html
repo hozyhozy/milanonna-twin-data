@@ -148,6 +148,10 @@
   table.mini th{background:#f1f2f5;font-weight:600;font-size:12px}
   table.mini td:nth-child(1),table.mini td:nth-child(2){white-space:nowrap}
   table.mini tr.new td{background:#eefaf3}
+  .pcard.wide{grid-column:1/-1}
+  .vid{display:inline-block;font-weight:700;font-size:12px;padding:1px 7px;border-radius:5px;background:var(--v-bg);color:var(--v);border:1.5px solid var(--v);white-space:nowrap}
+  .vcell{line-height:1.9}
+  .vnote{font-size:11px;color:var(--mute)}
   table.mini tr.base td{color:var(--mute)}
   .txt{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:11.5px;background:#f4f5f7;border-radius:4px;padding:1px 5px;color:#3a3f4b;white-space:nowrap}
   .idc{display:inline-block;font-weight:700;font-size:12px;padding:1px 7px;border-radius:5px;background:var(--a-bg);color:var(--a);border:1.5px solid var(--a);white-space:nowrap}
@@ -342,33 +346,43 @@ const G5='<div class="gwrap"><svg viewBox="0 0 960 430" role="img" aria-label="�
 
 const T=t=>'<span class="txt">"'+t+'"</span>';
 const I=(id,n)=>'<span class="idc">'+id+'</span>'+'';
-const pc=(n,h,d,body)=>'<div class="pcard"><h5><span class="pn">'+n+'</span>'+h+'</h5><p class="pd">'+d+'</p>'+body+'</div>';
+const V=(id,nm,w,g)=>'<div class="vcell"><span class="vid">'+id+' '+nm+'</span> <span class="vnote">'+g+'</span><br>'+T(w)+'</div>';
+const pc=(n,h,d,body,c)=>'<div class="pcard'+(c?' '+c:'')+'"><h5><span class="pn">'+n+'</span>'+h+'</h5><p class="pd">'+d+'</p>'+body+'</div>';
 const P5='<h4 class="sub">"아래층 클래스로 올라간다" — 데이터로 보면</h4>'+
  '<div class="banner"><b>2명 이상</b>이 쓴 꼬리표 → <b>클래스표에 ID를 가진 새 행</b>이 생김 → 상자표의 <b>글자가 그 ID로</b> 바뀜. 위 그림에서 두 상자가 같은 초록 점 "일시성"을 가리키는 것이 바로 이 ID입니다.</div>'+
  '<div class="promo">'+
- pc(1,'상자표 — 처음엔 글자','③단계에서 붙인 세부 꼬리표는 상자 칸에 적힌 문자열일 뿐입니다.',
-  '<table class="mini"><tr><th>상자</th><th>사람</th><th>대상</th><th>특징 A</th><th>결과 C</th></tr>'+
-  '<tr><td>ST-0001</td><td><span class="dot d1"></span> P01</td><td>유행하는 옷</td><td>'+T('오래가지 않는다')+'</td><td>'+T('쓸모가 금방 끝난다')+'</td></tr>'+
-  '<tr><td>ST-0002</td><td><span class="dot d1"></span> P01</td><td>요즘 옷차림</td><td>'+T('남과 같아진다')+'</td><td>'+T('내가 드러나지 않는다')+'</td></tr>'+
-  '<tr><td>ST-0003</td><td><span class="dot d2"></span> P02</td><td>세일 충동구매</td><td>'+T('오래가지 않는다')+'</td><td>'+T('쓸모가 금방 끝난다')+'</td></tr>'+
-  '<tr><td>ST-0004</td><td><span class="dot d3"></span> P03</td><td>남들 다 하는 것</td><td>'+T('남과 같아진다')+'</td><td class="dx">빈칸</td></tr></table>')+
- pc(2,'꼬리표마다 쓴 사람 수 세기','상자 수가 아니라 서로 다른 사람 수를 셉니다. ④단계의 표와 같습니다.',
+ pc(1,'상자표 — 처음엔 글자','③단계에서 붙인 A·C 세부 꼬리표는 상자 칸에 적힌 문자열일 뿐입니다. 반면 V 칸의 Schwartz 가치는 <b>처음부터 ID</b>입니다(이론에서 미리 정한 10개). 그 아래 본인 말은 글자로 같이 저장됩니다.',
+  '<table class="mini"><tr><th>상자</th><th>사람</th><th>대상</th><th>특징 A</th><th>결과 C</th><th>가치 V (Schwartz ID + 본인 말)</th></tr>'+
+  '<tr><td>ST-0001</td><td><span class="dot d1"></span> P01</td><td>유행하는 옷</td><td>'+T('오래가지 않는다')+'</td><td>'+T('쓸모가 금방 끝난다')+'</td><td>'+V('C06-06','안전','오래가는 것','추론')+'</td></tr>'+
+  '<tr><td>ST-0002</td><td><span class="dot d1"></span> P01</td><td>요즘 옷차림</td><td>'+T('남과 같아진다')+'</td><td>'+T('내가 드러나지 않는다')+'</td><td class="dx">빈칸 (말하지 않음)</td></tr>'+
+  '<tr><td>ST-0003</td><td><span class="dot d2"></span> P02</td><td>세일 충동구매</td><td>'+T('오래가지 않는다')+'</td><td>'+T('쓸모가 금방 끝난다')+'</td><td class="dx">빈칸 (말하지 않음)</td></tr>'+
+  '<tr><td>ST-0004</td><td><span class="dot d3"></span> P03</td><td>남들 다 하는 것</td><td>'+T('남과 같아진다')+'</td><td class="dx">빈칸</td><td class="dx">빈칸 (말하지 않음)</td></tr></table>','wide')+
+ pc(2,'꼬리표마다 쓴 사람 수 세기','상자 수가 아니라 서로 다른 사람 수를 셉니다. ④단계의 표와 같습니다. V(Schwartz)는 이미 클래스라 세지 않습니다.',
   '<table class="mini"><tr><th>칸</th><th>꼬리표</th><th>쓴 사람</th><th>수</th><th>판정</th></tr>'+
   '<tr><td>A</td><td>오래가지 않는다</td><td>P01 · P02</td><td>2</td><td>'+K('re','올림')+'</td></tr>'+
   '<tr><td>A</td><td>남과 같아진다</td><td>P01 · P03</td><td>2</td><td>'+K('re','올림')+'</td></tr>'+
   '<tr><td>C</td><td>쓸모가 금방 끝난다</td><td>P01 · P02</td><td>2</td><td>'+K('wait','결정 필요')+'</td></tr>'+
   '<tr><td>C</td><td>내가 드러나지 않는다</td><td>P01</td><td>1</td><td>'+K('old','대기')+'</td></tr></table>')+
- pc(3,'클래스표 — ID가 있는 새 행이 생김','설계표의 클래스 탭입니다. 위층(C04 특징)은 이론에서 미리 있던 행이고, 초록 행이 이번에 새로 생긴 아래층 클래스입니다.',
+ pc(3,'클래스표 — ID가 있는 새 행이 생김','설계표의 클래스 탭입니다. 회색 행은 이론에서 미리 있던 행이고(특징 C04, 가치 C06과 Schwartz 10개), 초록 행이 이번에 새로 생긴 아래층 클래스입니다.',
   '<table class="mini"><tr><th>클래스 ID</th><th>이름</th><th>위층</th><th>정의</th><th>묶인 표현</th></tr>'+
   '<tr class="base"><td>C04</td><td>특징 (Attribute)</td><td>—</td><td>대상이 어떤 것이라고 보나</td><td>이론에서 미리 정함</td></tr>'+
   '<tr class="new"><td>'+I('C04-01')+'</td><td><b>일시성</b></td><td>C04</td><td>오래가지 않고 금방 지나간다고 봄</td><td>오래가지 않는다 (한철 지나면, 금방 질려서)</td></tr>'+
-  '<tr class="new"><td>'+I('C04-02')+'</td><td><b>획일성</b></td><td>C04</td><td>남과 같아진다고 봄</td><td>남과 같아진다 (다들 똑같이, 남들 다 하는)</td></tr></table>')+
- pc(4,'상자표 — 글자가 ID로 바뀜','올라간 꼬리표만 ID로 바뀌고, 1명짜리와 결정 전인 C는 글자 그대로 남습니다.',
-  '<table class="mini"><tr><th>상자</th><th>사람</th><th>대상</th><th>특징 A <span class="idn">← 바뀜</span></th><th>결과 C</th></tr>'+
-  '<tr><td>ST-0001</td><td><span class="dot d1"></span> P01</td><td>유행하는 옷</td><td>'+I('C04-01',1)+'</td><td>'+T('쓸모가 금방 끝난다')+'</td></tr>'+
-  '<tr><td>ST-0002</td><td><span class="dot d1"></span> P01</td><td>요즘 옷차림</td><td>'+I('C04-02',1)+'</td><td>'+T('내가 드러나지 않는다')+'</td></tr>'+
-  '<tr><td>ST-0003</td><td><span class="dot d2"></span> P02</td><td>세일 충동구매</td><td>'+I('C04-01',1)+'</td><td>'+T('쓸모가 금방 끝난다')+'</td></tr>'+
-  '<tr><td>ST-0004</td><td><span class="dot d3"></span> P03</td><td>남들 다 하는 것</td><td>'+I('C04-02',1)+'</td><td class="dx">빈칸</td></tr></table>')+
+  '<tr class="new"><td>'+I('C04-02')+'</td><td><b>획일성</b></td><td>C04</td><td>남과 같아진다고 봄</td><td>남과 같아진다 (다들 똑같이, 남들 다 하는)</td></tr>'+
+  '<tr class="base"><td>C06</td><td>가치 (Value)</td><td>—</td><td>결국 지키려는 것</td><td>이론에서 미리 정함</td></tr>'+
+  '<tr class="base"><td><span class="vid">C06-06</span></td><td>안전</td><td>C06</td><td>안정, 질서, 위험 회피</td><td>Schwartz 10개 중 하나 · 처음부터 있음</td></tr></table>')+
+ pc(4,'상자표 — 글자가 ID로 바뀜','올라간 A 꼬리표만 ID로 바뀝니다. 1명짜리와 결정 전인 C는 글자 그대로 남고, V는 처음부터 ID라 그대로입니다.',
+  '<table class="mini"><tr><th>상자</th><th>사람</th><th>대상</th><th>특징 A <span class="idn">← 바뀜</span></th><th>결과 C</th><th>가치 V <span class="vnote">(그대로)</span></th></tr>'+
+  '<tr><td>ST-0001</td><td><span class="dot d1"></span> P01</td><td>유행하는 옷</td><td>'+I('C04-01',1)+'</td><td>'+T('쓸모가 금방 끝난다')+'</td><td>'+V('C06-06','안전','오래가는 것','추론')+'</td></tr>'+
+  '<tr><td>ST-0002</td><td><span class="dot d1"></span> P01</td><td>요즘 옷차림</td><td>'+I('C04-02',1)+'</td><td>'+T('내가 드러나지 않는다')+'</td><td class="dx">빈칸</td></tr>'+
+  '<tr><td>ST-0003</td><td><span class="dot d2"></span> P02</td><td>세일 충동구매</td><td>'+I('C04-01',1)+'</td><td>'+T('쓸모가 금방 끝난다')+'</td><td class="dx">빈칸</td></tr>'+
+  '<tr><td>ST-0004</td><td><span class="dot d3"></span> P03</td><td>남들 다 하는 것</td><td>'+I('C04-02',1)+'</td><td class="dx">빈칸</td><td class="dx">빈칸</td></tr></table>','wide')+
+ pc(5,'V 칸은 두 층 — 줄글을 지우지 않음','본인 말을 먼저 뽑고 그것을 보고 Schwartz 칸을 고르지만(파일럿 코드에서는 한 번의 호출), 둘 다 상자에 남습니다.',
+  '<table class="mini"><tr><th>ST-0001의 V 칸</th><th>값</th><th>무엇인가</th><th>어디에 쓰나</th></tr>'+
+  '<tr><td>Schwartz 칸</td><td><span class="vid">C06-06 안전</span></td><td>클래스 ID (공유 점)</td><td>비슷한 사람 찾기 1차 · 트윈 답 비교의 "가치 겹침"</td></tr>'+
+  '<tr><td>본인 말 (짧게)</td><td>'+T('오래가는 것')+'</td><td>상자 안 글자</td><td>비슷한 사람 찾기 2차(세부 가치) · 트윈이 본인처럼 말하게</td></tr>'+
+  '<tr><td>본인 말 (원문)</td><td>'+T('오래 두고 입을 수 있는 걸')+'</td><td>상자 안 글자</td><td>Schwartz 칸을 왜 골랐는지 사람이 확인하는 근거</td></tr>'+
+  '<tr><td>근거 등급</td><td>추론</td><td>상자 안 표시</td><td>본인이 "안전"을 직접 말하지 않았음 → 사람 확인 대상</td></tr></table>'+
+  '<p class="pd" style="margin:8px 0 0">Schwartz 칸은 10개뿐이라 굵습니다. "오래가는 것", "건강", "절약"이 모두 안전 한 칸에 들어가므로, 본인 말이 있어야 노라의 안전이 어떤 안전인지 남습니다. 만약 P02가 "아껴 둬야 마음이 놓여요"라고 했다면 P02의 상자도 같은 <span class="vid">C06-06</span>을 가리키게 되고, 2명 규칙 없이 바로 공유 점이 됩니다(본인 말은 "마음이 놓임"으로 따로 남음).</p>','wide')+
  '</div>'+
  '<div class="find"><div class="fq">특징 A = C04-01</div><div>→ <b>ST-0001</b> (<span class="dot d1"></span> P01 · 유행하는 옷) · <b>ST-0003</b> (<span class="dot d2"></span> P02 · 세일 충동구매)<br><span style="color:var(--mute);font-size:12.5px">ID 하나로 필터하면 대상이 달라도 같은 이유를 가진 상자가 사람을 넘어 모입니다. ⑥단계에서 P01에게 P02의 근거를 빌려 오는 길이 이것입니다. 1명짜리 꼬리표("내가 드러나지 않는다")는 P01의 관계도에는 남지만 이런 연결에는 아직 쓰이지 않습니다.</span></div></div>'+
  '<details class="code"><summary>코드로 보면 (build 단계에 들어갈 처리)</summary><div class="prompt">'+
