@@ -134,6 +134,29 @@
   .prompt{margin-top:8px;background:#1f2128;color:#e9eaee;border-radius:8px;padding:11px 14px;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:12.5px;line-height:1.7}
   .prompt .h{color:#9fb7ff}.prompt .b{color:#8fe0b6}.prompt .m{color:#a3a7b1}
 
+
+  .sub{margin:20px 0 4px;font-size:15.5px}
+  .banner{background:var(--done-bg);border:1px solid #bfe5d0;border-radius:10px;padding:10px 14px;font-size:14px;color:#1d4d35;margin:6px 0 12px}
+  .banner b{color:var(--done)}
+  .promo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .pcard{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .pcard h5{margin:0 0 2px;font-size:14px;display:flex;align-items:center;gap:8px}
+  .pcard h5 .pn{width:22px;height:22px;border-radius:50%;background:var(--me);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
+  .pcard .pd{font-size:12.5px;color:var(--mute);margin:0 0 8px}
+  table.mini{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.mini th,table.mini td{border:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:middle}
+  table.mini th{background:#f1f2f5;font-weight:600;font-size:12px}
+  table.mini td:nth-child(1),table.mini td:nth-child(2){white-space:nowrap}
+  table.mini tr.new td{background:#eefaf3}
+  table.mini tr.base td{color:var(--mute)}
+  .txt{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:11.5px;background:#f4f5f7;border-radius:4px;padding:1px 5px;color:#3a3f4b;white-space:nowrap}
+  .idc{display:inline-block;font-weight:700;font-size:12px;padding:1px 7px;border-radius:5px;background:var(--a-bg);color:var(--a);border:1.5px solid var(--a);white-space:nowrap}
+  .idn{font-size:10.5px;font-weight:700;color:var(--done);margin-left:4px}
+  .find{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:12px;font-size:13.5px}
+  .find .fq{background:#1f2128;color:#e9eaee;border-radius:7px;padding:7px 11px;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:12px;white-space:nowrap}
+  details.code{margin-top:10px;font-size:13px}
+  details.code summary{cursor:pointer;color:var(--mute)}
+  @media (max-width:760px){.promo,.find{grid-template-columns:1fr}}
   footer{color:var(--mute);font-size:12.5px;margin-top:40px;border-top:1px solid var(--line);padding-top:12px}
   @media (max-width:760px){.g4,.g2,.slots,.tl{grid-template-columns:1fr}.tl>div{border-left:0;border-top:1px solid var(--line)}.nav2{margin-left:0}}
 </style>
@@ -252,7 +275,7 @@
 <div class="cap" id="cap"></div>
 
 <footer>
-  설계표: 인물 온톨로지 설계표 v0.3 (클래스·관계·공리). 발화와 인물은 모두 설명용으로 지어낸 것이며 실제 인터뷰 인용이 아닙니다. 2026-11-21.
+  설계표: 인물 온톨로지 설계표 v0.3 (클래스·관계·공리). 발화와 인물은 모두 설명용으로 지어낸 것이며 실제 인터뷰 인용이 아닙니다. 2026-11-21 작성, 2026-11-22 개정(5단계에 클래스 승격 데이터 예시 추가).
 </footer>
 </div>
 
@@ -316,7 +339,45 @@ const G5='<div class="gwrap"><svg viewBox="0 0 960 430" role="img" aria-label="�
  ln(320,354,245,242,'#1f8a55')+ln(385,354,385,242,'#1f8a55')+ln(515,354,515,242,'#1f8a55')+ln(640,354,657,242,'#1f8a55')+
  '<text x="807" y="262" text-anchor="middle" font-size="11.5" fill="#9a9da6">P02: 가치 빈칸 → 선 없음</text>'+
  '</svg></div>';
-const D5=G5+
+
+const T=t=>'<span class="txt">"'+t+'"</span>';
+const I=(id,n)=>'<span class="idc">'+id+'</span>'+'';
+const pc=(n,h,d,body)=>'<div class="pcard"><h5><span class="pn">'+n+'</span>'+h+'</h5><p class="pd">'+d+'</p>'+body+'</div>';
+const P5='<h4 class="sub">"아래층 클래스로 올라간다" — 데이터로 보면</h4>'+
+ '<div class="banner"><b>2명 이상</b>이 쓴 꼬리표 → <b>클래스표에 ID를 가진 새 행</b>이 생김 → 상자표의 <b>글자가 그 ID로</b> 바뀜. 위 그림에서 두 상자가 같은 초록 점 "일시성"을 가리키는 것이 바로 이 ID입니다.</div>'+
+ '<div class="promo">'+
+ pc(1,'상자표 — 처음엔 글자','③단계에서 붙인 세부 꼬리표는 상자 칸에 적힌 문자열일 뿐입니다.',
+  '<table class="mini"><tr><th>상자</th><th>사람</th><th>대상</th><th>특징 A</th><th>결과 C</th></tr>'+
+  '<tr><td>ST-0001</td><td><span class="dot d1"></span> P01</td><td>유행하는 옷</td><td>'+T('오래가지 않는다')+'</td><td>'+T('쓸모가 금방 끝난다')+'</td></tr>'+
+  '<tr><td>ST-0002</td><td><span class="dot d1"></span> P01</td><td>요즘 옷차림</td><td>'+T('남과 같아진다')+'</td><td>'+T('내가 드러나지 않는다')+'</td></tr>'+
+  '<tr><td>ST-0003</td><td><span class="dot d2"></span> P02</td><td>세일 충동구매</td><td>'+T('오래가지 않는다')+'</td><td>'+T('쓸모가 금방 끝난다')+'</td></tr>'+
+  '<tr><td>ST-0004</td><td><span class="dot d3"></span> P03</td><td>남들 다 하는 것</td><td>'+T('남과 같아진다')+'</td><td class="dx">빈칸</td></tr></table>')+
+ pc(2,'꼬리표마다 쓴 사람 수 세기','상자 수가 아니라 서로 다른 사람 수를 셉니다. ④단계의 표와 같습니다.',
+  '<table class="mini"><tr><th>칸</th><th>꼬리표</th><th>쓴 사람</th><th>수</th><th>판정</th></tr>'+
+  '<tr><td>A</td><td>오래가지 않는다</td><td>P01 · P02</td><td>2</td><td>'+K('re','올림')+'</td></tr>'+
+  '<tr><td>A</td><td>남과 같아진다</td><td>P01 · P03</td><td>2</td><td>'+K('re','올림')+'</td></tr>'+
+  '<tr><td>C</td><td>쓸모가 금방 끝난다</td><td>P01 · P02</td><td>2</td><td>'+K('wait','결정 필요')+'</td></tr>'+
+  '<tr><td>C</td><td>내가 드러나지 않는다</td><td>P01</td><td>1</td><td>'+K('old','대기')+'</td></tr></table>')+
+ pc(3,'클래스표 — ID가 있는 새 행이 생김','설계표의 클래스 탭입니다. 위층(C04 특징)은 이론에서 미리 있던 행이고, 초록 행이 이번에 새로 생긴 아래층 클래스입니다.',
+  '<table class="mini"><tr><th>클래스 ID</th><th>이름</th><th>위층</th><th>정의</th><th>묶인 표현</th></tr>'+
+  '<tr class="base"><td>C04</td><td>특징 (Attribute)</td><td>—</td><td>대상이 어떤 것이라고 보나</td><td>이론에서 미리 정함</td></tr>'+
+  '<tr class="new"><td>'+I('C04-01')+'</td><td><b>일시성</b></td><td>C04</td><td>오래가지 않고 금방 지나간다고 봄</td><td>오래가지 않는다 (한철 지나면, 금방 질려서)</td></tr>'+
+  '<tr class="new"><td>'+I('C04-02')+'</td><td><b>획일성</b></td><td>C04</td><td>남과 같아진다고 봄</td><td>남과 같아진다 (다들 똑같이, 남들 다 하는)</td></tr></table>')+
+ pc(4,'상자표 — 글자가 ID로 바뀜','올라간 꼬리표만 ID로 바뀌고, 1명짜리와 결정 전인 C는 글자 그대로 남습니다.',
+  '<table class="mini"><tr><th>상자</th><th>사람</th><th>대상</th><th>특징 A <span class="idn">← 바뀜</span></th><th>결과 C</th></tr>'+
+  '<tr><td>ST-0001</td><td><span class="dot d1"></span> P01</td><td>유행하는 옷</td><td>'+I('C04-01',1)+'</td><td>'+T('쓸모가 금방 끝난다')+'</td></tr>'+
+  '<tr><td>ST-0002</td><td><span class="dot d1"></span> P01</td><td>요즘 옷차림</td><td>'+I('C04-02',1)+'</td><td>'+T('내가 드러나지 않는다')+'</td></tr>'+
+  '<tr><td>ST-0003</td><td><span class="dot d2"></span> P02</td><td>세일 충동구매</td><td>'+I('C04-01',1)+'</td><td>'+T('쓸모가 금방 끝난다')+'</td></tr>'+
+  '<tr><td>ST-0004</td><td><span class="dot d3"></span> P03</td><td>남들 다 하는 것</td><td>'+I('C04-02',1)+'</td><td class="dx">빈칸</td></tr></table>')+
+ '</div>'+
+ '<div class="find"><div class="fq">특징 A = C04-01</div><div>→ <b>ST-0001</b> (<span class="dot d1"></span> P01 · 유행하는 옷) · <b>ST-0003</b> (<span class="dot d2"></span> P02 · 세일 충동구매)<br><span style="color:var(--mute);font-size:12.5px">ID 하나로 필터하면 대상이 달라도 같은 이유를 가진 상자가 사람을 넘어 모입니다. ⑥단계에서 P01에게 P02의 근거를 빌려 오는 길이 이것입니다. 1명짜리 꼬리표("내가 드러나지 않는다")는 P01의 관계도에는 남지만 이런 연결에는 아직 쓰이지 않습니다.</span></div></div>'+
+ '<details class="code"><summary>코드로 보면 (build 단계에 들어갈 처리)</summary><div class="prompt">'+
+ '<span class="m"># 1) 꼬리표별로 쓴 사람 모으기</span><br>users = defaultdict(set)<br>for b in boxes: users[("A", b["A"])].add(b["person"])<br><br>'+
+ '<span class="m"># 2) 2명 이상이면 클래스표에 새 행 + ID 발급</span><br>for (slot, tag), people in users.items():<br>&nbsp;&nbsp;if len(people) &gt;= 2: classes[(slot, tag)] = new_id("C04")&nbsp;&nbsp;<span class="m"># C04-01, C04-02 …</span><br><br>'+
+ '<span class="m"># 3) 상자의 글자를 ID로 바꾸기 (클래스가 아니면 글자 그대로)</span><br>for b in boxes: b["A"] = classes.get(("A", b["A"]), b["A"])<br><br>'+
+ '<span class="m"># 4) 같은 이유를 가진 상자 찾기</span><br>[b["id"] for b in boxes if b["A"] == "C04-01"]&nbsp;&nbsp;<span class="b"># → ST-0001, ST-0003</span>'+
+ '</div><p style="font-size:12.5px;color:var(--mute);margin:6px 0 0">지금 파일럿은 인물이 노라 한 명이라 2)·3)이 없고, 모든 꼬리표가 글자 그대로 들어갑니다. 두 번째 인물부터 이 처리를 build.py에 넣습니다.</p></details>';
+const D5=G5+P5+
  '<table class="cmp"><tr><th></th><th class="hr">Etudo &amp; Yoon</th><th class="hm">우리 연구</th></tr>'+
  '<tr><td><b>주장 하나의 표현</b></td><td><b>FrameRelation 상자</b> (Israel_besieges_WestBank)</td><td><b>Stance 상자</b> (ID ST-0001, label: P01 · 유행하는 옷 · 반대)</td></tr>'+
  '<tr><td><b>상자의 칸</b></td><td>hasClaimant · hasDomain · hasRange · hasFrame</td><td>hasHolder · hasTopic · hasPolarity · hasAttribute · hasConsequence · hasValue (+ evidencedBy, inSituation)</td></tr>'+
@@ -365,7 +426,7 @@ const S=[
   pts:['"오래가지 않는다"(P01·P02) → C04-01 일시성, "남과 같아진다"(P01·P03) → C04-02 획일성','한 사람에게서만 나온 꼬리표는 지우지 않고 대기 — 그 사람의 관계도에는 남되, 사람을 잇는 데는 아직 못 씀 (가안)','결과(C) 쪽에도 같은 규칙을 적용할지는 결정 필요'],
   ref:'모인 문장들이 늘 "[누가] 공모한다 [누구와]" 구조임을 보고 관계 하나로 만들었습니다(Table C1).',ids:['C04-01 일시성','C04-02 획일성','A13']},
  {t:'5. 관계도로 옮기기 — 입장을 상자로',p:'②에서 쪼갠 발화 하나를 <b>입장 상자(Stance)</b> 하나로 만들고, 상자의 칸마다 선을 뽑습니다. 선에는 꼬리표(근거·시점·상황)를 달 수 없으므로 주장 자체를 사물로 만든 것입니다. 키 논문의 Israel_besieges_WestBank 상자와 같은 방식입니다(W3C n-ary 패턴).',d:D5,
-  pts:['상자는 사람마다, 점은 공유: P01의 ST-0001과 P02의 ST-0003이 같은 "일시성" 점을 가리킴 → 그래서 두 사람이 이어짐','칸의 종류는 ACV 이론에서 미리 정함 — 이 단계에서 새로 생기는 것은 점(클래스)','빈칸은 칸을 비워 둘 뿐, 억지로 채우지 않음','입장이 바뀌면 상자와 상자를 revises로 이음 (선으로는 불가능했던 것)','사람과 무관한 클래스 위계(일시성 ⊂ Attribute, 안전 ⊂ Value)는 상자 없이 그냥 선'],
+  pts:['상자는 사람마다, 점은 공유: P01의 ST-0001과 P02의 ST-0003이 같은 "일시성" 점을 가리킴 → 그래서 두 사람이 이어짐','칸의 종류는 ACV 이론에서 미리 정함 — 이 단계에서 새로 생기는 것은 점(클래스): 클래스표에 ID 행이 생기고 상자의 글자가 그 ID로 바뀜','빈칸은 칸을 비워 둘 뿐, 억지로 채우지 않음','입장이 바뀌면 상자와 상자를 revises로 이음 (선으로는 불가능했던 것)','사람과 무관한 클래스 위계(일시성 ⊂ Attribute, 안전 ⊂ Value)는 상자 없이 그냥 선'],
   ref:'"포위 주장"을 상자 Israel_besieges_WestBank로 만들고 hasDomain(Israel) · hasRange(West Bank) · hasFrame(진단) · hasClaimant(PFLP) 네 칸을 뽑았습니다. 그 뒤 OWL로 쓰고 Pellet으로 검사했습니다.',ids:['C13 Stance','R11–R19','R23 label','A02','A03','A05','A15','A16','A18','ID 규칙']},
  {t:'6. 새 질문에 쓰기',p:'기록에 없는 질문이 들어오면, 본인 관계도에서 쓸 수 있는 것을 먼저 꺼내고, 모자란 근거는 같은 점을 가리키는 비슷한 사람의 입장 상자에서 빌립니다.',d:D6,
   pts:['빌린 근거는 "빌린 것"으로 표시해서 LLM에 줌','상자째 빌리므로 근거 발화가 함께 따라옴','일화와 추론 상자는 빌리지 않음','이 단계가 키 논문에는 없는 우리 연구의 고유 부분'],
