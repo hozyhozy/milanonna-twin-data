@@ -56,7 +56,7 @@ python3 experiments/ontology/run_pilot.py --run pilot1 --limit 0 --n 50
 | ⓪ 교정 (선택) | clean.py | 자동 자막의 인식 오류만 최소로 고침 | _clean/<split>.jsonl |
 | ① 추출 | extract.py | 발화를 질문 상황·입장·특징·결과·가치·근거 등급·일화로 분해. 꼬리표 목록은 읽으며 자람 | extract.jsonl, tags.json |
 | ② 상자 | build.py | 입장 상자 ST-0001…, 일화 상자 EP-0001…, 공유 점(대상·특징·결과·가치) | graph.json, sheet_*.csv |
-| ③ 공리 | check.py | A02·A03·A04·A05·A09·A11·A12·A13·A16·A17·A18 + 구절 원문 일치(G1) | check.md, violations.csv |
+| ③ 공리 | check.py | A02·A03·A04·A05·A09·A11·A12·A13·A16·A17·A18·A19 + 구절 원문 일치(G1) | check.md, violations.csv |
 | ④ 통계 | stats.py | 칸 채움 비율, 꼬리표 수렴 곡선, 근거 등급, 역량 질문 자동 점검 | stats.md, tag_growth.csv |
 | ⑤ 답변 | answer.py | Holdout 질문에 B0(소개만)·B1(원문 발췌)·O1(관계도 근거)로 트윈 답 생성 | answers.jsonl, prompts_sample.md |
 | ⑥ 비교 | compare.py | 실제 답과 트윈 답을 같은 추출기로 분해해 찬반·특징·가치·일화를 맞댐, Retest 천장 | compare.md |
@@ -82,3 +82,15 @@ DeepSeek 기준: 30발화 시험은 호출 약 30 + 60 + 80회, Train 전체 + H
 - 한 사람 자료라 A13(2명 이상 공유)과 비슷한 사람 빌리기(조건 D·E)는 아직 시험할 수 없습니다.
 - 특질·동기·지향·상황별 방침 상자는 이번 파일럿에서 뽑지 않습니다(입장·일화만).
 - 비교의 찬반 일치는 '첫 입장'끼리만 봅니다. 입장이 여러 개인 답은 손으로 확인이 필요합니다.
+
+
+## 설계표 v0.4 반영 (2026-11-23)
+
+| 파일 | 바뀐 것 |
+|---|---|
+| common.py | 추출 프롬프트 v2.1: 결과(C) 꼬리표에 Schwartz 가치의 이름이나 뜻을 그대로 쓰지 않고 value로 보냄 (A19) |
+| merge.py | C 칸 합치기 설명에 같은 규칙 |
+| check.py | A13을 특징·결과에만 적용(가치는 Schwartz 칸이 처음부터 클래스), A19 검사 추가(C 꼬리표에 가치 이름이 들어가면 보고) |
+| compare.py | "결과 겹침"(C 꼬리표 자카드) 지표 추가 |
+
+graph.json에서 상자의 `hasValue`는 지금 본인 말(정리된 말)이고 Schwartz 칸은 `schwartz`에 있습니다. 설계표 v0.4 기준으로는 Schwartz 칸이 hasValue, 본인 말은 R24(phrase/valueWords)에 해당합니다. OWL로 옮길 때 이 대응으로 바꿉니다.

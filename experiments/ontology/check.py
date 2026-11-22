@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""③ 공리 검사: graph.json 을 설계표 v0.3 공리로 검사한다 (닫힌 세계: 빠진 것도 위반).
+"""③ 공리 검사: graph.json 을 설계표 v0.4 공리로 검사한다 (닫힌 세계: 빠진 것도 위반).
 
 python3 experiments/ontology/check.py --run pilot1
 출력: violations.csv, check.md
@@ -19,7 +19,8 @@ AXIOMS = {
     "A10": "(보고) 가치 근거가 '추론'인 상자 — 비슷한 사람 찾기에서 제외될 상자 수",
     "A11": "뒤 시기(Holdout·Retest) Statement는 관계도에 들어갈 수 없다",
     "A12": "같은 사람·같은 대상에 찬반이 다른 Stance가 있으면 revises로 이어져야 한다 (후보로 보고)",
-    "A13": "아래층 클래스(세부 꼬리표)는 2명 이상 공유해야 한다 (1명 자료에서는 모두 '대기')",
+    "A13": "특징·결과의 아래층 클래스(세부 꼬리표)는 2명 이상 공유해야 한다 (1명 자료에서는 모두 '대기')",
+    "A19": "결과(C) 꼬리표는 Schwartz 가치의 이름을 그대로 쓰지 않는다 (그러면 hasValue로 옮김)",
     "A16": "상자의 근거 발화는 모두 그 hasHolder 본인의 것이다",
     "A17": "상자 ID는 겹치지 않는다",
     "A18": "근거 발화 ID의 사람 번호 = 상자의 hasHolder",
@@ -82,11 +83,17 @@ def check(g):
         if len({b["hasPolarity"] for b in bs}) > 1:
             V.append(("A12", ",".join(b["id"] for b in bs), f"{h} · {t}: " + " / ".join(f"{b['id']}={b['hasPolarity']}" for b in bs)))
     # A13
-    for k in ["Attribute", "Consequence", "Value"]:
+    for k in ["Attribute", "Consequence"]:   # v0.4: 특징·결과만. 가치는 Schwartz 칸이 처음부터 클래스
         for tag, bids in g["points"][k].items():
             holders = {next(b for b in g["boxes"] if b["id"] == i)["hasHolder"] for i in bids}
             if len(holders) < 2:
                 V.append(("A13", f"{k}:{tag}", f"{len(holders)}명 → 대기"))
+    # A19: 결과 꼬리표에 Schwartz 가치 이름이 그대로 들어가면 V로 옮길 후보 (뜻만 같은 경우는 사람이 확인)
+    from common import SCHWARTZ
+    for tag in g["points"]["Consequence"]:
+        hit = [v for v in SCHWARTZ if v in tag]
+        if hit:
+            V.append(("A19", f"Consequence:{tag}", f"가치 이름 {', '.join(hit)} → hasValue로 옮길 것"))
     return V
 
 

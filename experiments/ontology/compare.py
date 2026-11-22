@@ -8,6 +8,7 @@ python3 experiments/ontology/compare.py --run pilot2 [--clean] [--ceiling]
   topic_match  실제 답의 입장 중 트윈 답에 같은 대상의 입장이 있는 비율 (대상 문자 유사도 ≥ 0.3)
   polarity     대상이 맞은 입장끼리 찬반이 같은 비율
   attr         특징 꼬리표 겹침 (자카드) — 꼬리표를 합친(코드북) 뒤에야 의미가 있음
+  cons         결과 꼬리표 겹침 (자카드) — 설계표 v0.4부터 C도 공유 개념
   value        Schwartz 칸 겹침 (자카드)
   ep_reused    트윈이 든 일화 중 Train에 있는 본인 일화 (가져다 씀)
   ep_invented  트윈이 든 일화 중 Train 어디에도 없는 일화 (지어냈을 가능성)
@@ -56,6 +57,7 @@ def score(te, ae, sim, train_eps, truth_text, twin_text):
     return {"topic_match": matched / len(T) if T else None,
             "polarity": agree / matched if matched else None,
             "attr": jac([x["attribute"]["tag"] for x in T if x["attribute"]], [x["attribute"]["tag"] for x in A if x["attribute"]]),
+            "cons": jac([x["consequence"]["tag"] for x in T if x["consequence"]], [x["consequence"]["tag"] for x in A if x["consequence"]]),
             "value": jac([y for x in T if x["value"] for y in x["value"]["schwartz"] if y != "해당 없음"],
                          [y for x in A if x["value"] for y in x["value"]["schwartz"] if y != "해당 없음"]),
             "ep_reused": reused, "ep_invented": invented, "ep_truth": len(te["episodes"]),
@@ -118,22 +120,22 @@ def main():
     agg = defaultdict(lambda: defaultdict(list))
     agg.update(base)
     for r in done.values():
-        for k in ["topic_match", "polarity", "attr", "value", "ep_reused", "ep_invented", "char_sim"]:
+        for k in ["topic_match", "polarity", "attr", "cons", "value", "ep_reused", "ep_invented", "char_sim"]:
             if r.get(k) is not None:
                 agg[r["cond"]][k].append(float(r[k]))
     mean = lambda xs: f"{sum(xs) / len(xs):.2f} (n={len(xs)})" if xs else "—"
     L = ["# 같은 추출기로 비교한 충실도 프로필 (v2 지표)", "",
-         "| 조건 | 대상 맞음 | 찬반 일치(맞은 대상 중) | 특징 겹침 | 가치 겹침 | 본인 일화 재사용 | 근거 없는 일화 | 표면 유사도 |",
-         "|---|---|---|---|---|---|---|---|"]
+         "| 조건 | 대상 맞음 | 찬반 일치(맞은 대상 중) | 특징 겹침 | 결과 겹침 | 가치 겹침 | 본인 일화 재사용 | 근거 없는 일화 | 표면 유사도 |",
+         "|" + "---|" * 10]
     order = [c for c in ["천장", "O1", "B1", "B0", "최빈 가치"] if c in agg] + [c for c in sorted(agg) if c not in ("천장", "O1", "B1", "B0", "최빈 가치")]
     for c in order:
         m = agg[c]
-        L.append(f"| {c} | {mean(m['topic_match'])} | {mean(m['polarity'])} | {mean(m['attr'])} | {mean(m['value'])} | "
+        L.append(f"| {c} | {mean(m['topic_match'])} | {mean(m['polarity'])} | {mean(m['attr'])} | {mean(m['cons'])} | {mean(m['value'])} | "
                  f"{mean(m['ep_reused'])} | {mean(m['ep_invented'])} | {mean(m['char_sim'])} |")
     L += ["", f"최빈 가치 = 질문과 상관없이 늘 {', '.join(top2)}라고 답했다고 칠 때의 가치 겹침. 트윈의 가치 겹침이 이보다 높아야 의미가 있음.",
           "천장 = 같은 질문에 본인이 다른 때 한 답끼리 비교(Retest). 트윈이 천장에 가까울수록 좋음. 단, 천장의 일화는 관계도에 들어간 발화가 적으면 '근거 없음'으로 잘못 잡힘.",
           "B0 = 기본 소개만, B1 = 원문 발췌, O1 = 관계도 근거.",
-          "특징 겹침은 꼬리표를 합친(코드북) 뒤에 의미가 있습니다. 근거 없는 일화는 Train 일화와 문자 유사도로만 판정하니 손으로 확인이 필요합니다."]
+          "특징·결과 겹침은 꼬리표를 합친(코드북) 뒤에 의미가 있습니다. 근거 없는 일화는 Train 일화와 문자 유사도로만 판정하니 손으로 확인이 필요합니다."]
     open(os.path.join(d, "compare.md"), "w", encoding="utf-8").write("\n".join(L))
     print("\n".join(L))
 

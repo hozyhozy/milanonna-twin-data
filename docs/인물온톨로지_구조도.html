@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>인물 온톨로지 구조도 (v0.3)</title>
+<title>인물 온톨로지 구조도 (v0.4)</title>
 <style>
   :root{--ink:#1b1c20;--mute:#6a6d76;--line:#e3e5ea;--bg:#f7f7f9;--card:#fff;--me:#2459d6;--me-bg:#eaf1ff;--ref:#5b6475;--ref-bg:#f1f3f6;--ref-line:#cfd4dd;--done:#1f8a55;--done-bg:#e6f6ee;--draft:#b06a00;--draft-bg:#fff3de}
   *{box-sizing:border-box}
@@ -59,7 +59,7 @@
 <body>
 <div class="wrap">
 <header>
-  <h1>인물 온톨로지 구조도 (v0.3)</h1>
+  <h1>인물 온톨로지 구조도 (v0.4)</h1>
   <p>객체 유형마다 카드 하나(유형 · 예시 객체 · 속성)를 두고, 유형 사이의 관계를 화살표로 그렸습니다. 카드를 누르면 정의, 칸, 공리, 키 논문과의 대응이 아래에 나옵니다. 예시 객체는 설명용으로 지어낸 것입니다.</p>
   <div class="legend">
     <span><span class="sw c"></span>사람별 상자 (한 사람의 주장 한 건)</span>
@@ -75,7 +75,7 @@
 <figure><svg id="fig" viewBox="0 0 1100 800" role="img" aria-label="인물 온톨로지 구조도"></svg></figure>
 <div class="panel" id="panel"></div>
 
-<footer>기준: 인물 온톨로지 설계표 v0.3 (클래스 · 관계 · 공리). 이론: McAdams 3수준 뼈대, PACE의 이론(HEXACO · Schwartz · 자기결정 이론 · 조절 초점 · Mischel &amp; Shoda), ACV. 2026-11-21.</footer>
+<footer>기준: 인물 온톨로지 설계표 v0.4 (클래스 · 관계 · 공리). 이론: McAdams 3수준 뼈대, PACE의 이론(HEXACO · Schwartz · 자기결정 이론 · 조절 초점 · Mischel &amp; Shoda), ACV. 2026-11-21.</footer>
 </div>
 
 <script>
@@ -102,7 +102,7 @@ const VA=[
  ['topic','topic',140,350,240,'Topic','유행하는 옷',['Properties: 범주, 공유 인원 수'],0],
  ['statement','doc',955,350,270,'Statement','P01-I03-012',['= P01의 3번째 자료, 12번째 답','Properties: 날짜, 매체·형식, 원문 구절'],0],
  ['attribute','attr',180,640,240,'Attribute','일시성 (C04-01)',['Properties: 공유 인원 수'],0],
- ['consequence','cons',450,640,230,'Consequence','쓸모가 끝남',['Properties: 공유 인원 수'],0],
+ ['consequence','cons',450,640,230,'Consequence','쓸모가 끝남 (C05-01)',['Properties: 공유 인원 수'],0],
  ['value','value',720,640,250,'Value','안전 · "오래가는 것"',['Properties: Schwartz 칸, 본인의 말'],0],
  ['episode','episode',975,640,220,'Episode (일화)','EP-0001',['label: P01 · 밀라노 코트','Properties: 때, 곳, 사건'],1]
 ];
@@ -148,9 +148,9 @@ const DET={
  topic:{t:'Topic — 대상',id:'C03',k:'p',d:'질문이나 입장의 대상입니다. 찬반을 붙일 수 있어야 합니다.',s:[['(들어옴) hasTopic','Stance','상자마다 1']],a:['A01'],r:'FrameEntity 중 hasRange 쪽 (West Bank). 다만 키 논문은 문장 속 명사를 클래스로 만들었고, 우리는 대상을 Topic의 인스턴스로 둠.',x:['같은 Topic에 찬성하는 사람과 반대하는 사람이 같은 점을 공유함 — 찬반은 상자의 칸']},
  statement:{t:'Statement — 근거 발화',id:'C02',k:'p',d:'근거가 된 발화 한 구절입니다. 날짜, 매체·형식, 질문이 만든 상황, 주변 맥락, 원문 구절이 붙어 있습니다. 상자의 시점과 상황은 여기서 옵니다. ID는 사람-자료-순번입니다: P01-I03-012 = P01의 3번째 자료(영상·기사 한 건)의 12번째 답.',
   s:[['(들어옴) evidencedBy','모든 상자','상자마다 1개 이상']],a:['A05','A08','A11','A16','A18'],r:'선언문·성명서의 문장.',x:['뒤 시기 발화는 평가용으로 떼어 두고 관계도에 넣지 않음 (A11)','지면 기사 문장은 특질의 근거로 쓰지 않음 (A08)']},
- attribute:{t:'Attribute — 대상에 대해 본 특징 (A)',id:'C04',k:'p',d:'대상의 성질입니다. 아래층(일시성, 획일성 …)은 이론이 아니라 자료에서 올라오며, 두 명 이상이 공유해야 클래스가 됩니다.',
+ attribute:{t:'Attribute — 대상에 대해 본 특징 (A)',id:'C04',k:'p',d:'대상의 성질입니다. 아래층(일시성, 획일성 …)은 이론이 아니라 자료에서 올라오며, 두 명 이상이 공유해야 클래스가 됩니다. 본인의 말(원문 구절)은 상자에 함께 남습니다.',
   s:[['(들어옴) hasAttribute','Stance','상자마다 0~1']],a:['A13','A15'],r:'키 논문에서는 세부 꼬리표가 관계가 되었지만, 우리는 아래층 클래스가 됨.',x:['예: C04-01 일시성 (P01 · P02), C04-02 획일성 (P01 · P03)']},
- consequence:{t:'Consequence — 결과·이유 (C)',id:'C05',k:'p',d:'그 특징이 가져오는 결과나 이유입니다. "그래서 ~하다"로 읽힙니다.',s:[['(들어옴) hasConsequence','Stance','상자마다 0~1']],a:['A15'],r:'키 논문에 해당 칸 없음.',x:['아래층을 Attribute처럼 2명 규칙으로 만들지는 아직 결정 필요']},
+ consequence:{t:'Consequence — 결과·이유 (C)',id:'C05',k:'p',d:'그 특징 때문에 본인에게 생기는 결과입니다. "그래서 나에게 무엇이 생기나"로 읽힙니다. Attribute와 같이 아래층(쓸모가 끝남 …)은 자료에서 올라오며, 두 명 이상이 공유해야 클래스가 됩니다. 본인의 말(원문 구절)은 상자에 함께 남습니다.',s:[['(들어옴) hasConsequence','Stance','상자마다 0~1']],a:['A13','A15','A19'],r:'키 논문에 해당 칸 없음.',x:['예: C05-01 쓸모가 끝남 (P01 · P02)','Schwartz 가치를 그대로 말하는 결과("안전해진다")는 Value로 옮김 (A19)']},
  value:{t:'Value — 지키려는 것 (V)',id:'C06',k:'p',d:'결국 지키려는 것입니다. 두 층으로 적습니다: 큰 칸은 Schwartz 10가지(자기주도, 자극, 쾌락, 성취, 권력, 안전, 순응, 전통, 박애, 보편주의), 세부는 본인의 말.',
   s:[['(들어옴) hasValue','Stance','상자마다 0~1'],['illustratedBy','Episode','0개 이상']],a:['A03','A04'],r:'키 논문에 해당 칸 없음.',x:['비슷한 사람 찾기 1차 기준: Schwartz 칸 + 극성','가치를 말하지 않았으면 칸을 비워 둠 — 추론해 채운 가치는 사람 찾기에 쓰지 않음 (A10)']},
  episode:{t:'Episode — 일화 (선택)',id:'C12',k:'c',d:'본인이 겪은 구체적인 일입니다(때 · 곳 · 사건). McAdams 3수준이며, 이번 연구에서는 켭니다. 그 자체가 사람별 상자라 hasHolder와 근거 발화를 가집니다.',

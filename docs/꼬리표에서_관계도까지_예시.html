@@ -149,6 +149,7 @@
   table.mini td:nth-child(1),table.mini td:nth-child(2){white-space:nowrap}
   table.mini tr.new td{background:#eefaf3}
   .pcard.wide{grid-column:1/-1}
+  .idc.c{background:var(--c-bg);color:var(--c);border-color:var(--c)}
   .vid{display:inline-block;font-weight:700;font-size:12px;padding:1px 7px;border-radius:5px;background:var(--v-bg);color:var(--v);border:1.5px solid var(--v);white-space:nowrap}
   .vcell{line-height:1.9}
   .vnote{font-size:11px;color:var(--mute)}
@@ -169,7 +170,7 @@
 <div class="wrap">
 <header>
   <h1>꼬리표에서 관계도까지 — 예시로 보는 과정</h1>
-  <p>Etudo &amp; Yoon의 thematic coding(Atlas.ti) → 온톨로지 단계를 우리 연구에 옮긴 예시입니다. 발화 4개는 설명용으로 지어낸 것이고, 기준은 설계표 v0.3입니다. 번호를 누르면 그 단계의 그림과 설명이 아래에 나옵니다.</p>
+  <p>Etudo &amp; Yoon의 thematic coding(Atlas.ti) → 온톨로지 단계를 우리 연구에 옮긴 예시입니다. 발화 4개는 설명용으로 지어낸 것이고, 기준은 설계표 v0.4입니다. 번호를 누르면 그 단계의 그림과 설명이 아래에 나옵니다.</p>
   <div class="legend">
     <span>큰 꼬리표(칸):</span>
     <span class="k k-s">입장</span><span class="k k-a">특징 A</span><span class="k k-c">결과 C</span><span class="k k-v">가치 V</span>
@@ -241,7 +242,7 @@
   <text class="t3m" x="132" y="70" text-anchor="middle">P01</text><text class="t3m" x="162" y="70" text-anchor="middle">P02</text><text class="t3m" x="192" y="70" text-anchor="middle">P03</text>
   <text class="t3" x="16" y="94">오래가지 않는다</text><circle cx="132" cy="90" r="6" fill="#2459d6"/><circle cx="162" cy="90" r="6" fill="#1f8a55"/><circle cx="192" cy="90" r="6" fill="none" stroke="#d3d5db"/><text class="t3" x="214" y="94" fill="#1f8a55" font-weight="700">C04-01</text>
   <text class="t3" x="16" y="122">남과 같아진다</text><circle cx="132" cy="118" r="6" fill="#2459d6"/><circle cx="162" cy="118" r="6" fill="none" stroke="#d3d5db"/><circle cx="192" cy="118" r="6" fill="#b06a00"/><text class="t3" x="214" y="122" fill="#1f8a55" font-weight="700">C04-02</text>
-  <text class="t3" x="16" y="150">쓸모가 금방 끝난다</text><circle cx="132" cy="146" r="6" fill="#2459d6"/><circle cx="162" cy="146" r="6" fill="#1f8a55"/><circle cx="192" cy="146" r="6" fill="none" stroke="#d3d5db"/><text class="t3" x="214" y="150" fill="#b06a00" font-weight="700">결정 필요</text>
+  <text class="t3" x="16" y="150">쓸모가 금방 끝난다</text><circle cx="132" cy="146" r="6" fill="#2459d6"/><circle cx="162" cy="146" r="6" fill="#1f8a55"/><circle cx="192" cy="146" r="6" fill="none" stroke="#d3d5db"/><text class="t3" x="214" y="150" fill="#1f8a55" font-weight="700">C05-01</text>
   <text class="t3" x="16" y="178">드러나지 않는다</text><circle cx="132" cy="174" r="6" fill="#2459d6"/><circle cx="162" cy="174" r="6" fill="none" stroke="#d3d5db"/><circle cx="192" cy="174" r="6" fill="none" stroke="#d3d5db"/><text class="t3m" x="214" y="178" font-weight="700">대기</text>
 </g>
 
@@ -279,7 +280,7 @@
 <div class="cap" id="cap"></div>
 
 <footer>
-  설계표: 인물 온톨로지 설계표 v0.3 (클래스·관계·공리). 발화와 인물은 모두 설명용으로 지어낸 것이며 실제 인터뷰 인용이 아닙니다. 2026-11-21 작성, 2026-11-22 개정(5단계에 클래스 승격 데이터 예시 추가).
+  설계표: 인물 온톨로지 설계표 v0.4 (클래스·관계·공리). 발화와 인물은 모두 설명용으로 지어낸 것이며 실제 인터뷰 인용이 아닙니다. 2026-11-21 작성, 2026-11-22 개정(5단계에 클래스 승격 데이터 예시 추가), 2026-11-23 개정(설계표 v0.4: 결과 C도 공유 개념).
 </footer>
 </div>
 
@@ -321,9 +322,9 @@ const D4='<div class="g2"><div><div class="search"><div class="q">꼬리표 검�
  '<div><table class="mx"><tr><th>세부 꼬리표</th><th>P01</th><th>P02</th><th>P03</th><th>사람 수</th><th>판정</th></tr>'+
  '<tr><td>'+K('a','오래가지 않는다')+'</td><td><span class="dot d1"></span></td><td><span class="dot d2"></span></td><td class="dx">–</td><td>2</td><td>'+K('re','C04-01 일시성')+'</td></tr>'+
  '<tr><td>'+K('a','남과 같아진다')+'</td><td><span class="dot d1"></span></td><td class="dx">–</td><td><span class="dot d3"></span></td><td>2</td><td>'+K('re','C04-02 획일성')+'</td></tr>'+
- '<tr><td>'+K('c','쓸모가 금방 끝난다')+'</td><td><span class="dot d1"></span></td><td><span class="dot d2"></span></td><td class="dx">–</td><td>2</td><td>'+K('wait','결정 필요')+'</td></tr>'+
+ '<tr><td>'+K('c','쓸모가 금방 끝난다')+'</td><td><span class="dot d1"></span></td><td><span class="dot d2"></span></td><td class="dx">–</td><td>2</td><td>'+K('re','C05-01 쓸모가 끝남')+'</td></tr>'+
  '<tr><td>'+K('c','내가 드러나지 않는다')+'</td><td><span class="dot d1"></span></td><td class="dx">–</td><td class="dx">–</td><td>1</td><td>'+K('old','대기')+'</td></tr></table>'+
- '<p style="font-size:13px;color:var(--mute);margin:8px 0 0">이 표가 Etudo &amp; Yoon의 Table C1에 해당합니다. 결과(C) 쪽도 2명 규칙으로 클래스를 만들지는 아직 정하지 않았습니다.</p></div></div>';
+ '<p style="font-size:13px;color:var(--mute);margin:8px 0 0">이 표가 Etudo &amp; Yoon의 Table C1에 해당합니다. 특징(A)과 결과(C) 모두 같은 2명 규칙을 씁니다(설계표 v0.4, A13).</p></div></div>';
 
 const node=(x,y,w,fill,stroke,t1,t2,sw,dash)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="48" rx="7" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+(sw||1.2)+'"'+(dash?' stroke-dasharray="5 4"':'')+'/><text x="'+(x+w/2)+'" y="'+(y+21)+'" text-anchor="middle" font-size="14" font-weight="700" fill="'+(dash?'#9a9da6':stroke)+'">'+t1+'</text><text x="'+(x+w/2)+'" y="'+(y+38)+'" text-anchor="middle" font-size="11.5" fill="#6a6d76">'+t2+'</text>';
 const box=(x,y,w,t1,t2)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="56" rx="8" fill="#1b1c20"/><text x="'+(x+w/2)+'" y="'+(y+24)+'" text-anchor="middle" font-size="14.5" font-weight="700" fill="#fff">'+t1+'</text><text x="'+(x+w/2)+'" y="'+(y+43)+'" text-anchor="middle" font-size="11.5" fill="#c9ccd4">'+t2+'</text>';
@@ -347,6 +348,8 @@ const G5='<div class="gwrap"><svg viewBox="0 0 960 430" role="img" aria-label="�
 const T=t=>'<span class="txt">"'+t+'"</span>';
 const I=(id,n)=>'<span class="idc">'+id+'</span>'+'';
 const V=(id,nm,w,g)=>'<div class="vcell"><span class="vid">'+id+' '+nm+'</span> <span class="vnote">'+g+'</span><br>'+T(w)+'</div>';
+const Ic=id=>'<span class="idc c">'+id+'</span>';
+const L2=(chip,ph)=>'<div class="vcell">'+chip+'<br>'+T(ph)+'</div>';
 const pc=(n,h,d,body,c)=>'<div class="pcard'+(c?' '+c:'')+'"><h5><span class="pn">'+n+'</span>'+h+'</h5><p class="pd">'+d+'</p>'+body+'</div>';
 const P5='<h4 class="sub">"아래층 클래스로 올라간다" — 데이터로 보면</h4>'+
  '<div class="banner"><b>2명 이상</b>이 쓴 꼬리표 → <b>클래스표에 ID를 가진 새 행</b>이 생김 → 상자표의 <b>글자가 그 ID로</b> 바뀜. 위 그림에서 두 상자가 같은 초록 점 "일시성"을 가리키는 것이 바로 이 ID입니다.</div>'+
@@ -361,22 +364,24 @@ const P5='<h4 class="sub">"아래층 클래스로 올라간다" — 데이터로
   '<table class="mini"><tr><th>칸</th><th>꼬리표</th><th>쓴 사람</th><th>수</th><th>판정</th></tr>'+
   '<tr><td>A</td><td>오래가지 않는다</td><td>P01 · P02</td><td>2</td><td>'+K('re','올림')+'</td></tr>'+
   '<tr><td>A</td><td>남과 같아진다</td><td>P01 · P03</td><td>2</td><td>'+K('re','올림')+'</td></tr>'+
-  '<tr><td>C</td><td>쓸모가 금방 끝난다</td><td>P01 · P02</td><td>2</td><td>'+K('wait','결정 필요')+'</td></tr>'+
+  '<tr><td>C</td><td>쓸모가 금방 끝난다</td><td>P01 · P02</td><td>2</td><td>'+K('re','올림')+'</td></tr>'+
   '<tr><td>C</td><td>내가 드러나지 않는다</td><td>P01</td><td>1</td><td>'+K('old','대기')+'</td></tr></table>')+
- pc(3,'클래스표 — ID가 있는 새 행이 생김','설계표의 클래스 탭입니다. 회색 행은 이론에서 미리 있던 행이고(특징 C04, 가치 C06과 Schwartz 10개), 초록 행이 이번에 새로 생긴 아래층 클래스입니다.',
+ pc(3,'클래스표 — ID가 있는 새 행이 생김','설계표의 클래스 탭입니다. 회색 행은 이론에서 미리 있던 행이고(특징 C04, 결과 C05, 가치 C06과 Schwartz 10개), 초록 행이 이번에 새로 생긴 아래층 클래스입니다.',
   '<table class="mini"><tr><th>클래스 ID</th><th>이름</th><th>위층</th><th>정의</th><th>묶인 표현</th></tr>'+
   '<tr class="base"><td>C04</td><td>특징 (Attribute)</td><td>—</td><td>대상이 어떤 것이라고 보나</td><td>이론에서 미리 정함</td></tr>'+
   '<tr class="new"><td>'+I('C04-01')+'</td><td><b>일시성</b></td><td>C04</td><td>오래가지 않고 금방 지나간다고 봄</td><td>오래가지 않는다 (한철 지나면, 금방 질려서)</td></tr>'+
   '<tr class="new"><td>'+I('C04-02')+'</td><td><b>획일성</b></td><td>C04</td><td>남과 같아진다고 봄</td><td>남과 같아진다 (다들 똑같이, 남들 다 하는)</td></tr>'+
+  '<tr class="base"><td>C05</td><td>결과 (Consequence)</td><td>—</td><td>그래서 나에게 무엇이 생기나</td><td>이론에서 미리 정함</td></tr>'+
+  '<tr class="new"><td>'+Ic('C05-01')+'</td><td><b>쓸모가 끝남</b></td><td>C05</td><td>곧 쓰지 않게 된다고 봄</td><td>쓸모가 금방 끝난다 (못 입거든요, 결국 버리게 돼요)</td></tr>'+
   '<tr class="base"><td>C06</td><td>가치 (Value)</td><td>—</td><td>결국 지키려는 것</td><td>이론에서 미리 정함</td></tr>'+
   '<tr class="base"><td><span class="vid">C06-06</span></td><td>안전</td><td>C06</td><td>안정, 질서, 위험 회피</td><td>Schwartz 10개 중 하나 · 처음부터 있음</td></tr></table>')+
- pc(4,'상자표 — 글자가 ID로 바뀜','올라간 A 꼬리표만 ID로 바뀝니다. 1명짜리와 결정 전인 C는 글자 그대로 남고, V는 처음부터 ID라 그대로입니다.',
-  '<table class="mini"><tr><th>상자</th><th>사람</th><th>대상</th><th>특징 A <span class="idn">← 바뀜</span></th><th>결과 C</th><th>가치 V <span class="vnote">(그대로)</span></th></tr>'+
-  '<tr><td>ST-0001</td><td><span class="dot d1"></span> P01</td><td>유행하는 옷</td><td>'+I('C04-01',1)+'</td><td>'+T('쓸모가 금방 끝난다')+'</td><td>'+V('C06-06','안전','오래가는 것','추론')+'</td></tr>'+
-  '<tr><td>ST-0002</td><td><span class="dot d1"></span> P01</td><td>요즘 옷차림</td><td>'+I('C04-02',1)+'</td><td>'+T('내가 드러나지 않는다')+'</td><td class="dx">빈칸</td></tr>'+
-  '<tr><td>ST-0003</td><td><span class="dot d2"></span> P02</td><td>세일 충동구매</td><td>'+I('C04-01',1)+'</td><td>'+T('쓸모가 금방 끝난다')+'</td><td class="dx">빈칸</td></tr>'+
-  '<tr><td>ST-0004</td><td><span class="dot d3"></span> P03</td><td>남들 다 하는 것</td><td>'+I('C04-02',1)+'</td><td class="dx">빈칸</td><td class="dx">빈칸</td></tr></table>','wide')+
- pc(5,'V 칸은 두 층 — 줄글을 지우지 않음','본인 말을 먼저 뽑고 그것을 보고 Schwartz 칸을 고르지만(파일럿 코드에서는 한 번의 호출), 둘 다 상자에 남습니다.',
+ pc(4,'상자표 — 글자가 ID로 바뀜','올라간 A·C 꼬리표만 ID로 바뀝니다. 본인 말(원문 구절)은 ID 아래에 그대로 남습니다(두 층). 1명짜리 "내가 드러나지 않는다"는 글자 그대로 대기하고, V는 처음부터 ID라 그대로입니다.',
+  '<table class="mini"><tr><th>상자</th><th>사람</th><th>대상</th><th>특징 A <span class="idn">← 바뀜</span></th><th>결과 C <span class="idn">← 바뀜</span></th><th>가치 V <span class="vnote">(그대로)</span></th></tr>'+
+  '<tr><td>ST-0001</td><td><span class="dot d1"></span> P01</td><td>유행하는 옷</td><td>'+L2(I('C04-01'),'한철 지나면')+'</td><td>'+L2(Ic('C05-01'),'못 입거든요')+'</td><td>'+V('C06-06','안전','오래가는 것','추론')+'</td></tr>'+
+  '<tr><td>ST-0002</td><td><span class="dot d1"></span> P01</td><td>요즘 옷차림</td><td>'+L2(I('C04-02'),'다들 똑같이')+'</td><td>'+T('내가 드러나지 않는다')+' <span class="vnote">대기</span></td><td class="dx">빈칸</td></tr>'+
+  '<tr><td>ST-0003</td><td><span class="dot d2"></span> P02</td><td>세일 충동구매</td><td>'+L2(I('C04-01'),'금방 질려서')+'</td><td>'+L2(Ic('C05-01'),'결국 버리게 돼요')+'</td><td class="dx">빈칸</td></tr>'+
+  '<tr><td>ST-0004</td><td><span class="dot d3"></span> P03</td><td>남들 다 하는 것</td><td>'+L2(I('C04-02'),'남들이 다 하는')+'</td><td class="dx">빈칸</td><td class="dx">빈칸</td></tr></table>','wide')+
+ pc(5,'V 칸은 두 층 — 줄글을 지우지 않음','본인 말을 먼저 뽑고 그것을 보고 Schwartz 칸을 고르지만(파일럿 코드에서는 한 번의 호출), 둘 다 상자에 남습니다. A·C도 같은 두 층입니다: 공유 꼬리표 ID + 원문 구절(표 ④).',
   '<table class="mini"><tr><th>ST-0001의 V 칸</th><th>값</th><th>무엇인가</th><th>어디에 쓰나</th></tr>'+
   '<tr><td>Schwartz 칸</td><td><span class="vid">C06-06 안전</span></td><td>클래스 ID (공유 점)</td><td>비슷한 사람 찾기 1차 · 트윈 답 비교의 "가치 겹침"</td></tr>'+
   '<tr><td>본인 말 (짧게)</td><td>'+T('오래가는 것')+'</td><td>상자 안 글자</td><td>비슷한 사람 찾기 2차(세부 가치) · 트윈이 본인처럼 말하게</td></tr>'+
@@ -384,12 +389,12 @@ const P5='<h4 class="sub">"아래층 클래스로 올라간다" — 데이터로
   '<tr><td>근거 등급</td><td>추론</td><td>상자 안 표시</td><td>본인이 "안전"을 직접 말하지 않았음 → 사람 확인 대상</td></tr></table>'+
   '<p class="pd" style="margin:8px 0 0">Schwartz 칸은 10개뿐이라 굵습니다. "오래가는 것", "건강", "절약"이 모두 안전 한 칸에 들어가므로, 본인 말이 있어야 노라의 안전이 어떤 안전인지 남습니다. 만약 P02가 "아껴 둬야 마음이 놓여요"라고 했다면 P02의 상자도 같은 <span class="vid">C06-06</span>을 가리키게 되고, 2명 규칙 없이 바로 공유 점이 됩니다(본인 말은 "마음이 놓임"으로 따로 남음).</p>','wide')+
  '</div>'+
- '<div class="find"><div class="fq">특징 A = C04-01</div><div>→ <b>ST-0001</b> (<span class="dot d1"></span> P01 · 유행하는 옷) · <b>ST-0003</b> (<span class="dot d2"></span> P02 · 세일 충동구매)<br><span style="color:var(--mute);font-size:12.5px">ID 하나로 필터하면 대상이 달라도 같은 이유를 가진 상자가 사람을 넘어 모입니다. ⑥단계에서 P01에게 P02의 근거를 빌려 오는 길이 이것입니다. 1명짜리 꼬리표("내가 드러나지 않는다")는 P01의 관계도에는 남지만 이런 연결에는 아직 쓰이지 않습니다.</span></div></div>'+
+ '<div class="find"><div class="fq">A = C04-01 · C = C05-01</div><div>→ <b>ST-0001</b> (<span class="dot d1"></span> P01 · 유행하는 옷) · <b>ST-0003</b> (<span class="dot d2"></span> P02 · 세일 충동구매)<br><span style="color:var(--mute);font-size:12.5px">특징과 결과 ID로 함께 거르면, 대상이 달라도 "일시성 → 쓸모가 끝남" 사슬 전체가 같은 상자가 사람을 넘어 모입니다. ⑥단계에서 P01에게 P02의 근거를 빌려 오는 길이 이것입니다. 1명짜리 꼬리표("내가 드러나지 않는다")는 P01의 관계도에는 남지만 이런 연결에는 아직 쓰이지 않습니다.</span></div></div>'+
  '<details class="code"><summary>코드로 보면 (build 단계에 들어갈 처리)</summary><div class="prompt">'+
- '<span class="m"># 1) 꼬리표별로 쓴 사람 모으기</span><br>users = defaultdict(set)<br>for b in boxes: users[("A", b["A"])].add(b["person"])<br><br>'+
- '<span class="m"># 2) 2명 이상이면 클래스표에 새 행 + ID 발급</span><br>for (slot, tag), people in users.items():<br>&nbsp;&nbsp;if len(people) &gt;= 2: classes[(slot, tag)] = new_id("C04")&nbsp;&nbsp;<span class="m"># C04-01, C04-02 …</span><br><br>'+
- '<span class="m"># 3) 상자의 글자를 ID로 바꾸기 (클래스가 아니면 글자 그대로)</span><br>for b in boxes: b["A"] = classes.get(("A", b["A"]), b["A"])<br><br>'+
- '<span class="m"># 4) 같은 이유를 가진 상자 찾기</span><br>[b["id"] for b in boxes if b["A"] == "C04-01"]&nbsp;&nbsp;<span class="b"># → ST-0001, ST-0003</span>'+
+ '<span class="m"># 1) 꼬리표별로 쓴 사람 모으기</span><br>users = defaultdict(set)<br>for b in boxes:<br>&nbsp;&nbsp;for slot in ("A", "C"): users[(slot, b[slot])].add(b["person"])<br><br>'+
+ '<span class="m"># 2) 2명 이상이면 클래스표에 새 행 + ID 발급</span><br>for (slot, tag), people in users.items():<br>&nbsp;&nbsp;if len(people) &gt;= 2: classes[(slot, tag)] = new_id(slot)&nbsp;&nbsp;<span class="m"># A → C04-01 …, C → C05-01 …</span><br><br>'+
+ '<span class="m"># 3) 상자의 글자를 ID로 바꾸기 (클래스가 아니면 글자 그대로)</span><br>for b in boxes:<br>&nbsp;&nbsp;for slot in ("A", "C"): b[slot] = classes.get((slot, b[slot]), b[slot])<br><br>'+
+ '<span class="m"># 4) 같은 이유를 가진 상자 찾기</span><br>[b["id"] for b in boxes if b["A"] == "C04-01" and b["C"] == "C05-01"]&nbsp;&nbsp;<span class="b"># → ST-0001, ST-0003</span>'+
  '</div><p style="font-size:12.5px;color:var(--mute);margin:6px 0 0">지금 파일럿은 인물이 노라 한 명이라 2)·3)이 없고, 모든 꼬리표가 글자 그대로 들어갑니다. 두 번째 인물부터 이 처리를 build.py에 넣습니다.</p></details>';
 const D5=G5+P5+
  '<table class="cmp"><tr><th></th><th class="hr">Etudo &amp; Yoon</th><th class="hm">우리 연구</th></tr>'+
@@ -404,7 +409,7 @@ const D5=G5+P5+
  '<div><b>A03</b> hasValue = Value, 방향 표시 있음<br><span class="ok">통과</span> ST-0001: 안전 · 해침</div>'+
  '<div><b>A05 · A18</b> 상자마다 본인 발화가 근거<br><span class="ok">통과</span> ST-0001 ← P01-I03-012, ST-0003 ← P02-I05-031</div>'+
  '<div><b>A04</b> Value는 Schwartz 칸 1~2개<br><span class="na">해당</span> 안전 = 후보, 사람이 확인</div>'+
- '<div><b>A13</b> 아래층 클래스는 2명 이상<br><span class="ok">통과</span> 일시성(P01·P02), 획일성(P01·P03)</div>'+
+ '<div><b>A13</b> 아래층 클래스는 2명 이상<br><span class="ok">통과</span> 일시성(P01·P02), 획일성(P01·P03), 쓸모가 끝남(P01·P02)</div>'+
  '<div><b>A15</b> A·C·V 칸은 0~1개<br><span class="na">빈칸</span> ST-0003은 hasValue 없음</div></div>';
 
 const D6='<div class="vflow">'+
@@ -437,8 +442,8 @@ const S=[
   pts:['처음 30~50개 발화는 사람이 직접 붙여 목록(시드)을 만듦','이후 모델은 목록에서 고르거나 새 꼬리표를 제안만 하고, 사람이 승인','재사용해야 사람과 사람이 이어짐 — 사람마다 따로 만들면 비슷한 사람을 찾을 수 없음'],
   ref:'AQAP 문장에서 "가까운 세력이 적과 공모한다"를 만들고, ALF의 PETA 문장에서 재사용했습니다.',ids:['수정 기록에 새 꼬리표 추가']},
  {t:'4. 꼬리표별로 모으기 → 클래스',p:'꼬리표 하나를 누르면 그 꼬리표가 붙은 구절이 사람에 상관없이 한 화면에 모입니다. 두 명 이상에게서 나온 꼬리표만 아래층 클래스가 됩니다.',d:D4,
-  pts:['"오래가지 않는다"(P01·P02) → C04-01 일시성, "남과 같아진다"(P01·P03) → C04-02 획일성','한 사람에게서만 나온 꼬리표는 지우지 않고 대기 — 그 사람의 관계도에는 남되, 사람을 잇는 데는 아직 못 씀 (가안)','결과(C) 쪽에도 같은 규칙을 적용할지는 결정 필요'],
-  ref:'모인 문장들이 늘 "[누가] 공모한다 [누구와]" 구조임을 보고 관계 하나로 만들었습니다(Table C1).',ids:['C04-01 일시성','C04-02 획일성','A13']},
+  pts:['"오래가지 않는다"(P01·P02) → C04-01 일시성, "남과 같아진다"(P01·P03) → C04-02 획일성','한 사람에게서만 나온 꼬리표는 지우지 않고 대기 — 그 사람의 관계도에는 남되, 사람을 잇는 데는 아직 못 씀 (가안)','결과(C)도 같은 규칙: "쓸모가 금방 끝난다"(P01·P02) → C05-01 쓸모가 끝남. 가치를 그대로 말하는 C는 V로 옮김 (A19)'],
+  ref:'모인 문장들이 늘 "[누가] 공모한다 [누구와]" 구조임을 보고 관계 하나로 만들었습니다(Table C1).',ids:['C04-01 일시성','C04-02 획일성','C05-01 쓸모가 끝남','A13','A19']},
  {t:'5. 관계도로 옮기기 — 입장을 상자로',p:'②에서 쪼갠 발화 하나를 <b>입장 상자(Stance)</b> 하나로 만들고, 상자의 칸마다 선을 뽑습니다. 선에는 꼬리표(근거·시점·상황)를 달 수 없으므로 주장 자체를 사물로 만든 것입니다. 키 논문의 Israel_besieges_WestBank 상자와 같은 방식입니다(W3C n-ary 패턴).',d:D5,
   pts:['상자는 사람마다, 점은 공유: P01의 ST-0001과 P02의 ST-0003이 같은 "일시성" 점을 가리킴 → 그래서 두 사람이 이어짐','칸의 종류는 ACV 이론에서 미리 정함 — 이 단계에서 새로 생기는 것은 점(클래스): 클래스표에 ID 행이 생기고 상자의 글자가 그 ID로 바뀜','빈칸은 칸을 비워 둘 뿐, 억지로 채우지 않음','입장이 바뀌면 상자와 상자를 revises로 이음 (선으로는 불가능했던 것)','사람과 무관한 클래스 위계(일시성 ⊂ Attribute, 안전 ⊂ Value)는 상자 없이 그냥 선'],
   ref:'"포위 주장"을 상자 Israel_besieges_WestBank로 만들고 hasDomain(Israel) · hasRange(West Bank) · hasFrame(진단) · hasClaimant(PFLP) 네 칸을 뽑았습니다. 그 뒤 OWL로 쓰고 Pellet으로 검사했습니다.',ids:['C13 Stance','R11–R19','R23 label','A02','A03','A05','A15','A16','A18','ID 규칙']},
