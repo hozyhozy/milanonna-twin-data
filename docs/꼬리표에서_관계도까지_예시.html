@@ -280,7 +280,7 @@
 <div class="cap" id="cap"></div>
 
 <footer>
-  설계표: 인물 온톨로지 설계표 v0.5 (클래스·관계·공리). 발화와 인물은 모두 설명용으로 지어낸 것이며 실제 인터뷰 인용이 아닙니다. 2026-11-21 작성, 2026-11-22 개정(5단계에 클래스 승격 데이터 예시 추가), 2026-11-23 개정(설계표 v0.4: 결과 C도 공유 개념 / v0.5: 입장 상자 중심으로 범위 축소).
+  설계표: 인물 온톨로지 설계표 v0.5 (클래스·관계·공리). 발화와 인물은 모두 설명용으로 지어낸 것이며 실제 인터뷰 인용이 아닙니다. 2026-11-21 작성, 2026-11-22 개정(5단계에 클래스 승격 데이터 예시 추가), 2026-11-23 개정(설계표 v0.4: 결과 C도 공유 개념 / v0.5: 입장 상자 중심으로 범위 축소 / 6단계에 트윈 답 예시 추가).
 </footer>
 </div>
 
@@ -418,8 +418,9 @@ const D6='<div class="vflow">'+
  '<div class="vstep"><div class="n">3</div><div><h4>비슷한 사람 찾기</h4><p>설계 기준: 1차는 Schwartz 칸 + 극성, 2차는 세부 가치. 이 예시에서는 같은 점(일시성, 쓸모가 끝남)을 가리키는 상자를 가진 '+K('re','P02')+'로 단순화했습니다. 근거가 "추론"인 상자는 사람 찾기에 쓰지 않습니다(A10).</p></div></div><div class="vdown"></div>'+
  '<div class="vstep"><div class="n">4</div><div><h4>근거 꺼내기</h4><p>P02의 입장 상자 ST-0003을 통째로 꺼냅니다: 세일 충동구매 · 반대 · 일시성 · 쓸모가 끝남 · 가치 빈칸 · 근거 발화 P02-I05-031. 일화는 빌리지 않습니다(A07).</p></div></div><div class="vdown"></div>'+
  '<div class="vstep"><div class="n">5</div><div><h4>LLM에 주는 것</h4>'+
- '<div class="prompt"><span class="h">[본인 · P01의 ST-0001]</span><br>가치: 안전 — "오래가는 것"<br>입장: 유행하는 옷 → 반대 (근거: 한철 지나면 못 입음)<br><span class="b">[빌린 근거 · P02의 ST-0003, 성향 비슷]</span><br>세일 충동구매 → 반대 / 금방 질림 → 쓸모가 금방 끝남<br><span class="m">[지시] 본인 가치로 판단하고, 빌린 근거는 참고만 할 것. 본인 말투로 답할 것.</span></div></div></div><div class="vdown"></div>'+
- '<div class="vstep"><div class="n">6</div><div><h4>답이 나온 뒤</h4><p>트윈의 답을 같은 추출기로 다시 뽑아 본인 관계도와 맞대어 봅니다. 이 부분은 시스템 구조 페이지의 평가 단계에 해당합니다.</p></div></div>'+
+ '<div class="prompt"><span class="h">[본인 · P01의 ST-0001]</span><br>가치: 안전 — "오래가는 것"<br>입장: 유행하는 옷 → 반대 (근거: 한철 지나면 못 입음)<br><span class="b">[빌린 근거 · P02의 ST-0003, 성향 비슷]</span><br>세일 충동구매 → 반대 / 금방 질림 → 쓸모가 금방 끝남<br><span class="h">[말투 메모 · P01]</span><br>짧고 단정하게, 존댓말, 결론부터<br><span class="m">[지시] 본인 가치로 판단하고, 빌린 근거는 참고만 할 것. 일화는 본인 기록에 있는 것만 쓸 것. 본인 말투로 답할 것.</span></div></div></div><div class="vdown"></div>'+
+ '<div class="vstep"><div class="n">6</div><div><h4>트윈의 답 (예시)</h4><p>위 재료를 받은 트윈(O1)의 답입니다. 비교를 위해 기본 소개만 받은 트윈(B0)의 답도 함께 둡니다. 두 답 모두 설명용으로 지어낸 것입니다.</p><div class="dec" style="margin-top:8px"><div class="who"><span class="dot d1"></span> P01의 트윈 · O1 (관계도 근거)</div><div class="quote">한정판이요? <span class="hl hl-s">저는 잘 안 사요</span>. 지금은 귀해 보여도 <span class="hl hl-a">한철이잖아요</span>. 그때 지나면 신발장에 들어가서 <span class="hl hl-c">결국 안 신게 돼요</span>. 저는 그 돈이면 <span class="hl hl-v">오래 신을 수 있는</span> 좋은 신발 하나를 사겠어요.</div></div><div class="dec"><div class="who" style="color:#9a9da6">비교 · B0 (기본 소개만)</div><div class="quote" style="color:#4a4d55">한정판 운동화 좋죠! 저도 젊을 때 파리에서 한정판 구두를 사서 아직도 아껴 신어요. 특별한 물건은 삶을 즐겁게 해 주니까요.</div></div></div></div><div class="vdown"></div>'+
+ '<div class="vstep"><div class="n">7</div><div><h4>같은 추출기로 다시 뽑아 맞대기</h4><p>트윈 답도 발화와 똑같이 입장 상자로 분해한 뒤, 칸마다 어디서 왔는지와 지어낸 것이 있는지 봅니다.</p><table class="mini" style="margin-top:8px"><tr><th>칸</th><th>O1 답에서 뽑힌 것</th><th>어디서 왔나</th><th>B0 답에서 뽑힌 것</th></tr><tr><td>대상</td><td>한정판 운동화</td><td>질문</td><td>한정판 운동화</td></tr><tr><td>찬반</td><td>반대</td><td>본인 ST-0001(유행하는 옷 · 반대)과 같은 방향</td><td>찬성 <span style="color:#c0392b;font-weight:700">✕</span></td></tr><tr><td>특징 A</td><td>'+L2(I('C04-01'),'한철이잖아요')+'</td><td>본인 ST-0001과 P02 ST-0003이 함께 가리키는 점</td><td class="dx">없음</td></tr><tr><td>결과 C</td><td>'+L2(Ic('C05-01'),'결국 안 신게 돼요')+'</td><td>본인 ST-0001과 P02 ST-0003이 함께 가리키는 점</td><td class="dx">없음</td></tr><tr><td>가치 V</td><td>'+V('C06-06','안전','오래 신을 수 있는','')+'</td><td>본인 ST-0001 (빌리지 않음)</td><td><span class="vid">C06-03 쾌락</span> <span style="color:#c0392b;font-weight:700">✕</span> 본인 기록에 없음</td></tr><tr><td>일화</td><td>없음</td><td>지어낸 일화 0</td><td>"파리에서 산 한정판 구두" <span style="color:#c0392b;font-weight:700">✕</span> 근거 없는 일화 1</td></tr></table><p style="margin-top:8px">O1의 답은 모든 칸이 본인 상자나 공유 점으로 거슬러 올라갑니다. B0는 찬반이 반대로 가고, 본인이 말한 적 없는 가치와 일화를 지어냈습니다. 실제 평가는 본인이 나중에 같은 질문에 한 답(Holdout)을 같은 방식으로 뽑아, 찬반 일치 · 특징·결과·가치 겹침 · 근거 없는 일화를 셉니다(06 파일럿 비교 페이지의 지표).</p></div></div>'+
  '</div>';
 
 const D0='<table class="cmp" style="margin-top:0"><tr><th></th><th class="hr">Etudo &amp; Yoon</th><th class="hm">우리 연구</th></tr>'+
@@ -448,8 +449,8 @@ const S=[
   pts:['상자는 사람마다, 점은 공유: P01의 ST-0001과 P02의 ST-0003이 같은 "일시성" 점을 가리킴 → 그래서 두 사람이 이어짐','칸의 종류는 ACV 이론에서 미리 정함 — 이 단계에서 새로 생기는 것은 점(클래스): 클래스표에 ID 행이 생기고 상자의 글자가 그 ID로 바뀜','빈칸은 칸을 비워 둘 뿐, 억지로 채우지 않음','입장이 바뀌면 상자와 상자를 revises로 이음 (선으로는 불가능했던 것)','사람과 무관한 클래스 위계(일시성 ⊂ Attribute, 안전 ⊂ Value)는 상자 없이 그냥 선'],
   ref:'"포위 주장"을 상자 Israel_besieges_WestBank로 만들고 hasDomain(Israel) · hasRange(West Bank) · hasFrame(진단) · hasClaimant(PFLP) 네 칸을 뽑았습니다. 그 뒤 OWL로 쓰고 Pellet으로 검사했습니다.',ids:['C13 Stance','R11–R19','R23 label','A02','A03','A05','A15','A16','A18','ID 규칙']},
  {t:'6. 새 질문에 쓰기',p:'기록에 없는 질문이 들어오면, 본인 관계도에서 쓸 수 있는 것을 먼저 꺼내고, 모자란 근거는 같은 점을 가리키는 비슷한 사람의 입장 상자에서 빌립니다.',d:D6,
-  pts:['빌린 근거는 "빌린 것"으로 표시해서 LLM에 줌','상자째 빌리므로 근거 발화가 함께 따라옴','일화와 추론 상자는 빌리지 않음','이 단계가 키 논문에는 없는 우리 연구의 고유 부분'],
-  ref:'채운 온톨로지로 새 글이 이념과 얼마나 공명하는지 점수를 매겼습니다(FRDS). 다른 대상의 근거를 빌려 답을 만들지는 않았습니다.',ids:['A07','A10']}
+  pts:['빌린 근거는 "빌린 것"으로 표시해서 LLM에 줌','트윈 답도 같은 추출기로 다시 뽑아, 칸마다 본인 상자 · 공유 점 중 어디서 왔는지와 지어낸 일화가 있는지 확인','상자째 빌리므로 근거 발화가 함께 따라옴','일화와 추론 상자는 빌리지 않음','이 단계가 키 논문에는 없는 우리 연구의 고유 부분'],
+  ref:'채운 온톨로지로 새 글이 이념과 얼마나 공명하는지 점수를 매겼습니다(FRDS). 다른 대상의 근거를 빌려 답을 만들지는 않았습니다.',ids:['A07','A10','C04-01 일시성','C05-01 쓸모가 끝남','C06-06 안전']}
 ];
 
 let step=0;
