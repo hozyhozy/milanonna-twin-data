@@ -64,7 +64,10 @@ def main():
     sch = Counter(x for b in st for x in b["schwartz"])
     eff = Counter(b["valueEffect"] for b in st if b["hasValue"])
     L += ["## 3. 근거 등급 · 질문 상황 · 가치", "",
-          "- 근거 등급: " + ", ".join(f"{k} {pct(v, len(st))}" for k, v in ev.most_common()),
+          "- 근거 등급(찬반): " + ", ".join(f"{k} {pct(v, len(st))}" for k, v in ev.most_common()),
+          "- 근거 등급(가치): " + ", ".join(f"{k} {v}" for k, v in Counter(b.get('valueEvidence') for b in st if b['hasValue']).most_common()),
+          "- 특질 단서(상위): " + ", ".join(f"{k}({v})" for k, v in Counter(t for s in g['statements'].values() for t in s.get('trait_cues', [])).most_common(10)),
+          f"- 교정본으로 추출한 발화: {sum(1 for r in recs if r.get('cleaned'))}/{ns}",
           "- 질문 상황: " + ", ".join(f"{k} {v}" for k, v in sit.most_common()),
           "- Schwartz 칸: " + ", ".join(f"{k} {v}" for k, v in sch.most_common()),
           "- 가치 방향: " + ", ".join(f"{k} {v}" for k, v in eff.items()),

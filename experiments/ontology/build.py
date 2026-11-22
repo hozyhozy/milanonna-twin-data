@@ -23,7 +23,8 @@ def build(recs):
         holder = sid.split("-")[0]
         statements[sid] = {"item_id": r["item_id"], "split": r["split"], "year": r.get("year"),
                            "question": r["question"], "answer": r["answer"], "situation": ext["situation"],
-                           "style": ext.get("style", ""), "video_id": r["video_id"]}
+                           "style": ext.get("style", ""), "video_id": r["video_id"], "type": r.get("type"),
+                           "trait_cues": ext.get("trait_cues", [])}
         for s in ext["stances"]:
             n_st += 1
             bid = f"ST-{n_st:04d}"
@@ -35,6 +36,7 @@ def build(recs):
                  "schwartz": s["value"]["schwartz"] if s["value"] else [],
                  "valueEffect": s["value"]["effect"] if s["value"] else None,
                  "inSituation": ext["situation"], "evidencedBy": [sid], "evidence": s["evidence"],
+                 "valueEvidence": (s["value"] or {}).get("evidence"),
                  "phrases": {"topic": s["topic_phrase"],
                              "attribute": s["attribute"]["phrase"] if s["attribute"] else None,
                              "consequence": s["consequence"]["phrase"] if s["consequence"] else None,
@@ -81,7 +83,7 @@ def export_sheets(g, recs, d):
                          "" if b["grounded"]["consequence"] else "구절이 원문과 다름"])
         if b["hasValue"]:
             rows.append([sid, b["id"], b["phrases"]["value"], f"가치 V ({b['valueEffect']})", b["hasValue"], "",
-                         ", ".join(b["schwartz"]), ev, "모델", "" if b["grounded"]["value"] else "구절이 원문과 다름"])
+                         ", ".join(b["schwartz"]), b.get("valueEvidence") or ev, "모델", "" if b["grounded"]["value"] else "구절이 원문과 다름"])
     write_csv(os.path.join(d, "sheet_코딩.csv"),
               ["발화 ID", "상자 ID", "구절 (원문 그대로)", "칸", "세부 꼬리표", "새로/재사용", "Schwartz 칸", "근거 등급", "코더", "메모"], rows)
     tag_rows = []

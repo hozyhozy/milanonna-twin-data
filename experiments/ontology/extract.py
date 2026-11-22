@@ -10,7 +10,8 @@ MOCK_LLM=1 ... 로 API 없이 형식 점검.
 """
 import argparse, json, os
 from common import (load_split, video_index, statement_id, run_dir, read_jsonl, TagBook, EXTRACT_SYSTEM,
-                    extract_prompt, parse_json, mock_extract, SITUATIONS, POLARITY, EVIDENCE, EFFECT, SCHWARTZ_OK)
+                    extract_prompt, parse_json, mock_extract, load_clean, SITUATIONS, UNKNOWN_SITUATION,
+                    PROMPT_VERSION, POLARITY, EVIDENCE, EFFECT, SCHWARTZ_OK)
 
 
 def clean(ext, answer):
@@ -23,8 +24,9 @@ def clean(ext, answer):
     for s in ext.get("stances") or []:
         if not isinstance(s, dict) or not s.get("topic"):
             continue
+        ev_p = s.get("evidence_polarity") or s.get("evidence")
         st = {"topic": str(s.get("topic")).strip(), "polarity": s.get("polarity"),
-              "evidence": s.get("evidence") if s.get("evidence") in EVIDENCE else "추론",
+              "evidence": ev_p if ev_p in EVIDENCE else "추론",
               "topic_phrase": s.get("topic_phrase") or "", "topic_grounded": g(s.get("topic_phrase"))}
         for k in ["attribute", "consequence"]:
             v = s.get(k)
@@ -34,14 +36,17 @@ def clean(ext, answer):
         if isinstance(v, dict) and v.get("words"):
             sch = v.get("schwartz") or []
             sch = [sch] if isinstance(sch, str) else list(sch)
+            ev_v = s.get("evidence_value")
             st["value"] = {"words": str(v.get("words")).strip(), "schwartz": sch, "effect": v.get("effect"),
-                           "phrase": v.get("phrase") or "", "grounded": g(v.get("phrase"))}
+                           "phrase": v.get("phrase") or "", "grounded": g(v.get("phrase")),
+                           "evidence": ev_v if ev_v in EVIDENCE else "추론"}
         else:
             st["value"] = None
         out["stances"].append(st)
     for e in ext.get("episodes") or []:
         if isinstance(e, dict) and e.get("label"):
             out["episodes"].append({"label": e["label"], "phrase": e.get("phrase") or "", "grounded": g(e.get("phrase"))})
+    out["trait_cues"] = [str(t) for t in (ext.get("trait_cues") or []) if t]
     return out
 
 
@@ -79,7 +84,8 @@ def main():
     ap.add_argument("--run", default="pilot1")
     ap.add_argument("--split", default="Train")
     ap.add_argument("--limit", type=int, default=0, help="앞에서 N발화만 (0=전체)")
-    ap.add_argument("--tags", default="", help="시작 꼬리표 목록 CSV (코딩 시트 '꼬리표' 탭)")
+    ap.add_argument("--tags", default="", help="시작 꼬리표 목록 CSV (코딩 시트 '꼬리표' 탭 또는 merge.py 결과)")
+    ap.add_argument("--clean", action="store_true", help="clean.py 교정본이 있으면 그걸로 추출")
     a = ap.parse_args()
 
     d = run_dir(a.run)
@@ -95,6 +101,7 @@ def main():
     for r in done.values():          # 이어서 실행: 이미 뽑은 꼬리표를 목록에 복원
         grow(tb, r["ext"])
     llm = get_llm()
+    clean = load_clean() if a.clean else {}
 
     n_new = 0
     with open(out_p, "a", encoding="utf-8") as f:
@@ -102,11 +109,15 @@ def main():
             sid = statement_id(x, vidx)
             if sid in done:
                 continue
-            ext, meta = extract_one(llm, x["question"], x["answer"], tb, seed=0)
+            text = clean.get(x["id"], x["answer"])
+            ext, meta = extract_one(llm, x["question"], text, tb, seed=0)
+            if x.get("type") == "derived":          # 원래 질문이 없는 문항: 상황을 알 수 없음
+                ext["situation"] = UNKNOWN_SITUATION
             grow(tb, ext)
             rec = {"statement_id": sid, "item_id": x["id"], "video_id": x["video_id"], "split": a.split,
                    "year": x.get("year"), "topic_label": x.get("topic"), "type": x.get("type"),
-                   "question": x["question"], "answer": x["answer"], "ext": ext, "model": meta.get("model")}
+                   "question": x["question"], "answer": text, "answer_raw": x["answer"], "cleaned": x["id"] in clean,
+                   "ext": ext, "model": meta.get("model"), "prompt": PROMPT_VERSION}
             f.write(json.dumps(rec, ensure_ascii=False) + "\n"); f.flush()
             n_new += 1
             print(f"[{i+1}/{len(items)}] {sid} 입장 {len(ext['stances'])}개 · 일화 {len(ext['episodes'])}개 · {ext['situation']}")

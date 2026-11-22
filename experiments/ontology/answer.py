@@ -10,7 +10,7 @@ python3 experiments/ontology/answer.py --run pilot1 --n 30 --k 8
 """
 import argparse, json, os
 from collections import Counter
-from common import ROOT, run_dir, load_split, PERSON_NAME
+from common import ROOT, run_dir, load_split, load_clean, PERSON_NAME
 
 RULE = "\n\n[답하는 법]\n아래 근거를 참고하되 질문에 맞게 새로 답하세요. 근거에 없는 구체적인 일화(때·곳·사건)는 지어내지 마세요."
 
@@ -44,6 +44,7 @@ def main():
     ap.add_argument("--n", type=int, default=30, help="Holdout 문항 수 (holdout50.json 앞에서부터)")
     ap.add_argument("--k", type=int, default=8)
     ap.add_argument("--conds", default="B0,B1,O1")
+    ap.add_argument("--clean", action="store_true", help="B1 원문 발췌에 교정본 사용")
     a = ap.parse_args()
     d = run_dir(a.run)
     g = json.load(open(os.path.join(d, "graph.json"), encoding="utf-8"))
@@ -53,6 +54,10 @@ def main():
 
     # B1: Train 원문 발췌
     train = load_split("Train")
+    if a.clean:
+        cl = load_clean()
+        for x in train:
+            x["answer"] = cl.get(x["id"], x["answer"])
     sim_t = tfidf_rank(qs, [x["question"] + " " + x["answer"][:200] for x in train])
     # O1: 관계도 상자
     boxes = g["boxes"]

@@ -6,7 +6,7 @@ python3 experiments/ontology/check.py --run pilot1
 """
 import argparse, json, os
 from collections import Counter, defaultdict
-from common import run_dir, write_csv, SITUATIONS, POLARITY, EVIDENCE, EFFECT, SCHWARTZ_OK
+from common import run_dir, write_csv, SITUATIONS, UNKNOWN_SITUATION, POLARITY, EVIDENCE, EFFECT, SCHWARTZ_OK
 
 AXIOMS = {
     "A02": "Stance는 hasHolder·hasTopic·hasPolarity를 정확히 하나씩 가진다",
@@ -15,7 +15,8 @@ AXIOMS = {
     "A05": "모든 상자는 evidencedBy로 Statement 하나 이상에 닿는다",
     "A06": "TraitClaim은 상황 2종 이상 — 이번 파일럿은 특질을 추출하지 않음(해당 없음)",
     "A07": "Episode는 본인 Statement에만 근거한다",
-    "A09": "Situation은 정해진 목록 안",
+    "A09": "Situation은 정해진 목록 안 (만든 질문은 '알 수 없음')",
+    "A10": "(보고) 가치 근거가 '추론'인 상자 — 비슷한 사람 찾기에서 제외될 상자 수",
     "A11": "뒤 시기(Holdout·Retest) Statement는 관계도에 들어갈 수 없다",
     "A12": "같은 사람·같은 대상에 찬반이 다른 Stance가 있으면 revises로 이어져야 한다 (후보로 보고)",
     "A13": "아래층 클래스(세부 꼬리표)는 2명 이상 공유해야 한다 (1명 자료에서는 모두 '대기')",
@@ -35,7 +36,7 @@ def check(g):
         if c > 1:
             V.append(("A17", i, f"ID {c}번 사용"))
     for sid, s in st.items():
-        if s["situation"] not in SITUATIONS:
+        if s["situation"] not in SITUATIONS + [UNKNOWN_SITUATION]:
             V.append(("A09", sid, s["situation"]))
         if s["split"] != "Train":
             V.append(("A11", sid, f"{s['split']} 발화가 관계도에 있음"))
@@ -65,6 +66,10 @@ def check(g):
                 V.append(("A04", bid, f"Schwartz {sch}"))
         if b.get("evidence") not in EVIDENCE:
             V.append(("E1", bid, str(b.get("evidence"))))
+        if b.get("hasValue") and b.get("valueEvidence") not in EVIDENCE:
+            V.append(("E1", bid, f"가치 근거 {b.get('valueEvidence')}"))
+        if b.get("hasValue") and b.get("valueEvidence") == "추론":
+            V.append(("A10", bid, "가치 근거가 추론"))
         for k, ok in (b.get("grounded") or {}).items():
             if ok is False:
                 V.append(("G1", bid, f"{k} 구절이 원문에 없음"))

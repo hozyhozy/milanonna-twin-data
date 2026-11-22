@@ -2,7 +2,39 @@
 
 설계 기준: 인물 온톨로지 설계표 v0.3 · 예시 페이지 "꼬리표에서 관계도까지". 저장소 루트에서 실행합니다. 키는 기존과 같이 `experiments/.env`의 `DEEPSEEK_API_KEY`.
 
-## 한 번에
+## v2 (2026-11-22) — 1차 결과 반영
+
+| 바뀐 것 | 이유 (pilot1) |
+|---|---|
+| A·C·V 경계: 계기 사건 → 일화, 본인 성격 → 특질 단서(trait_cues), 말 안 했으면 비움 | A 칸에 '노래에 반함', '책임감' 같은 계기·성격이 들어감 |
+| 가치 칸을 정리된 말(words)과 원문 구절(phrase)로 분리 | 자막 오류 문장이 가치 꼬리표가 됨 |
+| 근거 등급을 찬반·가치에 따로 | 98%가 '직접 진술'로 나와 구분이 안 됨 |
+| 만든 질문(derived)은 질문 상황 '알 수 없음' | 원래 질문이 없어 상황을 알 수 없음 |
+| 말투 메모에서 자막 인식 오류 제외 | 트윈이 '예 아,' 같은 인식 오류를 말투로 흉내 냄 |
+| clean.py: 자막 교정(선택, 원문은 보존) | 자막 오류 |
+| merge.py: 꼬리표 합치기(코드북) | 꼬리표가 수렴하지 않음(한 번만 쓰인 것 74~88%) |
+| compare.py: 대상이 같은 입장끼리 찬반 비교, 일화를 '본인 일화 재사용'과 '근거 없는 일화'로 구분, Retest 천장 | 첫 입장끼리만 비교, 일화 지표가 재사용과 지어냄을 구분 못 함 |
+
+### v2 실행 순서
+
+```
+# 1) 교정 + 추출 + 비교 (pilot1과 같은 30발화·20문항)
+.venv/bin/python experiments/ontology/run_pilot.py --run pilot2 --limit 30 --n 20 --clean
+
+# 2) 꼬리표 합치기 제안 → CSV를 열어 고침(묶음 쪼개기·합치기, 대표 이름, 상태)
+.venv/bin/python experiments/ontology/merge.py --run pilot2
+
+# 3) 고친 CSV를 적용해 새 run으로 → 관계도·공리·통계 다시
+.venv/bin/python experiments/ontology/merge.py --run pilot2 --apply experiments/runs/ontology/pilot2/merge_proposal.csv --to pilot2m
+.venv/bin/python experiments/ontology/run_pilot.py --run pilot2m --stages build,check,stats
+
+# 4) 다음 추출부터는 확정한 코드북에서 고르게
+.venv/bin/python experiments/ontology/run_pilot.py --run pilot3 --limit 0 --n 50 --clean --tags experiments/runs/ontology/pilot2/merge_proposal.csv
+```
+
+교정본은 `experiments/runs/ontology/_clean/`에 한 번만 만들어 모든 run이 같이 씁니다. 유사도가 0.75 미만인 교정은 '고쳐 쓴 것'으로 보고 버립니다(원문 사용).
+
+## 한 번에 (v1)
 
 ```
 # API 없이 형식만 점검
@@ -21,12 +53,14 @@ python3 experiments/ontology/run_pilot.py --run pilot1 --limit 0 --n 50
 
 | 단계 | 스크립트 | 하는 일 | 출력 |
 |---|---|---|---|
+| ⓪ 교정 (선택) | clean.py | 자동 자막의 인식 오류만 최소로 고침 | _clean/<split>.jsonl |
 | ① 추출 | extract.py | 발화를 질문 상황·입장·특징·결과·가치·근거 등급·일화로 분해. 꼬리표 목록은 읽으며 자람 | extract.jsonl, tags.json |
 | ② 상자 | build.py | 입장 상자 ST-0001…, 일화 상자 EP-0001…, 공유 점(대상·특징·결과·가치) | graph.json, sheet_*.csv |
 | ③ 공리 | check.py | A02·A03·A04·A05·A09·A11·A12·A13·A16·A17·A18 + 구절 원문 일치(G1) | check.md, violations.csv |
 | ④ 통계 | stats.py | 칸 채움 비율, 꼬리표 수렴 곡선, 근거 등급, 역량 질문 자동 점검 | stats.md, tag_growth.csv |
 | ⑤ 답변 | answer.py | Holdout 질문에 B0(소개만)·B1(원문 발췌)·O1(관계도 근거)로 트윈 답 생성 | answers.jsonl, prompts_sample.md |
-| ⑥ 비교 | compare.py | 실제 답과 트윈 답을 같은 추출기로 분해해 찬반·특징·가치·일화를 맞댐 | compare.md |
+| ⑥ 비교 | compare.py | 실제 답과 트윈 답을 같은 추출기로 분해해 찬반·특징·가치·일화를 맞댐, Retest 천장 | compare.md |
+| 합치기 | merge.py | 꼬리표를 뜻이 같은 것끼리 묶어 코드북 제안 → 사람이 고쳐 적용 | merge_proposal.csv |
 
 결과는 `experiments/runs/ontology/<run>/`에 쌓입니다.
 

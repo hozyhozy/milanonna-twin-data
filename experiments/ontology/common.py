@@ -14,6 +14,7 @@ PERSON_NAME = "노라"   # 가명본의 이름
 
 SITUATIONS = ["조언 요청", "비판·반론 받음", "회상", "찬반 묻기", "칭찬 받음",
               "취향·습관 묻기", "근황·일상 대화", "기타"]
+UNKNOWN_SITUATION = "알 수 없음"   # 원래 질문이 없는 문항(derived)
 SCHWARTZ = {
     "자기주도": "스스로 생각하고 선택하고 만들고 탐구하는 독립성",
     "자극": "삶의 신남, 새로움, 도전",
@@ -55,6 +56,22 @@ def statement_id(x, vidx):
     m = re.search(r"_q(\d+)$", x["id"])
     seq = int(m.group(1)) if m else 0
     return f"{x.get('persona_code', PERSON)}-{vidx[x['video_id']]}-{seq:03d}"
+
+
+CLEAN_DIR = os.path.join(RUNS, "_clean")
+
+
+def load_clean():
+    """clean.py 가 만든 교정본 {item_id: 교정 답}. 거절된 교정은 빠져 있다."""
+    out = {}
+    for split in ["Train", "Holdout", "Retest"]:
+        p = os.path.join(CLEAN_DIR, f"{split}.jsonl")
+        if os.path.exists(p):
+            for l in open(p, encoding="utf-8"):
+                r = json.loads(l)
+                if r.get("accepted"):
+                    out[r["id"]] = r["clean"]
+    return out
 
 
 def run_dir(run):
@@ -119,10 +136,19 @@ class TagBook:
         return {k: dict(sorted(v.items(), key=lambda t: -t[1])) for k, v in self.tags.items()}
 
 
-# ---------------- 추출 프롬프트 ----------------
+# ---------------- 추출 프롬프트 (v2) ----------------
+# v1 → v2 (2026-11-22, 파일럿 1차 결과 반영)
+#  - A·C·V의 뜻은 그대로 두고 경계를 분명히: 계기 사건 → 일화, 본인 성격 → 특질 단서(trait_cues), 말 안 했으면 비움
+#  - 가치 칸: 정리된 짧은 말(words)과 원문 구절(phrase)을 분리
+#  - 근거 등급을 찬반(evidence_polarity)과 가치(evidence_value)에 따로
+#  - 말투 메모: 자막 인식 오류는 말투가 아님
+#  - 만든 질문(derived)은 질문 상황을 '알 수 없음'으로 (코드에서 고정)
+PROMPT_VERSION = "v2"
+
 EXTRACT_SYSTEM = """너는 인터뷰 발화를 인물 온톨로지의 칸으로 분해하는 코더다.
 분류가 아니라 분해다: 한 답에서 입장이 여러 개 나올 수 있고, 말하지 않은 칸은 null로 둔다.
-본인이 말하지 않은 이유·가치를 추측으로 채우지 않는다. 반드시 JSON 하나로만 답한다."""
+본인이 말하지 않은 이유·가치를 추측으로 채우지 않는다. 반드시 JSON 하나로만 답한다.
+답은 자동 자막이라 틀린 단어·끊긴 말이 섞여 있다. 뜻을 읽되, 구절은 원문 그대로 복사한다."""
 
 EXTRACT_USER = """[질문]
 {question}
@@ -138,23 +164,33 @@ EXTRACT_USER = """[질문]
 [지금까지의 세부 꼬리표 목록 — 같은 뜻이면 이 말을 그대로 쓰고, 없을 때만 새로 만든다]
 {tags}
 
+칸의 뜻 (수단-목적 사슬: 대상 → A → C → V)
+- A 특징: "그것(대상)이 어떤 것이라고 보나?" 대상의 성질이나 그 선택에 대한 규정.
+    물건이면 "한철이다", "손이 많이 간다" / 선택·행동이면 "남들이 안 가는 길", "늦어도 할 수 있는 일"
+    A에 넣지 않는 것: 계기가 된 사건(→ episodes), 본인의 성격(→ trait_cues), 본인의 감정·상태
+- C 결과: "그래서 나에게 무엇이 생기나?" 그 대상·특징 때문에 본인에게 생기는 일. 예: "오래 못 입는다", "후회가 줄어든다"
+- V 가치: "그게 왜 중요한가?" 사슬의 끝. words는 정리된 짧은 말(10자 안팎, 자막 오류 없이), phrase는 원문 구절.
+
 규칙
 1. situation: 이 질문이 만든 상황. 목록에서 하나.
 2. stances: 답에서 '무엇에 대해 찬성·반대하는지'가 드러나는 입장마다 하나. 없으면 빈 목록.
-   - topic: 입장의 대상, 짧은 명사구 (예: "유행하는 옷")
+   - topic: 입장의 대상, 짧은 명사구
    - polarity: 찬성 | 반대 | 조건부
-   - attribute: 대상에 대해 본 특징. {{"tag": 꼬리표, "phrase": 답의 원문 구절}} — 말하지 않았으면 null
-   - consequence: 그 특징이 가져오는 결과·이유 ("그래서 ~하다"). 같은 형식, 없으면 null
-   - value: 결국 지키려는 것. {{"words": 본인의 말, "schwartz": 10칸 중 1~2개 목록, "effect": "지킴" 또는 "해침", "phrase": 원문 구절}}
-            effect는 '대상이 그 가치를 지키는지 해치는지'. 본인이 이유를 말하지 않았으면 value 전체를 null.
-   - evidence: 직접 진술 | 관찰 | 추론 (찬반을 본인이 말했으면 직접 진술, 말투로만 보이면 관찰, 짐작이면 추론)
+   - attribute: {{"tag": 꼬리표, "phrase": 원문 구절}} 또는 null
+   - consequence: {{"tag": 꼬리표, "phrase": 원문 구절}} 또는 null
+   - value: {{"words": 정리된 말, "schwartz": 10칸 중 1~2개, "effect": "지킴" 또는 "해침", "phrase": 원문 구절}} 또는 null
+            effect는 '대상이 그 가치를 지키는지 해치는지'. 이유가 전혀 없으면 value 전체를 null.
+   - evidence_polarity: 찬반의 근거 — 직접 진술(본인이 찬반을 말함) | 관찰(말투·태도로만 보임) | 추론(짐작)
+   - evidence_value: 가치의 근거 — 직접 진술(본인이 '왜 중요한지'를 말함) | 추론(답에서 짐작) | value가 null이면 null
+     Schwartz 칸을 고른 것 자체는 해석이므로, 본인이 이유를 분명히 말하지 않았다면 '추론'이다.
    - topic_phrase: 대상과 찬반이 드러난 원문 구절
-3. episodes: 본인이 겪은 구체적인 일(때·곳·사건이 있는 것)마다 {{"label": 짧은 이름, "phrase": 원문 구절}}. 없으면 빈 목록.
-4. style: 이 답의 말투 한 줄 (길이, 단정성, 부르는 말 등).
-5. 모든 phrase는 [답]에 실제로 있는 문자열을 그대로 복사한다. 꼬리표는 10자 안팎의 일반적인 말로.
+3. episodes: 본인이 겪은 구체적인 일(때·곳·사건이 있는 것)마다 {{"label": 짧은 이름, "phrase": 원문 구절}}. 계기가 된 사건도 여기.
+4. trait_cues: 답에서 드러난 본인의 성격 단서(예: "책임감", "실행력") 목록. 없으면 빈 목록.
+5. style: 말투 한 줄 — 어휘, 문장 길이, 단정성, 부르는 말만. 자막 인식 오류(끊김, 틀린 단어, 반복)는 말투로 적지 않는다.
+6. 모든 phrase는 [답]에 실제로 있는 문자열을 그대로 복사한다. 꼬리표는 10자 안팎의 일반적인 말로.
 
 JSON 형식:
-{{"situation": "...", "stances": [{{"topic": "...", "polarity": "...", "attribute": {{"tag": "...", "phrase": "..."}} 또는 null, "consequence": {{"tag": "...", "phrase": "..."}} 또는 null, "value": {{"words": "...", "schwartz": ["..."], "effect": "...", "phrase": "..."}} 또는 null, "evidence": "...", "topic_phrase": "..."}}], "episodes": [], "style": "..."}}"""
+{{"situation": "...", "stances": [{{"topic": "...", "polarity": "...", "attribute": {{"tag": "...", "phrase": "..."}} 또는 null, "consequence": {{"tag": "...", "phrase": "..."}} 또는 null, "value": {{"words": "...", "schwartz": ["..."], "effect": "...", "phrase": "..."}} 또는 null, "evidence_polarity": "...", "evidence_value": "..." 또는 null, "topic_phrase": "..."}}], "episodes": [], "trait_cues": [], "style": "..."}}"""
 
 
 def extract_prompt(question, answer, tagbook):
@@ -189,6 +225,6 @@ def mock_extract(question, answer, seed=0):
             "attribute": r.choice([None, {"tag": r.choice(["오래가지 않는다", "남과 같아진다", "정성이 든다", "비싸다"]), "phrase": ph()}]),
             "consequence": r.choice([None, {"tag": r.choice(["쓸모가 금방 끝난다", "마음이 편하다", "내가 드러나지 않는다"]), "phrase": ph()}]),
             "value": r.choice([None, None, {"words": r.choice(["오래가는 것", "나답게", "나누는 삶"]), "schwartz": [r.choice(list(SCHWARTZ))], "effect": r.choice(EFFECT), "phrase": ph()}]),
-            "evidence": r.choice(EVIDENCE), "topic_phrase": ph()})
+            "evidence_polarity": r.choice(EVIDENCE), "evidence_value": r.choice(["직접 진술", "추론"]), "topic_phrase": ph()})
     eps = [{"label": "모의 일화", "phrase": ph()}] if r.random() < 0.2 else []
-    return {"situation": r.choice(SITUATIONS), "stances": stances, "episodes": eps, "style": "모의 말투"}
+    return {"situation": r.choice(SITUATIONS), "stances": stances, "episodes": eps, "trait_cues": ["모의 성격"], "style": "모의 말투"}
