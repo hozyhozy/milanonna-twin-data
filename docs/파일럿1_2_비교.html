@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>온톨로지 파일럿 1·2: 추출 규칙을 고쳤을 때</title>
+<style>
+
+:root {
+  --bg: #f6f7f9; --raised: #ffffff; --sunken: #eceef1; --line: #e1e4e8; --line-strong: #7f838b;
+  --ink: #1c1e22; --ink2: #55585f; --ink3: #5c6068;
+  --action: #0a73b5; --action-soft: #e8f4fc; --on-action: #ffffff;
+  --brand-soft: #e4f5fe;
+  --ok: #1b7446; --ok-soft: #e6f6ec; --warn: #9a5b00; --warn-soft: #fff3dc; --bad: #c62828; --bad-soft: #fdeaea;
+  --sans: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  --mono: "SF Mono", Menlo, Consolas, "D2Coding", monospace;
+  --r-sm: 6px; --r-md: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121417; --raised: #1a1d21; --sunken: #23272c; --line: #2d3238; --line-strong: #6f757e;
+  --ink: #e8eaed; --ink2: #b3b8bf; --ink3: #979da5;
+  --action: #5db8f0; --action-soft: #13324a; --on-action: #0c1116;
+  --brand-soft: #10354a;
+  --ok: #63cf92; --ok-soft: #133022; --warn: #e3a84d; --warn-soft: #3a2a10; --bad: #f28383; --bad-soft: #3d1818;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121417; --raised: #1a1d21; --sunken: #23272c; --line: #2d3238; --line-strong: #6f757e;
+  --ink: #e8eaed; --ink2: #b3b8bf; --ink3: #979da5;
+  --action: #5db8f0; --action-soft: #13324a; --on-action: #0c1116;
+  --brand-soft: #10354a;
+  --ok: #63cf92; --ok-soft: #133022; --warn: #e3a84d; --warn-soft: #3a2a10; --bad: #f28383; --bad-soft: #3d1818;
+  color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 64px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+a { color: var(--action); }
+:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+h1, h2, h3, h4 { text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 17px; font-weight: 600; }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+code { font-family: var(--mono); font-size: 0.86em; background: var(--sunken); padding: 1px 5px; border-radius: 4px; }
+.muted { color: var(--ink2); }
+.small { font-size: 13px; }
+
+.wrap { max-width: 1080px; margin: 0 auto; }
+header.top { padding-block: 40px 20px; display: grid; gap: 14px; }
+.eyebrow { font-size: 13px; color: var(--ink2); font-weight: 500; }
+.lead { font-size: 17px; color: var(--ink2); max-width: 760px; }
+.links { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; }
+nav.toc { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line);
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 8px max(16px, env(safe-area-inset-left, 0px)); }
+nav.toc .wrap { display: flex; gap: 16px; overflow-x: auto; font-size: 13px; scrollbar-width: none; }
+nav.toc a { color: var(--ink2); text-decoration: none; padding: 4px 0; white-space: nowrap; }
+nav.toc a:hover { color: var(--action); }
+
+section.sec { padding-block: 44px 8px; scroll-margin-top: 48px; }
+section.sec > .wrap { display: grid; gap: 18px; }
+.sec-head { display: grid; gap: 6px; }
+.prose { display: grid; gap: 12px; max-width: 760px; }
+
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raised); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+th { background: var(--sunken); font-weight: 500; font-size: 13px; color: var(--ink2); white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.rowh { font-weight: 600; white-space: nowrap; }
+td .sub { display: block; font-size: 12px; color: var(--ink3); font-weight: 400; }
+table.wide { min-width: 900px; }
+table.cmp td { min-width: 150px; }
+tr.grp td { background: var(--sunken); font-size: 12px; font-weight: 600; color: var(--ink2); padding-block: 6px; }
+
+.pill { display: inline-block; font-size: 11px; font-weight: 600; line-height: 18px; padding: 0 7px; border-radius: 999px; white-space: nowrap; margin-bottom: 4px; }
+.pill.same { background: var(--sunken); color: var(--ink2); }
+.pill.add { background: var(--ok-soft); color: var(--ok); }
+.pill.swap { background: var(--warn-soft); color: var(--warn); }
+.pill.none { background: transparent; color: var(--ink3); border: 1px dashed var(--line-strong); }
+.who { font-size: 11px; font-weight: 600; line-height: 18px; padding: 0 7px; border-radius: 999px; background: var(--sunken); color: var(--ink2); white-space: nowrap; }
+.who.llm { background: var(--action); color: var(--on-action); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink2); align-items: center; }
+.legend .pill { margin: 0; }
+
+.step { background: var(--raised); border: 1px solid var(--line); border-radius: var(--r-md); padding: 18px; display: grid; gap: 12px; min-width: 0; scroll-margin-top: 48px; }
+.step-h { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.step h4 { font-size: 14px; margin-top: 4px; }
+.step > p, .step > ul { max-width: 820px; }
+.io { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: start; }
+@media (max-width: 900px) { .io { grid-template-columns: minmax(0, 1fr); } }
+.io-box { display: grid; gap: 6px; min-width: 0; }
+.io-h { font-size: 12px; font-weight: 600; color: var(--ink2); }
+pre.code { margin: 0; background: var(--sunken); border-radius: var(--r-sm); padding: 10px 12px; font-family: var(--mono); font-size: 12px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 420px; overflow: auto; color: var(--ink); }
+.note { background: var(--action-soft); border-radius: var(--r-md); padding: 12px 14px; font-size: 14px; display: grid; gap: 6px; }
+.warnbox { background: var(--warn-soft); border-radius: var(--r-md); padding: 12px 14px; font-size: 14px; display: grid; gap: 6px; }
+details.prompt { border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 12px; display: grid; gap: 8px; background: var(--raised); }
+details.prompt[open] { padding-bottom: 12px; }
+details.prompt summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--action); }
+details.prompt > * + * { margin-top: 8px; }
+.callout { background: var(--sunken); border-radius: var(--r-md); padding: 14px 16px; display: grid; gap: 8px; font-size: 14px; }
+.cite { display: flex; gap: 8px; align-items: baseline; font-size: 13px; color: var(--ink2); line-height: 1.55; }
+.cite-k { flex: none; font-size: 11px; font-weight: 600; padding: 0 7px; line-height: 18px; border-radius: 999px; background: var(--brand-soft); color: var(--ink); }
+
+.trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 820px) { .trio { grid-template-columns: minmax(0, 1fr); } }
+.trio .card { background: var(--raised); border: 1px solid var(--line); border-radius: var(--r-md); padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.trio .card .k { font-size: 12px; font-weight: 600; color: var(--ink3); }
+.trio .card h3 { font-size: 16px; }
+.trio .card p { font-size: 14px; }
+.trio .card .res { font-size: 13px; color: var(--ink2); border-top: 1px solid var(--line); padding-top: 8px; }
+.hl { background: var(--warn-soft); border-radius: 3px; padding: 0 2px; }
+.good { color: var(--ok); font-weight: 600; }
+.badn { color: var(--bad); font-weight: 600; }
+</style>
+</head><body>
+<header class="top wrap">
+  <div class="eyebrow">밀라논나 트윈 · 온톨로지 파일럿 · 2026-11-22</div>
+  <h1>온톨로지 파일럿 1·2: 추출 규칙을 고쳤을 때</h1>
+  <p class="lead">P01의 Train 앞 30발화로 관계도를 만들고 Holdout 20문항에 트윈 답을 만들어, 실제 답과 같은 추출기로 맞대 본 두 실험입니다. 파일럿 1은 설계표 v0.3 그대로, 파일럿 2는 파일럿 1에서 드러난 문제에 맞춰 추출 규칙과 비교 지표를 바꿨습니다. 두 실험 모두 같은 30발화·20문항을 씁니다.</p>
+  <div class="links">
+    <a href="https://claude.ai/artifact/WbQNZtNgAGgf5eSwTMpuHp">꼬리표에서 관계도까지 (예시)</a>
+    <a href="https://claude.ai/artifact/4FWXcbo7yPxEjn729sZ9B2">인물 온톨로지 구조도</a>
+    <a href="https://claude.ai/artifact/7CyE5KuNq26ay2DQCMkzic">설계표 v0.3</a>
+    <a href="https://claude.ai/artifact/RW93Lnrq8vL7muqhaBZDKr">발화 코딩 표</a>
+  </div>
+</header>
+
+<nav class="toc" aria-label="목차"><div class="wrap">
+  <a href="#overview">1. 두 실험</a>
+  <a href="#pipeline">2. 단계별 변화</a>
+  <a href="#rules">3. 바뀐 추출 규칙</a>
+  <a href="#same">4. 같은 발화로 보기</a>
+  <a href="#numbers">5. 숫자 비교</a>
+  <a href="#twin">6. 트윈 답 보기</a>
+  <a href="#issues">7. 문제와 남은 질문</a>
+</div></nav>
+
+<!-- 1 -->
+<section class="sec" id="overview"><div class="wrap">
+  <div class="sec-head"><h2>1. 두 실험</h2>
+    <p class="muted">마지막 카드는 다음에 돌릴 실험입니다. 표의 마지막 칸이 다음 실험으로 넘어간 이유입니다.</p></div>
+  <div class="trio">
+    <div class="card">
+      <div class="k">파일럿 1 · 11/21 · 기준</div>
+      <h3>설계표 v0.3 그대로 추출</h3>
+      <p>발화를 입장·특징(A)·결과(C)·가치(V)·근거 등급·일화로 분해. 꼬리표 목록은 읽으며 자람. 자막 원문 그대로.</p>
+      <p class="res">분해 93%, 구절 원문 일치 98%, 공리 위반 0. 그러나 A 칸에 계기·성격이 섞이고, 꼬리표가 수렴하지 않고(단발 74~88%), 근거 등급 98%가 직접 진술.</p>
+    </div>
+    <div class="card">
+      <div class="k">파일럿 2 · 11/22 · 규칙 교체</div>
+      <h3>칸 경계를 좁히고 비교 지표를 고침</h3>
+      <p>계기 → 일화, 성격 → 특질 단서, 가치는 정리된 말과 원문 구절을 분리, 근거 등급을 찬반·가치에 따로. 비교는 대상 맞춘 찬반, 일화 재사용/근거 없음 구분, Retest 천장, 최빈 가치 기준선.</p>
+      <p class="res">가치 꼬리표 33개(단발 88%) → 16개(44%). 가치 근거 직접 23 · 추론 15로 구분됨. 특징 꼬리표는 여전히 수렴 안 함. 자막 교정은 코드 오류로 미적용.</p>
+    </div>
+    <div class="card">
+      <div class="k">파일럿 3 · 예정</div>
+      <h3>교정 + 코드북 + 전체 자료</h3>
+      <p>자막 교정 적용, Jee가 고친 코드북(merge_proposal.csv)에서 꼬리표를 고르게 하고, Train 381발화 · Holdout 50문항으로 확장.</p>
+      <p class="res">확인할 것: 특징 꼬리표 수렴, 일화 목록이 완전할 때의 '근거 없는 일화', 문항 수를 늘렸을 때 가치 겹침 차이가 유지되는지.</p>
+    </div>
+  </div>
+  <div class="tbl-wrap"><table class="wide">
+    <thead><tr><th>실험</th><th>확인하려던 것</th><th>방법</th><th>결과</th><th>그래서 바꾼 것</th></tr></thead>
+    <tbody>
+      <tr><td class="rowh">파일럿 1<span class="sub">11/21</span></td>
+        <td>설계표 v0.3의 칸으로 실제 인터뷰 발화가 쪼개지는가, 관계도 근거(O1)가 원문 발췌(B1)보다 나은가</td>
+        <td>Train 30발화 추출 → 입장 상자 56·일화 30 → 공리 검사 → Holdout 20문항 × B0·B1·O1 → 같은 추출기로 비교</td>
+        <td>분해·구절 근거·공리는 통과. A 칸에 '노래에 반함', '책임감'. 가치 칸에 자막 문장. 트윈이 자막 인식 오류를 말투로 흉내. 가치 겹침 O1 0.40 > B1 0.28 > B0 0.24</td>
+        <td>A·C·V 경계 규칙, 가치 칸 분리, 근거 등급 분리, 특질 단서 칸, 말투 메모 규칙, 자막 교정(clean.py), 꼬리표 합치기(merge.py), 비교 지표 v2</td></tr>
+      <tr><td class="rowh">파일럿 2<span class="sub">11/22</span></td>
+        <td>칸 경계를 좁히면 꼬리표가 정리되고 근거 등급이 구분되나, 지표를 고치면 조건 차이가 어떻게 보이나</td>
+        <td>같은 30발화·20문항. 추출 규칙 v2, 교정 옵션(미적용), 합치기 제안, 비교 v2 + Retest 천장 8쌍 + 최빈 가치 기준선</td>
+        <td>가치 꼬리표 정리됨, 근거 등급 구분됨, 특질 분리됨. 특징 꼬리표 39개 단발 82%. 가치 겹침 O1 0.52 > B1 0.44 > B0 0.38 > 기준선 0.32. 근거 없는 일화 O1 0.30 < B1 0.55 < B0 1.10</td>
+        <td>교정 순서 오류 수정. 합치기 제안을 사람이 고쳐 코드북으로. 대상 맞추기를 의미 기준(임베딩)으로 바꿀 예정. 합치기 대표 이름은 '성질 문장'으로</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<!-- 2 -->
+<section class="sec" id="pipeline"><div class="wrap">
+  <div class="sec-head"><h2>2. 단계별 변화</h2>
+    <p class="muted">파이프라인 순서 그대로입니다. 굵은 칸 두 개(교정, 합치기)가 새로 생긴 단계입니다.</p></div>
+  <div class="legend">
+    <span><span class="pill same">같음</span> 파일럿 1과 같음</span>
+    <span><span class="pill add">추가</span> 새로 붙음</span>
+    <span><span class="pill swap">교체</span> 바꿈</span>
+    <span><span class="pill none">없음</span> 이 실험엔 없음</span>
+  </div>
+  <div class="tbl-wrap"><table class="wide">
+    <thead><tr><th>단계</th><th>누가</th><th>파일럿 1</th><th>파일럿 2</th></tr></thead>
+    <tbody>
+      <tr><td class="rowh"><b>⓪ 자막 교정</b></td><td><span class="who llm">LLM</span></td>
+        <td><span class="pill none">없음</span></td>
+        <td><span class="pill add">추가</span><br>틀린 단어만 고치고 말버릇은 둠. 원문과 유사도 0.75 미만이면 거절. <span class="badn">이번엔 다른 발화를 교정해서 실제로는 적용 안 됨(0/30)</span></td></tr>
+      <tr><td class="rowh">① 추출</td><td><span class="who llm">LLM</span></td>
+        <td>질문 상황, 입장(대상·찬반), A·C·V, 근거 등급 1개, 일화, 말투 한 줄</td>
+        <td><span class="pill swap">교체</span><br>A·C·V 경계 규칙과 예시. 가치 = 정리된 말 + 원문 구절. 근거 등급을 찬반·가치에 따로. 특질 단서 칸 추가. 말투 메모에서 자막 오류 제외</td></tr>
+      <tr><td class="rowh">질문 상황</td><td><span class="who">코드</span></td>
+        <td>모든 문항을 LLM이 분류</td>
+        <td><span class="pill swap">교체</span><br>원래 질문이 없는 문항(derived)은 코드가 '알 수 없음'으로 고정 (30개 중 9개)</td></tr>
+      <tr><td class="rowh">② 상자 만들기</td><td><span class="who">코드</span></td>
+        <td>입장 상자 ST-, 일화 상자 EP-, 공유 점, 시트용 CSV</td>
+        <td><span class="pill same">같음</span><br>+ 가치 근거 등급, 특질 단서를 상자·발화에 기록</td></tr>
+      <tr><td class="rowh">③ 공리 검사</td><td><span class="who">코드</span></td>
+        <td>A02~A18, 구절 원문 일치</td>
+        <td><span class="pill same">같음</span><br>+ A10 보고(가치 근거가 추론인 상자 수)</td></tr>
+      <tr><td class="rowh">④ 통계</td><td><span class="who">코드</span></td>
+        <td>칸 채움, 꼬리표 수렴, 근거 등급, 역량 질문</td>
+        <td><span class="pill same">같음</span><br>+ 가치 근거 등급, 특질 단서, 교정본 사용 수</td></tr>
+      <tr><td class="rowh"><b>꼬리표 합치기</b></td><td><span class="who llm">LLM</span> <span class="who">사람</span></td>
+        <td><span class="pill none">없음</span></td>
+        <td><span class="pill add">추가</span><br>LLM이 뜻이 같은 꼬리표를 묶어 대표 꼬리표 제안 → 사람이 CSV에서 고침 → 다음 추출의 코드북</td></tr>
+      <tr><td class="rowh">⑤ 트윈 답</td><td><span class="who llm">LLM</span></td>
+        <td>B0 소개만 · B1 원문 발췌 8개 · O1 입장 상자 8개 + 일화 3개 + 가치 요약 + 말투 메모</td>
+        <td><span class="pill same">같음</span></td></tr>
+      <tr><td class="rowh">⑥ 비교</td><td><span class="who llm">LLM</span> <span class="who">코드</span></td>
+        <td>첫 입장끼리 찬반, 특징·가치 겹침, 일화 수 초과분, 표면 유사도</td>
+        <td><span class="pill swap">교체</span><br>대상이 맞은 입장끼리 찬반, 일화를 '본인 일화 재사용'과 '근거 없음'으로 구분, Retest 천장, 최빈 가치 기준선</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<!-- 3 -->
+<section class="sec" id="rules"><div class="wrap">
+  <div class="sec-head"><h2>3. 바뀐 추출 규칙</h2>
+    <p class="muted">A·C·V의 뜻(수단-목적 사슬, Gutman 1982; Reynolds &amp; Gutman 1988)은 그대로 두고 칸의 경계만 좁혔습니다.</p></div>
+
+  <div class="step">
+    <div class="step-h"><h3>3-1. 칸마다 묻는 질문과 넣지 않는 것</h3></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>칸</th><th>원래 뜻</th><th>파일럿 1에서 들어간 것</th><th>파일럿 2 규칙</th></tr></thead>
+      <tbody>
+        <tr><td class="rowh">A 특징</td><td>대상이 가진 성질</td>
+          <td>노래에 반함(계기), 책임감(성격), 외모 자신감 결여(상태)</td>
+          <td>"그것이 <b>어떤 것</b>이라고 보나?" 물건이면 성질, 선택이면 그 선택에 대한 규정. 계기 → 일화, 성격 → 특질 단서, 말 안 했으면 비움</td></tr>
+        <tr><td class="rowh">C 결과</td><td>그 성질이 나에게 가져오는 결과</td>
+          <td>옷 관심 시작, 후회 줄이기</td>
+          <td>"그래서 <b>나에게</b> 무엇이 생기나?" (변화 없음, 예시만 추가)</td></tr>
+        <tr><td class="rowh">V 가치</td><td>그 결과가 왜 중요한지, 사슬의 끝</td>
+          <td>"내가 진짜 이쁘지 프 것부터 입으세요" (자막 문장 그대로)</td>
+          <td>"그게 <b>왜</b> 중요한가?" 정리된 짧은 말(words) + 원문 구절(phrase) 분리</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="step">
+    <div class="step-h"><h3>3-2. 칸에 붙는 정보</h3></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>정보</th><th>파일럿 1</th><th>파일럿 2</th><th>이유</th></tr></thead>
+      <tbody>
+        <tr><td class="rowh">근거 등급</td><td>입장마다 1개</td><td><span class="pill swap">교체</span> 찬반 · 가치에 따로</td><td>찬반은 본인이 말해도, Schwartz 칸 고르기는 해석인 경우가 많음</td></tr>
+        <tr><td class="rowh">특질 단서</td><td><span class="pill none">없음</span></td><td><span class="pill add">추가</span> trait_cues 목록</td><td>A 칸에서 성격을 빼낼 곳</td></tr>
+        <tr><td class="rowh">질문 상황</td><td>LLM 분류</td><td><span class="pill swap">교체</span> 만든 질문은 '알 수 없음'</td><td>Train 381개 중 192개는 답을 보고 만든 질문</td></tr>
+        <tr><td class="rowh">말투 메모</td><td>자유 기술</td><td><span class="pill swap">교체</span> 어휘·길이·단정성·부르는 말만</td><td>트윈이 '예 아,' 같은 인식 오류를 말투로 흉내 냄</td></tr>
+      </tbody>
+    </table></div>
+    <details class="prompt"><summary>추출 프롬프트 v2에 새로 들어간 문단</summary>
+<pre class="code">칸의 뜻 (수단-목적 사슬: 대상 → A → C → V)
+- A 특징: "그것(대상)이 어떤 것이라고 보나?" 대상의 성질이나 그 선택에 대한 규정.
+    물건이면 "한철이다", "손이 많이 간다" / 선택·행동이면 "남들이 안 가는 길", "늦어도 할 수 있는 일"
+    A에 넣지 않는 것: 계기가 된 사건(→ episodes), 본인의 성격(→ trait_cues), 본인의 감정·상태
+- C 결과: "그래서 나에게 무엇이 생기나?"
+- V 가치: "그게 왜 중요한가?" words는 정리된 짧은 말(10자 안팎, 자막 오류 없이), phrase는 원문 구절.
+
+- evidence_polarity: 직접 진술 | 관찰 | 추론
+- evidence_value: 직접 진술 | 추론 — Schwartz 칸을 고른 것 자체는 해석이므로,
+  본인이 이유를 분명히 말하지 않았다면 '추론'이다.
+- style: 어휘, 문장 길이, 단정성, 부르는 말만. 자막 인식 오류는 말투로 적지 않는다.</pre></details>
+  </div>
+</div></section>
+
+<!-- 4 -->
+<section class="sec" id="same"><div class="wrap">
+  <div class="sec-head"><h2>4. 같은 발화로 보기</h2>
+    <p class="muted">같은 발화를 두 규칙으로 추출한 결과입니다. 두 실험 모두 자막 원문을 입력으로 썼습니다.</p></div>
+
+  <div class="step">
+    <div class="step-h"><span class="who">P01-I01-007</span><h3>"L국 유학을 결심한 이유는?"</h3></div>
+    <p class="small muted">답(자막 원문 일부): "…고등학교 때 그 L국 … 공연을 했어요 … 그걸 듣는 순간 … 아름다운 노래가 이건 내가 정나라 말을 꼭 배워봐요 … 고 2때 에요 … 디자이너가 되겠다는 … 크림도 잘 그렸고 … 공상이 많았어요"</p>
+    <div class="io">
+      <div class="io-box"><div class="io-h">파일럿 1</div>
+<pre class="code">입장 3개
+- L국 유학 / 찬성  A: 국가고시 패스
+- L국 말 배우기 / 찬성
+    A: <span class="hl">노래에 반함</span>            ← 계기
+    V: <span class="hl">"내가 정나라 말을 꼭 배워봐요"</span>  ← 자막 문장
+       자기주도·자극 / 근거 등급 없음
+- 디자이너 진로 / 찬성  A: <span class="hl">그림 재능</span>  ← 성격
+일화: 고등학교 때 L국 공연 관람, 고2 때 노래 듣고 언어 결심
+말투: 말이 길고 더듬으며 … 얼버무림이 많음</pre></div>
+      <div class="io-box"><div class="io-h">파일럿 2</div>
+<pre class="code">입장 2개
+- L국 유학 / 찬성  A: 국가고시를 패스해야 가는 길
+- L국 말 배우기 / 찬성
+    A: (비움)
+    V: 새로운 언어 탐구
+       자기주도·자극 / 가치 근거: <span class="good">추론</span>
+일화: 고등학교 때 L국 공연 관람, 고2 때 노래 듣고 언어 결심
+특질 단서: <span class="good">그림을 잘 그림, 상상력이 많음</span>
+말투: 말이 길게 이어지고 <span class="hl">자막이 끊기며</span>, '이제'를 반복</pre></div>
+    </div>
+    <p class="small">계기는 일화에만, 성격은 특질 단서로 갔고, 가치는 정리된 말이 됐습니다. 다만 말투 메모에 여전히 "자막이 끊기며"가 들어갑니다.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-h"><span class="who">P01-I01-005</span><h3>"외모에 자신이 없어서 옷에 관심을 갖게 되었다는데, 어떤 사연인가요?"</h3></div>
+    <div class="io">
+      <div class="io-box"><div class="io-h">파일럿 1</div>
+<pre class="code">- 외모 콤플렉스를 옷으로 보완하기 / 찬성
+    A: <span class="hl">외모 자신감 결여</span>    ← 본인의 상태
+    C: 옷 관심 시작
+    V: <span class="hl">"내가 이뻐 보일수 있을까"</span>  자기주도·안전
+일화: 병아리 다리 별명, 백조가 된 변화</pre></div>
+      <div class="io-box"><div class="io-h">파일럿 2</div>
+<pre class="code">- 옷에 관심 갖기 / 찬성
+    A: 자기 표현 수단
+    C: 자신감 상승
+    V: 스스로 가꾸는 자존감  자기주도 / 가치 근거: 추론
+일화: 외모 지적 받음, 병아리 다리 별명
+특질 단서: 자기관리</pre></div>
+    </div>
+    <p class="small">대상이 "옷에 관심 갖기"로 정리되면서 A·C·V가 사슬로 읽힙니다 (옷은 자기 표현 수단 → 자신감이 오름 → 스스로 가꾸는 자존감).</p>
+  </div>
+</div></section>
+
+<!-- 5 -->
+<section class="sec" id="numbers"><div class="wrap">
+  <div class="sec-head"><h2>5. 숫자 비교</h2>
+    <p class="muted">추출은 같은 30발화, 비교는 같은 Holdout 20문항입니다. 비교 지표는 정의가 바뀐 것이 있어 그대로 맞대면 안 되는 칸을 표시했습니다.</p></div>
+
+  <h3>추출</h3>
+  <div class="tbl-wrap"><table class="cmp">
+    <thead><tr><th>항목</th><th class="n">파일럿 1</th><th class="n">파일럿 2</th><th>읽는 법</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="4">분해</td></tr>
+      <tr><td>입장이 나온 발화</td><td class="n">93%</td><td class="n">90%</td><td>비슷함</td></tr>
+      <tr><td>입장 상자 / 일화</td><td class="n">56 / 30</td><td class="n">51 / 37</td><td>계기가 일화로 옮겨가 일화가 늘어남</td></tr>
+      <tr><td>A · C · V 채움</td><td class="n">96 · 55 · 68%</td><td class="n">94 · 49 · 75%</td><td>A는 여전히 거의 다 채워짐 — 내용은 규정 쪽으로 바뀜</td></tr>
+      <tr class="grp"><td colspan="4">꼬리표 (30발화 누적)</td></tr>
+      <tr><td>특징 꼬리표 수 (한 번만 쓰임)</td><td class="n">42 (74%)</td><td class="n">39 (82%)</td><td><span class="badn">수렴 안 함</span> → 합치기로 해결할 부분</td></tr>
+      <tr><td>결과 꼬리표 수 (한 번만 쓰임)</td><td class="n">25 (84%)</td><td class="n">19 (74%)</td><td>조금 나아짐</td></tr>
+      <tr><td>가치 꼬리표 수 (한 번만 쓰임)</td><td class="n">33 (88%)</td><td class="n">16 (44%)</td><td><span class="good">크게 나아짐</span> — "자기 삶의 주도권", "자기 결정권"처럼 정리됨</td></tr>
+      <tr class="grp"><td colspan="4">근거와 상황</td></tr>
+      <tr><td>근거 등급 (찬반)</td><td class="n">직접 98%</td><td class="n">직접 90% · 관찰 10%</td><td>조금 구분됨</td></tr>
+      <tr><td>근거 등급 (가치)</td><td class="n">—</td><td class="n">직접 23 · 추론 15</td><td><span class="good">구분됨</span> — 추론 15개는 비슷한 사람 찾기에서 제외(A10)</td></tr>
+      <tr><td>질문 상황 '알 수 없음'</td><td class="n">—</td><td class="n">9</td><td>만든 질문 문항</td></tr>
+      <tr><td>Schwartz 상위</td><td class="n">자기주도 26 · 자극 7 · 성취 6</td><td class="n">자기주도 27 · 쾌락 4 · 성취 3</td><td>자기주도가 압도적 — 아래 기준선의 이유</td></tr>
+      <tr class="grp"><td colspan="4">품질</td></tr>
+      <tr><td>구절 원문 일치</td><td class="n">98%</td><td class="n">99%</td><td>유지</td></tr>
+      <tr><td>공리 위반 (A13 제외)</td><td class="n">0</td><td class="n">0</td><td>A13은 한 사람 자료라 모두 '대기'가 정상</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>꼬리표 합치기 제안 (파일럿 2)</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>칸</th><th class="n">꼬리표 → 대표</th><th>잘 된 묶음</th><th>고쳐야 할 것</th></tr></thead>
+    <tbody>
+      <tr><td class="rowh">가치 V</td><td class="n">16 → 11</td><td>자기 삶의 주도권 (자기 결정권 · 개인의 자유, 13회)</td><td>거의 그대로 써도 됨</td></tr>
+      <tr><td class="rowh">특징 A</td><td class="n">39 → 15</td><td>타인 시선과 모방 소비 (타인 기준 소비 · 남이 해주는 것)</td><td>대표 이름이 주제("명품에 대한 태도")라 방향이 사라짐. "국가고시를 패스해야 가는 길"이 "새로운 언어와 배움"에 들어감</td></tr>
+      <tr><td class="rowh">결과 C</td><td class="n">19 → 13</td><td>꿈과 여행 실현 (여행 가능 · 살아보고 싶은 것 실현)</td><td>자막 오류 "영업점이 타이트해짐"이 "자신감과 자기표현"에 들어감</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>트윈 답 비교 (Holdout 20문항)</h3>
+  <div class="tbl-wrap"><table class="cmp">
+    <thead><tr><th>조건</th><th class="n">가치 겹침</th><th class="n">근거 없는 일화</th><th class="n">본인 일화 재사용</th><th class="n">대상 맞음</th><th class="n">찬반 일치</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="6">파일럿 2 (v2 지표)</td></tr>
+      <tr><td class="rowh">천장 <span class="sub">본인 재답변, Retest 8쌍</span></td><td class="n">0.29</td><td class="n">1.75</td><td class="n">0.00</td><td class="n">0.33</td><td class="n">1.00 (n=4)</td></tr>
+      <tr><td class="rowh">O1 관계도</td><td class="n"><span class="good">0.52</span></td><td class="n"><span class="good">0.30</span></td><td class="n">0.40</td><td class="n">0.19</td><td class="n">1.00 (n=5)</td></tr>
+      <tr><td class="rowh">B1 원문 발췌</td><td class="n">0.44</td><td class="n">0.55</td><td class="n">0.05</td><td class="n">0.24</td><td class="n">1.00 (n=6)</td></tr>
+      <tr><td class="rowh">B0 소개만</td><td class="n">0.38</td><td class="n">1.10</td><td class="n">0.00</td><td class="n">0.19</td><td class="n">1.00 (n=5)</td></tr>
+      <tr><td class="rowh">기준선 <span class="sub">늘 "자기주도·쾌락"이라고 답했다고 칠 때</span></td><td class="n">0.32</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+      <tr class="grp"><td colspan="6">파일럿 1 (v1 지표 — 정의가 달라 위와 직접 비교 불가한 칸은 —)</td></tr>
+      <tr><td class="rowh">O1 · B1 · B0</td><td class="n">0.40 · 0.28 · 0.24</td><td class="n">— <span class="sub">초과 일화 0.45 · 0.30 · 0.80</span></td><td class="n">—</td><td class="n">—</td><td class="n">— <span class="sub">첫 입장끼리 0.60 · 0.55 · 0.65</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="note">
+    <p><b>믿을 만한 신호 두 가지.</b> ① 가치 겹침: 기준선(0.32)을 넘는 폭이 O1 +0.20, B1 +0.12, B0 +0.06로, 관계도가 가치를 전달한다는 방향이 파일럿 1에 이어 유지됨. ② 일화: O1은 일화를 지어내기보다 본인의 실제 일화를 가져다 씀.</p>
+    <p><b>아직 못 믿는 지표.</b> 대상 맞음은 천장도 0.33 — 문자 유사도로 대상을 맞춰 같은 대상을 다른 말로 쓰면 놓침. 찬반 일치는 맞은 대상이 4~6개뿐. 천장의 가치 겹침·일화는 Retest 쌍이 짧은 사실 질문이 많고 관계도가 30발화뿐이라 낮거나 높게 잡힘.</p>
+  </div>
+</div></section>
+
+<!-- 6 -->
+<section class="sec" id="twin"><div class="wrap">
+  <div class="sec-head"><h2>6. 트윈 답 보기</h2>
+    <p class="muted">파일럿 2의 같은 문항에 세 조건이 낸 답입니다.</p></div>
+  <div class="step">
+    <div class="step-h"><span class="who">44pG56vzkY4_q004</span><h3>"영어 공부는 어떻게 하나요?"</h3></div>
+    <p class="small muted">실제 답: "한시간 정도 영어 공부를 하죠. 이게 우리 큰아들이 중학생 때 쓰던 영어 책이에요. 저 할머니는 맨날 고물만 갖고 나와 그러실 거 같아."</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>조건</th><th>트윈 답 (앞부분)</th><th class="n">재사용</th><th class="n">근거 없음</th></tr></thead>
+      <tbody>
+        <tr><td class="rowh">B0</td><td>아이고, 영어 공부라... 저도 늦깎이로 시작했어요. <span class="hl">하루 10분씩 미드 한 장면 따라 말하기</span>부터 했죠. … <span class="hl">요리 영상 영어로 보면서</span> 단어 적어놓고…</td><td class="n">0</td><td class="n">2</td></tr>
+        <tr><td class="rowh">B1</td><td>머리맡에 사전 두 권 늘 놓고 살았어요. 자는 동안에도 테이프 틀어놓고요. 학원 다닐 형편이 안 돼서 외국인 찾아가 … 개인교습 받으며 2년 배웠죠.</td><td class="n">1</td><td class="n">2</td></tr>
+        <tr><td class="rowh">O1</td><td><span class="hl">예 아,</span> 저는 머리맡에 L국어 사전하고 영어사전 두 개 항상 놓고 살았어요. 학원 없던 시절이라 테이프 틀어놓고 귀에 익히고, 소리 내서 따라 하고. … 돈 들여서 남 따라 하지 말고, 하루 십 분이라도 매일.</td><td class="n">2</td><td class="n">0</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small">B0는 그럴듯한 일화를 지어내고, O1은 본인의 실제 일화(사전 두 권, 테이프)를 씁니다. 다만 O1은 여전히 "예 아,"로 시작합니다 — 말투 메모의 자막 오류가 아직 남아 있다는 뜻입니다. 실제 답의 "큰아들 중학생 때 쓰던 책"은 어느 조건도 알 수 없는 새 일화입니다.</p>
+  </div>
+</div></section>
+
+<!-- 7 -->
+<section class="sec" id="issues"><div class="wrap">
+  <div class="sec-head"><h2>7. 문제와 남은 질문</h2></div>
+  <div class="warnbox">
+    <p><b>파일럿 2에서 자막 교정이 적용되지 않음.</b> clean.py가 추출과 다른 순서로 30개를 골라 다른 발화를 교정함(교정 자체는 30/30 채택, 유사도 0.95 이상). 순서를 맞춰 고침. 그래서 파일럿 2는 추출 규칙만 바꾼 결과입니다.</p>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>남은 문제</th><th>보이는 곳</th><th>다음에 할 것</th><th>누가</th></tr></thead>
+    <tbody>
+      <tr><td class="rowh">특징 꼬리표가 수렴하지 않음</td><td>39개 중 82%가 한 번만</td><td>합치기 제안을 고쳐 코드북으로 확정, 다음 추출은 코드북에서 고르게</td><td><span class="who">사람</span></td></tr>
+      <tr><td class="rowh">합치기 대표 이름이 주제가 됨</td><td>"명품에 대한 태도"</td><td>대표 이름은 "남과 같아진다"처럼 성질 문장으로 — 합치기 프롬프트에 규칙 추가</td><td><span class="who">코드</span></td></tr>
+      <tr><td class="rowh">말투 메모에 자막 오류가 남음</td><td>"자막이 끊기며", O1의 "예 아,"</td><td>교정본으로 다시 추출. 그래도 남으면 말투 메모를 교정본에서만 뽑기</td><td><span class="who">코드</span></td></tr>
+      <tr><td class="rowh">대상 맞추기가 문자 기준</td><td>대상 맞음 천장 0.33</td><td>저장소의 embed.py로 의미 기준 매칭</td><td><span class="who">코드</span></td></tr>
+      <tr><td class="rowh">문항·관계도가 작음</td><td>찬반 n=4~6, 천장 일화 1.75</td><td>Train 381발화 · Holdout 50문항으로 확장 (파일럿 3)</td><td><span class="who">코드</span></td></tr>
+      <tr><td class="rowh">사람도 같은 질문에 다른 일화를 고름</td><td>채널 시작 계기: 한 번은 후배 권유, 한 번은 빵집 캐스팅</td><td>일화는 '같은 일화를 골랐나'가 아니라 '근거 있는 일화인가'로 평가</td><td><span class="who">설계</span></td></tr>
+      <tr><td class="rowh">가치 겹침이 기준선에 묶임</td><td>P01은 자기주도가 압도적</td><td>다른 인물(가치 분포가 다른 사람)을 넣어 가치 겹침이 사람을 구분하는지 확인</td><td><span class="who">자료</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">
+    <p><b>파일럿 3 실행</b> (Jee가 merge_proposal.csv를 고친 뒤)</p>
+    <pre class="code">.venv/bin/python experiments/ontology/run_pilot.py --run pilot3 --limit 0 --n 50 --clean \
+  --tags experiments/runs/ontology/pilot2/merge_proposal.csv</pre>
+  </div>
+  <div class="cite"><span class="cite-k">근거</span><span>수단-목적 사슬: Gutman (1982); 래더링과 요약 코드: Reynolds &amp; Gutman (1988); 코드북 합치기: Braun &amp; Clarke (2006), Dai et al. (2023, LLM-in-the-loop); 실험 설계 틀: Etudo &amp; Yoon (2024).</span></div>
+</div></section>
+
+</body></html>
