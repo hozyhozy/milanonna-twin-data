@@ -191,6 +191,15 @@
   .barrow .tr{background:#eef0f4;border-radius:5px;height:16px;overflow:hidden}
   .barrow .fl{height:100%;border-radius:5px}
   .note3{font-size:12.5px;color:var(--mute);margin:6px 0 0}
+  /* 2단계 칸 뜻 */
+  .acv4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .tq.s{background:var(--s-bg)}.tq.s h5{color:var(--s)}
+  .tq dl{margin:6px 0 0;display:grid;grid-template-columns:44px 1fr;gap:3px 6px;font-size:12.5px}
+  .tq dt{font-weight:700;color:#4a4d55}.tq dd{margin:0}
+  .chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:13px}
+  .chain .ar{color:#9ea2ac;font-weight:700}
+  .chain .why{font-size:11.5px;color:var(--mute);display:block}
+  @media (max-width:760px){.acv4{grid-template-columns:1fr 1fr}}
   @media (max-width:760px){.trio,.stat3{grid-template-columns:1fr}.barrow{grid-template-columns:80px 1fr 90px}}
   footer{color:var(--mute);font-size:12.5px;margin-top:40px;border-top:1px solid var(--line);padding-top:12px}
   @media (max-width:760px){.g4,.g2,.slots,.tl{grid-template-columns:1fr}.tl>div{border-left:0;border-top:1px solid var(--line)}.nav2{margin-left:0}}
@@ -310,7 +319,7 @@
 <div class="cap" id="cap"></div>
 
 <footer>
-  설계표: 인물 온톨로지 설계표 v0.6 (클래스·관계·공리). 발화와 인물은 모두 설명용으로 지어낸 것이며 실제 인터뷰 인용이 아닙니다. 2026-11-21 작성, 2026-11-22 개정(5단계에 클래스 승격 데이터 예시 추가), 2026-11-23 개정(설계표 v0.4: 결과 C도 공유 개념 / v0.5: 입장 상자 중심으로 범위 축소 / 6단계에 트윈 답 예시 추가 / v0.6: 사람 중심 상자를 설계에서 삭제 / 3단계에 세부 꼬리표 상세 예시 추가: A·C·V 판별, 이름 규칙 7가지, 재사용 판단, 코드북 행, 상태).
+  설계표: 인물 온톨로지 설계표 v0.6 (클래스·관계·공리). 발화와 인물은 모두 설명용으로 지어낸 것이며 실제 인터뷰 인용이 아닙니다. 2026-11-21 작성, 2026-11-22 개정(5단계에 클래스 승격 데이터 예시 추가), 2026-11-23 개정(설계표 v0.4: 결과 C도 공유 개념 / v0.5: 입장 상자 중심으로 범위 축소 / 6단계에 트윈 답 예시 추가 / v0.6: 사람 중심 상자를 설계에서 삭제 / 3단계에 세부 꼬리표 상세 예시 추가: A·C·V 판별, 이름 규칙 7가지, 재사용 판단, 코드북 행, 상태 / 2단계에 입장·A·C·V 칸의 뜻과 수단–목적 사슬 설명 추가).
 </footer>
 </div>
 
@@ -327,6 +336,7 @@ const D1='<div class="g4">'+[
 ].map(u=>'<div class="ucard"><div class="who"><span class="dot" style="background:'+u[1]+'"></span> '+u[0]+'</div><div class="meta"><b>발화 ID</b><span style="color:var(--ink);font-weight:600">'+u[5]+'</span><b>매체·형식</b><span>'+u[2]+'</span><b>질문 상황</b><span>'+u[3]+'</span><b>주변 맥락</b><span>'+u[4]+'</span></div><div class="quote">'+u[6]+'</div></div>').join('')+'</div>';
 
 const dec=(who,col,q,sl)=>'<div class="dec"><div class="who"><span class="dot" style="background:'+col+'"></span> '+who+'</div><div class="quote">'+q+'</div><div class="slots">'+sl+'</div></div>';
+const P2='<h4 class="sub" style="margin-top:0">칸 네 개의 뜻 — 입장 + A · C · V</h4>'+'<div class="banner">A·C·V는 <b>수단–목적 사슬</b>(Gutman, 1982)의 세 층입니다. 사람이 무언가를 좋다/싫다고 할 때 그 이유는 보통 <b>대상의 특징 → 그 특징이 나에게 가져오는 결과 → 그 결과로 지키거나 해치는 가치</b>로 이어진다는 이론입니다. 래더링 면접(Reynolds &amp; Gutman, 1988)에서 "그게 왜 중요하세요?"를 반복해 물으면 A → C → V 순서로 내려갑니다. 입장 칸은 이 사슬이 무엇에 대한 판단인지를 적는 칸입니다.</div>'+'<div class="acv4">'+'<div class="tq s"><h5>입장 (대상 + 찬반)</h5>무엇에 대해 어느 쪽인가<dl><dt>질문</dt><dd>무엇을 좋다/싫다 하나?</dd><dt>꼴</dt><dd>[대상] · 찬성/반대/조건부</dd><dt>예</dt><dd>유행하는 옷 · 반대</dd><dt>주의</dt><dd>상자마다 꼭 하나. 찬반이 말투로만 드러나면 "말투에서 읽음" 표시</dd></dl></div>'+'<div class="tq a"><h5>특징 A (Attribute)</h5>그 대상이 <b>어떤 것이라고 보나</b><dl><dt>질문</dt><dd>그 대상은 어떤 것인가?</dd><dt>꼴</dt><dd>[대상]은 ___다</dd><dt>예</dt><dd>오래가지 않는다 ("한철 지나면")</dd><dt>주의</dt><dd>주어는 대상. 본인 성격("나는 검소하다")은 A가 아님. 찬성하는 사람도 같은 관찰을 할 수 있음</dd></dl></div>'+'<div class="tq c"><h5>결과 C (Consequence)</h5>그 특징 때문에 <b>나에게 무슨 일이 생기나</b><dl><dt>질문</dt><dd>그래서 어떻게 되나?</dd><dt>꼴</dt><dd>(나는) ___하게 된다</dd><dt>예</dt><dd>쓸모가 금방 끝난다 ("못 입거든요")</dd><dt>주의</dt><dd>주어는 나(또는 사람들). 좋은 결과도 나쁜 결과도 됨. 가치 이름을 쓰지 않음(A19)</dd></dl></div>'+'<div class="tq v"><h5>가치 V (Value)</h5>그 결과로 <b>결국 무엇을 지키려나</b><dl><dt>질문</dt><dd>그게 왜 중요한가?</dd><dt>꼴</dt><dd>Schwartz 10칸 중 1~2개 + 본인 말</dd><dt>예</dt><dd>안전 · "오래가는 것"</dd><dt>주의</dt><dd>대상이 바뀌어도 남는 기준. 본인이 직접 말하지 않았으면 근거 "추론"</dd></dl></div>'+'</div>'+'<div class="chain"><b style="margin-right:4px">P01 ① 을 사슬로 읽으면</b>'+K('s','유행하는 옷 · 반대')+'<span class="ar">←</span>'+K('a','A 한철이라 오래가지 않는다')+'<span class="ar">→</span>'+K('c','C 그래서 금방 못 입게 된다')+'<span class="ar">→</span>'+K('v','V 오래가는 것을 지키고 싶다 (안전)')+'<span class="why" style="flex-basis:100%">"왜 유행하는 옷을 안 사세요?" → "한철이잖아요"(A) → "그게 왜 문제예요?" → "못 입게 되니까요"(C) → "그게 왜 중요해요?" → "오래 두고 입을 수 있는 게 좋아요"(V). 래더링 질문 한 번이 칸 하나에 해당합니다.</span></div>'+'<table class="rt" style="margin-top:10px"><tr><th>칸</th><th>들어가지 않는 것</th><th>어디로 보내나</th></tr>'+'<tr><td>A</td><td>본인 성격·습관 ("소박하고 겸손함")</td><td>성격 단서 (이번 설계에서는 쓰지 않음)</td></tr>'+'<tr><td>C</td><td>가치 이름 ("자율성이 지켜진다")</td><td>V의 Schwartz 칸 (C에는 "하고 싶은 것을 할 수 있다"처럼 일어나는 일만)</td></tr>'+'<tr><td>A · C</td><td>예전에 겪은 구체적 이야기 ("파리에서 산 구두")</td><td>일화 (Episode, 보조 모듈)</td></tr>'+'<tr><td>A · C · V</td><td>말하지 않은 것</td><td>빈칸으로 둠. 억지로 채우지 않음 (A15)</td></tr></table>'+'<h4 class="sub">발화 네 개를 칸에 넣으면</h4>';
 const D2=
  dec('P01 ① · P01-I03-012 · 소비 습관 질문','#2459d6','<span class="hl hl-s">유행하는 옷은 안 사요</span>. <span class="hl hl-a">한철 지나면</span> <span class="hl hl-c">못 입거든요</span>. 저는 <span class="hl hl-v">오래 두고 입을 수 있는 걸</span> 사요.',
    slot('s','입장','유행하는 옷 · 반대')+slot('a','특징 A','오래가지 않는다','n')+slot('c','결과 C','쓸모가 금방 끝난다','n')+slot('v','가치 V','본인 말 "오래가는 것"<br>Schwartz 칸: 안전 (후보)'))+
@@ -552,7 +562,7 @@ const S=[
  {t:'1. 발화 모으기',p:'질문 하나에 대한 답 한 대목을 발화(Statement) 하나로 봅니다. 사람과 함께 상황을 세 층으로 기록합니다.',d:D1,
   pts:['상황 세 층: 매체·형식 / 질문이 만든 상황(5–7개 목록) / 주변 맥락','뒤 시기 발화는 평가용으로 떼어 두고 관계도에 넣지 않음','기사는 본인 답이 그대로 실린 경우만, 그리고 표시해 둠 (말투 판단에는 쓰지 않음)'],
   ref:'네 조직(AQAP · ALF · PFLP · KKK)의 선언문과 성명서 문장을 모았습니다. 상황 기록은 없었습니다.',ids:['C01 Person','C02 Statement','C10 Situation','A11']},
- {t:'2. 구절로 쪼개기 — 큰 꼬리표',p:'발화 하나를 큰 꼬리표 하나로 분류하지 않고, 구절로 쪼개 해당하는 칸에 넣습니다(분해). 말하지 않은 칸은 빈칸으로 둡니다.',d:D2,
+ {t:'2. 구절로 쪼개기 — 큰 꼬리표',p:'발화 하나를 큰 꼬리표 하나로 분류하지 않고, 구절로 쪼개 해당하는 칸에 넣습니다(분해). 칸은 입장 · 특징 A · 결과 C · 가치 V 네 개이고, 말하지 않은 칸은 빈칸으로 둡니다. 먼저 칸마다 뜻을 보고, 아래에서 발화 네 개를 실제로 쪼갭니다.',d:P2+D2,
   pts:['큰 꼬리표 = 설계표의 위층 클래스 (이론에서 옴)','한 발화에서 여러 칸이 나올 수 있고, 하나도 안 나올 수도 있음','가치 칸은 두 층: 본인의 말 + Schwartz 칸 (칸은 사람이 확인)','말투는 사람이 아니라 이 발화에 붙여 둠'],
   ref:'"누가 문제인가"를 말하는 문장 → <b>진단</b> 하나만 붙였습니다.',ids:['C03 Topic','C04 Attribute','C05 Consequence','C06 Value','A02','A04']},
  {t:'3. 세부 꼬리표 붙이기',p:'②에서 칸에 넣은 구절마다 세부 꼬리표를 붙입니다. 처음엔 목록이 비어 있어 새로 만들고, 같은 얘기가 나오면 기존 것을 재사용합니다. 아래에 칸 판별 → 이름 짓기 → 재사용 판단 → 코드북 행 → 상태까지, 파일럿 2 꼬리표를 1차 수정한 기준 그대로 예시를 붙였습니다.',d:D3+P3,
